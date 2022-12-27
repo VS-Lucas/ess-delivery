@@ -18,4 +18,4 @@ Scenario: atualizar nome do restaurante
         AND estou na aba “Atualizar dados cadastrais”
         AND vejo “Bar PST” no nome do restaurante 
     When: eu atualizo o nome do restaurante para “Restaurante PST”    
-    Then: vejo a mensagem “Atualização bem sucedido” 
+    Then: vejo a mensagem “Atualização concluída”
