@@ -11,4 +11,4 @@ Scenario: cadastro de novo restaurante
         “CinFood” no nome da empresa; “51430012” no CEP; “PE” na UF; “R. Conde da Boa Vista, 345” no complemento;
         “Vegana” no tipo de comida    
     Then: vejo a mensagem “Cadastro bem sucedido” 
-        AND sou direcionado para a página “Seu Restaurante”
+        AND sou direcionado para a página “Seu Restaurante” 

@@ -10,4 +10,5 @@ Scenario: remover restaurante
         AND estou na aba "Descadastramento"
     When: eu descadastro o restaurante “Food”    
     Then: vejo a mensagem "Descadastramento bem sucedido”
-        AND sou direcionado para a página “Seu Perfil”
+        AND sou direcionado para a página “Seu Perfil”  
+    
