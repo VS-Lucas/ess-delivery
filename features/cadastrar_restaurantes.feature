@@ -11,4 +11,13 @@ Scenario: cadastro de novo restaurante
         “CinFood” no nome da empresa; “51430012” no CEP; “PE” na UF; “R. Conde da Boa Vista, 345” no complemento;
         “Vegana” no tipo de comida    
     Then: vejo a mensagem “Cadastro bem sucedido” 
-        AND sou direcionado para a página “Seu Restaurante” 
+        AND sou direcionado para a página “Seu Restaurante”
+
+Scenario: cadastro de novo restaurante sem informar o CNPJ
+    Given: eu estou na página “Cadastrar Restaurante”
+    When: eu adiciono “lvll@hotmail.com” no email; “1234” na senha; “Pessoa física” no tipo de cadastro;
+        “Lucas Van-Lume Lima” no nome completo; “123.759.375-22” no CPF;
+        “CinFood” no nome da empresa; “51430012” no CEP; “PE” na UF; “R. Conde da Boa Vista, 345” no complemento;
+        “Vegana” no tipo de comida    
+    Then: vejo a mensagem “Preencha todos os campos”
+        AND permaneço na página "Cadastrar Restaurante"
