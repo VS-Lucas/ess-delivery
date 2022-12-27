@@ -13,7 +13,7 @@ Scenario: atualizar horário de funcionamento do restaurante
     Then: vejo a mensagem “Atualização bem sucedido”
 
 Scenario: atualizar nome do restaurante
-    Given: eu estou logado no perfil de “Restaurante” com login “lvll@hotmail.com” e senha “1234”
+    Given: eu estou logado no perfil de “Restaurante” com login “lvll@hotmail.com” e senha “123”
         AND estou na página “Seu Restaurante”
         AND estou na aba “Atualizar dados cadastrais”
         AND vejo “Bar PST” no nome do restaurante 
