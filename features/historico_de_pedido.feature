@@ -28,3 +28,4 @@ Scenario: fazendo novamente um pedido pelo histórico de pedidos
     Then eu sou redirecionado para a página de “carrinho”
 
 Scenario: Teste
+    # ajuste no cenário
