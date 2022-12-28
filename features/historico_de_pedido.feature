@@ -1,5 +1,5 @@
 Feature: Exibir historico de pedidos
-    # description
+    # description form
 
 Scenario: visualizando a página de histórico de pedido vazia
     Given Estou logado como “usuário” com login “severino” e senha “senha” 
@@ -25,4 +25,6 @@ Scenario: fazendo novamente um pedido pelo histórico de pedidos
     And fiz um pedido de id “2”
     When eu acesso o pedido de id “2”
     And eu peço novamente o pedido de id “2” 
-    Then eu sou redirecionado para a página de “carrinho de compras”
+    Then eu sou redirecionado para a página de “carrinho”
+
+Scenario: Teste
