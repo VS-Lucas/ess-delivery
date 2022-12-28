@@ -1,4 +1,5 @@
 Feature: Exibir historico de pedidos
+    # description
 
 Scenario: visualizando a página de histórico de pedido vazia
     Given Estou logado como “usuário” com login “severino” e senha “senha” 
