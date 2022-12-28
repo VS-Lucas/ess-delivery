@@ -26,3 +26,6 @@ Scenario: fazendo novamente um pedido pelo histórico de pedidos
     When eu acesso o pedido de id “2”
     And eu peço novamente o pedido de id “2” 
     Then eu sou redirecionado para a página de “carrinho”
+
+Scenario: Teste
+
