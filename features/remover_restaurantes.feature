@@ -16,7 +16,7 @@ Scenario: tentativa de remoção de restaurante com pedido em andamento
     Given: eu estou logado no perfil de “Restaurante” com login “biu@hotmail.com” e senha “1234”
         AND estou na página “Seu Restaurante”
         AND estou na aba "Descadastramento"
-        AND possuo um pedido em andamento
+        AND possuo pelo menos um pedido em andamento
     When: eu tento descadastrar o restaurante “Food”
     Then: eu vejo uma notificação de erro "O restaurante não pode ser romovido com pedido em andamento"
     
