@@ -19,3 +19,11 @@ Scenario: atualizar nome do restaurante
     And vejo “Bar PST” no nome do restaurante 
     When eu atualizo o nome do restaurante para “Restaurante PST”    
     Then vejo a mensagem “Atualização concluída”
+
+Scenario: atualizar CEP do restaurante sem adicionar um novo
+    Given eu estou logado no perfil de “Restaurante” com login “mc@hotmail.com” e senha “12345”
+    And estou na página “Seu Restaurante”
+    And estou na aba “Atualizar dados cadastrais”
+    And vejo “53827649” no CEP do restaurante 
+    When eu tento atualizar o CEP do restaurante para “ ”    
+    Then vejo a mensagem “Preencha todos os campos para concluir a atualização”
