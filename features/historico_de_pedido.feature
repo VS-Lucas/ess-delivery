@@ -30,3 +30,6 @@ Scenario: fazendo novamente um pedido pelo histórico de pedidos
 
 Scenario: Teste
     # ajuste no cenário
+    # teste 1
+    # teste 2
+
