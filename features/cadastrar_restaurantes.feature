@@ -15,10 +15,9 @@ Scenario: cadastro de novo restaurante
 
 Scenario: cadastro de novo restaurante sem informar o CNPJ
     Given eu estou na página “Cadastrar Restaurante”
-    When eu adiciono “lvll@hotmail.com” no email; “1234” na senha; “Pessoa física” no tipo de cadastro;
-        “Lucas Van-Lume Lima” no nome completo; “123.759.375-22” no CPF;
-        “CinFood” no nome da empresa; “51430012” no CEP; “PE” na UF; “R. Conde da Boa Vista, 345” no complemento;
-        “Vegana” no tipo de comida    
+    When eu adiciono “vvv@hotmail.com” no email; “1234” na senha; “Pessoa física” no tipo de cadastro;
+        “Carlos Lima” no nome completo; “333.294.462-44” no CPF; “Food” no nome da empresa;
+        “27130011” no CEP; “PE” na UF; “R. Conde, 335” no complemento; “Chinesa” no tipo de comida    
     Then vejo a mensagem “Preencha todos os campos”
     And permaneço na página "Cadastrar Restaurante"
 
