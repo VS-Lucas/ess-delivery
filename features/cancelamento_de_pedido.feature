@@ -30,3 +30,6 @@ Feature: cancelamento de pedido
         Then vejo o pedido de ID "123" cancelado
 
     Scenario: teste
+        Given 
+        When 
+        Then 
