@@ -28,3 +28,5 @@ Feature: cancelamento de pedido
         And o pedido foi cancelado
         When clico em "Histórico de pedidos"
         Then vejo o pedido de ID "123" cancelado
+
+    Scenario: teste
