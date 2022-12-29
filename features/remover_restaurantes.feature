@@ -19,4 +19,11 @@ Scenario: tentativa de remoção de restaurante com pedido em andamento
     And possuo pelo menos um pedido em andamento
     When eu tento descadastrar o restaurante “Food”
     Then eu vejo uma notificação de erro "O restaurante não pode ser romovido com pedido em andamento"
+
+Scenario: remoção de restaurante cancelada
+    Given eu estou logado no perfil de “Restaurante” com login “lvll@gmail.com” e senha “1234”
+    And estou na página "Restaurantes removidos recentemente"
+    When eu solicito o recadastramento do restaurante “IFood”    
+    Then vejo a mensagem "Recadastramento realizado”
+    And sou direcionado para a página “Seu Restaurante”
     
