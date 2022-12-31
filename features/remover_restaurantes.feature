@@ -8,7 +8,7 @@ Scenario: remover restaurante
     Given eu estou logado no perfil de “Restaurante” com login “lvll@hotmail.com” e senha “1234”
     And estou na página “Seu Restaurante”
     And estou na aba "Descadastramento"
-    When eu descadastro o restaurante “Food”    
+    When eu descadastro o restaurante “Food”
     Then vejo a mensagem "Descadastramento realizado”
     And sou direcionado para a página “Seu Perfil”
 
