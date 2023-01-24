@@ -5,14 +5,14 @@ And o meu carrinho de compras tem o item "A", com "1 unidade", e o item "B" com 
 When eu excluo o item "A"
 Then o item "A" não aparece mais no meu carrinho
 
-Scenario: Alterar a quantidade de algum item no carrinho e ser bem sucedido
+Scenario: Alterar a quantidade de algum item no carrinho e ter sucesso
 Given estou logado com o usuário "@Lara2462" e com a senha "senha1234"
 And eu estou na página do carrinho de compras
 And o meu carrinho de compras tem apenas o item "A", com "1 unidade"
 When eu altero a quantidade do item "A" para "3 unidades"
 Then aparece que tem 3 unidade do item "A" no meu carrinho
 
-Scenario: Alterar a quantidade de algum item no carrinho e ser mal sucedido
+Scenario: Alterar a quantidade de algum item no carrinho e não ter sucesso
 Given estou logado com o usuário "@Lara2462" e com a senha "senha1234"
 And eu estou na página do carrinho de compras
 And o meu carrinho de compras tem apenas o item "B", com "1 unidade"
