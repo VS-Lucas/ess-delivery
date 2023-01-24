@@ -41,10 +41,18 @@ When eu acesso o meu carrinho de compras
 Then eu sou direcionado para a página do carrinho de compras
 And eu vejo os itens "A" e "B"
 
-Scenario: Adicionar um cupom de desconto
+Scenario: Adicionar um cupom de desconto válido
 Given estou logado com o usuário "@Lara2462" e com a senha "senha1234"
 And eu estou na página do carrinho de compras
 And eu tenho os itens "A" e "B" adicionados no meu carrinho de compras
 And o valor total da compra até o momento é "20"
 When eu aplico o cupom "CUPOM_10%_DESCONTO" 
 Then eu vejo que o valor total da compra passou a ser "18"
+
+Scenario: Adicionar um cupom de desconto inválido
+Given estou logado com o usuário "@Lara2462" e com a senha "senha1234"
+And eu estou na página do carrinho de compras
+And eu tenho os itens "A" e "B" adicionados no meu carrinho de compras
+And o valor total da compra até o momento é "20"
+When eu aplico o cupom "CUPOM_10%" 
+Then eu vejo o aviso de que o cupom que eu apliquei é inválido
