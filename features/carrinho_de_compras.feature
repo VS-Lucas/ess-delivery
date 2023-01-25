@@ -40,3 +40,4 @@ And eu tenho os itens "A" e "B" adicionados no meu carrinho de compras
 When eu acesso o meu carrinho de compras
 Then eu sou direcionado para a página do carrinho de compras
 And eu vejo os itens "A" e "B"
+And eu vejo todas as informações disponíveis na página do carrinho de compras
