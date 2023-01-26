@@ -56,3 +56,5 @@ And eu tenho os itens "A" e "B" adicionados no meu carrinho de compras
 And o valor total da compra até o momento é "20"
 When eu aplico o cupom "CUPOM_10%" 
 Then eu vejo o aviso de que o cupom que eu apliquei é inválido
+
+#teste aqui
