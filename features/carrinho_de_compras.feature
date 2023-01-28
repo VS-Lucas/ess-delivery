@@ -59,3 +59,4 @@ When eu aplico o cupom "CUPOM_10%"
 Then eu vejo o aviso de que o cupom que eu apliquei é inválido
 
 #teste na branch master
+#teste aqui
