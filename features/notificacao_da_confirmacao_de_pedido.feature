@@ -40,4 +40,8 @@ And eu selecionei um método de pagamento válido
 And a loja da qual estou pedindo está aberta
 And a loja não entrega no endereço que forneci
 When eu confirmo o meu pedido
-Then se exibe na tela uma mensagem avisando que o pedido não pôde ser concluído pois a loja não entrega no endereço fornecido ###LINHA MODIFICADA 
+Then se exibe na tela uma mensagem avisando que o pedido não pôde ser concluído pois a loja não entrega no endereço fornecido ###LINHA MODIFICADA
+
+###Nova linha modificado
+
+# Novo Cenário de Falha 1
