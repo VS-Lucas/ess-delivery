@@ -40,7 +40,10 @@ And eu tenho os itens "A" e "B" adicionados no meu carrinho de compras
 When eu acesso o meu carrinho de compras
 Then eu sou direcionado para a página do carrinho de compras
 And eu vejo os itens "A" e "B"
+<<<<<<< HEAD
 And eu vejo todas as informações disponíveis na página do carrinho de compras
+=======
+>>>>>>> 7f2370c2bff7d5abd296b53df4b7a1b66bede4a7
 
 Scenario: Adicionar um cupom de desconto válido
 Given estou logado com o usuário "@Lara2462" e com a senha "senha1234"
