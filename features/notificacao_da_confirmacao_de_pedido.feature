@@ -45,3 +45,5 @@ Then se exibe na tela uma mensagem avisando que o pedido não pôde ser concluí
 ###Nova linha modificado
 
 # Novo Cenário de Falha 1
+
+# Novo Cenário de Falha 2
