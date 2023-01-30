@@ -36,5 +36,9 @@ Feature: cancelamento de pedido
         And 
         Then 
         And 
+<<<<<<< HEAD
         And 
         And 
+=======
+        And
+>>>>>>> f227274 (commit teste desenvolvimento 2)
