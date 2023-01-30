@@ -38,3 +38,8 @@ Feature: cancelamento de pedido
         And 
         And 
         And 
+    
+    Scenario: teste2
+        Given 
+        When 
+        Then 
