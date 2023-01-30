@@ -31,7 +31,8 @@ Feature: cancelamento de pedido
 
     Scenario: teste
         Given 
-        When 
-        Then 
         And 
+        When 
+        And 
+        Then 
         And 
