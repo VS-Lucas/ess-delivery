@@ -33,3 +33,4 @@ Feature: cancelamento de pedido
         Given 
         When 
         Then 
+        And 
