@@ -31,4 +31,4 @@ Feature: Notificação de Novos Pedidos
 4th Scenario: Notificação de Avaliação 
     WHEN o pedido 0258 é finalizado
     AND o cliente avalia o restaurante com 5 estrelas
-    THEN o restaurante recebe a notificação "O pedido 0258 avaliou a experiência com 5 estrelas"
+    THEN o restaurante recebe a notificação "O pedido 0379 avaliou a experiência com 5 estrelas"
