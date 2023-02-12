@@ -1,6 +1,7 @@
 Feature: Exibir historico de pedidos
-    # description form 
-    # ...
+    As a cliente com pedidos já concluídos
+    I want to salvar informações dos pedidos
+    So that eu possa vizualizar um histórico de pedidos 
 
 Scenario: visualizando a página de histórico de pedido vazia
     Given Estou logado como “usuário” com login “severino” e senha “senha” 
@@ -27,12 +28,3 @@ Scenario: fazendo novamente um pedido pelo histórico de pedidos
     When eu acesso o pedido de id “2”
     And eu peço novamente o pedido de id “2” 
     Then eu sou redirecionado para a página de “carrinho de compra”
-
-Scenario: Teste
-    # ajuste no cenário
-    # teste 1
-    # teste 2
-
-Scenario: ajuste
-    # ajuste
-
