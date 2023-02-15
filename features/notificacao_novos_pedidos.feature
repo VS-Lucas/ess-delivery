@@ -40,3 +40,4 @@ Feature: Notificação de Novos Pedidos
 
 6th Scenario: (Possible Scenario) Notificação de Pedido Entregue
 nothing to add
+...
