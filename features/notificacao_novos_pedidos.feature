@@ -39,3 +39,4 @@ Feature: Notificação de Novos Pedidos
     AND cliente "Ana Melo" envia motivo do cancelamento "Mudei de ideia, quero pedir um prato maior"
 
 6th Scenario: (Possible Scenario) Notificação de Pedido Entregue
+nothing to add
