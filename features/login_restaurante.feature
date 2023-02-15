@@ -1,3 +1,5 @@
+# Login do restaurante
+
 Feature: Restaurant's login
 
     As a restaurant manager
