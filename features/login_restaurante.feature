@@ -95,3 +95,15 @@ Scenario: wrong password
     Then  the system checks the existence of the combination of the inputs on its stored data
     And   the system denies the login request
     And   returns an error message
+
+# Não consegui pensar em algum outro cenário de serviço que seja relevante para esta feature, portanto, deixarei
+# comentado um cenário de GUI. 
+# PS: Este comentário refere-se à questão 7, alternativa d, do roteiro de gerência de configuração
+
+# Scenario: wrong password
+#
+#    Given I am at the login screen
+#    And   I can see a request for my restaurant's CNPJ or email, and password
+#    And   my restaurant is registered to the system with the CNPJ "12345678000190" and the password "P@ssword1234"
+#    When  I enter my restaurant's CNPJ "12345678000190" and the password "P@ssword1111"
+#    Then  I see an error message
