@@ -86,3 +86,4 @@ Scenario: forgotten password
     When  I enter the email "restaurant@ess.com" and the CNPJ "12345678000190"
     Then  the system sends a new password to my email
     And   returns a message to the user informing about the email
+    And   updates the password stored in the system
