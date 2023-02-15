@@ -2,7 +2,7 @@ Feature: Notificação de Novos Pedidos
     In order to manage new orders
     As a restaurant
     I neet do receive updates about these new orders
-
+...
     GIVEN that o restaurante "Quentinhas do Almir" está logado na plataforma
     AND desde às 8hrs está com o horário de expediente aberto
 
