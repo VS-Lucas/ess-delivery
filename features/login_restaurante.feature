@@ -57,7 +57,7 @@ Scenario: successfully logging in
     Given my restaurant is stored on the system with the CNPJ "12345678000190" and the password "P@ssword1234"
     When  I ask the system to log in
     And   I pass as inputs the CNPJ "12345678000190" and the password "P@ssword1234"
-    Then  the system checks the existence of the right combination of the inputs on its stored data
+    Then  the system checks the existence of the combination of the inputs on its stored data
     And   the system approves the login request
 
 
@@ -86,3 +86,12 @@ Scenario: forgotten password
     When  I enter the email "restaurant@ess.com" and the CNPJ "12345678000190"
     Then  the system sends a new password to my email
     And   returns a message to the user informing about the email
+
+Scenario: wrong password
+
+    Given my restaurant is stored on the system with the CNPJ "12345678000190" and the password "P@ssword1234"
+    When  I ask the system to log in
+    And   I pass as inputs the CNPJ "12345678000190" and the password "P@ssword1111"
+    Then  the system checks the existence of the combination of the inputs on its stored data
+    And   the system denies the login request
+    And   returns an error message
