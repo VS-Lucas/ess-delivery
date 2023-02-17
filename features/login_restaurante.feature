@@ -115,7 +115,8 @@ Scenario: wrong password
 # Scenario: wrong password
 #
 #    Given I am at the login screen
-#    And   I can see a request for my restaurant's CNPJ or email, and password
-#    And   my restaurant is registered to the system with the CNPJ "12345678000190" and the password "P@ssword1234"
-#    When  I enter my restaurant's CNPJ "12345678000190" and the password "P@ssword1111"
+#    And   I can see a request for my restaurant's CNPJ or email
+#    And   I can see a request for the account's password
+#    And   my restaurant is registered to the system with the CNPJ "12345678000190" with the password "P@ssword1234"
+#    When  I enter my restaurant's CNPJ "12345678000190" plus the password "P@ssword1111"
 #    Then  I see an error message
