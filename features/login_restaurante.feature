@@ -121,3 +121,4 @@ Scenario: wrong password
 #    Then  I see an error message
 
 # Commit teste 1 para a questão 14 do roteiro de gerência de configuração
+# Commit teste 2 para a questão 14 do roteiro de gerência de configuração
