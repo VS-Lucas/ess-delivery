@@ -120,3 +120,6 @@ Scenario: wrong password
 #    And   my restaurant is registered to the system with the CNPJ "12345678000190" with the password "P@ssword1234"
 #    When  I enter my restaurant's CNPJ "12345678000190" plus the password "P@ssword1111"
 #    Then  I see an error message
+
+# Commit teste 1 para a questão 14 do roteiro de gerência de configuração
+# Commit teste 2 para a questão 14 do roteiro de gerência de configuração
