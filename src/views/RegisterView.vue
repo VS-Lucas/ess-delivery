@@ -216,6 +216,8 @@
 
 <script scoped>
 import {mask} from 'vue-the-mask'
+import { getFirestore, collection, addDoc } from "firebase/firestore"
+
 
 export default {
   name: 'RegisterView',
@@ -226,14 +228,72 @@ export default {
   data() {
     return {
       nome: '',
-      especialidade: ''
+      cpf: '',
+      rg: '',
+      cnpj: '',
+      razao_social: '',
+      nome_loja: '',
+      telefone: '',
+      especialidade: '',
+      cep: '',
+      estado_uf: '',
+      cidade: '',
+      bairro: '',
+      endereco: '',
+      numero: '',
+      complemento: ''
     }
   },
   methods: {
     onlyLetters() {
       this.nome = this.nome.replace(/[^a-zA-ZÀ-ú\s]/g, ''),
       this.especialidade = this.especialidade.replace(/[^a-zA-ZÀ-ú\s]/g, '')
+    },
+    submit() {
+      const db = getFirestore()
+      const userCollection = collection(db, "restaurantes")
+      const nome = this.nome
+      const cpf = this.cpf
+      const rg = this.rg
+      const cnpj = this.cnpj
+      const razao_social = this.razao_social
+      const nome_loja = this.nome_loja
+      const telefone = this.telefone
+      const especialidade = this.especialidade
+      const cep = this.cep
+      const estado_uf = this.estado_uf
+      const cidade = this.cidade
+      const bairro = this.bairro
+      const endereco = this.endereco
+      const numero = this.numero
+      const complemento = this.complemento
+
+      if (!nome || !cpf || !rg || !cnpj || !razao_social || !nome_loja || !telefone || !especialidade || !cep || !estado_uf || !cidade || !bairro || !endereco || !numero) {
+        return;
+      }
+
+      addDoc(userCollection, {
+        nome,
+        cpf,
+        rg,
+        cnpj,
+        razao_social,
+        nome_loja,
+        telefone,
+        especialidade,
+        cep,
+        estado_uf,
+        cidade,
+        bairro,
+        endereco,
+        numero,
+        complemento
+      })
+      .then(
+        this.$router.push('/')
+      )
     }
   }
 }
 </script>
+
