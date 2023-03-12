@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RegisterRestaurantView from '../views/RegisterRestaurantView.vue'
+import UpdateRegisterView from '../views/UpdateRegisterView.vue'
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: '/register-restaurant',
     name: 'register-restaurant',
     component: RegisterRestaurantView
+  },
+  {
+    path: '/update-register',
+    name: 'update-register',
+    component: UpdateRegisterView
   }
 ]
 
