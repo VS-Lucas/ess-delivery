@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import RegisterRestaurantView from '../views/RegisterRestaurantView.vue'
 import UpdateRegisterView from '../views/UpdateRegisterView.vue'
+import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
 
 const routes = [
   {
@@ -17,6 +18,11 @@ const routes = [
     path: '/update-register',
     name: 'update-register',
     component: UpdateRegisterView
+  },
+  {
+    path: '/unsubscribe-restaurant',
+    name: 'unsubscribe-restaurant',
+    component: UnsubscribeRestaurantView
   }
 ]
 
