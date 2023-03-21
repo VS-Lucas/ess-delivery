@@ -17,7 +17,12 @@ const routes = [
     path: '/update-register',
     name: 'update-register',
     component: UpdateRegisterView
-  }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue')
+  },
 ]
 
 const router = createRouter({
