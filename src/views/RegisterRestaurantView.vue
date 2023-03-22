@@ -215,7 +215,7 @@
 
 <script scoped>
 import {mask} from 'vue-the-mask'
-import { getFirestore, collection, addDoc } from "firebase/firestore"
+import axios from 'axios';
 
 
 export default {
@@ -249,8 +249,6 @@ export default {
       this.especialidade = this.especialidade.replace(/[^a-zA-ZÀ-ú\s]/g, '')
     },
     submit() {
-      const db = getFirestore()
-      const userCollection = collection(db, "restaurantes")
       const nome = this.nome
       const cpf = this.cpf
       const rg = this.rg
@@ -270,8 +268,9 @@ export default {
       if (!nome || !cpf || !rg || !cnpj || !razao_social || !nome_loja || !telefone || !especialidade || !cep || !estado_uf || !cidade || !bairro || !endereco || !numero) {
         return;
       }
+      
 
-      addDoc(userCollection, {
+      const formData = {
         nome,
         cpf,
         rg,
@@ -286,12 +285,13 @@ export default {
         bairro,
         endereco,
         numero,
-        complemento
-      })
-      .then(
-        this.$router.push('/')
-      )
-    }
+        complemento,
+      };
+      axios.post('http://localhost:3000/register-restaurant', formData)
+        .then(
+          this.$router.push('/')
+        )
+    },
   }
 }
 </script>
