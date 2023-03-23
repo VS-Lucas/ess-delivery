@@ -16,6 +16,37 @@ admin.initializeApp({
   credential: admin.credential.cert("../firebaseConfig.json")
 });
 
+
+// Rota Post do cadastro de login
+app.post('/register-login', (req, res) => {
+  console.log('POST login');
+  const data = req.body;
+  admin.auth().createUser({
+    email: data.email,
+    password: data.senha
+  })
+  .then(userRecord => {
+    const responseData = { id: userRecord.uid, ...data };
+    // Adicionar o campo "restauranteId" no documento do usuário
+    admin.firestore()
+      .collection('usuarios')
+      .doc(userRecord.uid)
+      .set({ restauranteId: null, ...data })
+      .then(() => {
+        res.json(responseData);
+      })
+      .catch(err => {
+        console.error(err);
+        res.status(500).send('Erro ao salvar usuário');
+      });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao criar usuário');
+  });
+});
+
+
 //Rota Post do cadastro de restaurante
 app.post('/register-restaurant', (req, res) => {
   console.log('POST restaurant');
