@@ -5,7 +5,7 @@
             <div class="image-logo">
                 <img class="w-1/2 mx-auto" src="../assets/img/logo.png" alt="Forra o Bucho" />
             </div> <!--image-logo-->
-            <form class="space-y-2 mt-5 bg-[#A62C21] p-5 rounded-[20px]" action="#" method="POST">
+            <form @submit.prevent="doLogin($event)" class="space-y-2 mt-5 bg-[#A62C21] p-5 rounded-[20px]" action="#" method="POST">
                 <h3 class="text-center text-gray-50 ">Digite suas informações para forrar o bucho</h3> <!--h3-->
                 <div class="-space-y-px shadow-sm">
                     <div>
@@ -15,6 +15,10 @@
                         <input id="password" name="password" v-model="password" type="password" autocomplete="off" required="" class="relative border-0 block w-full rounded-b-2xl bg-[#CA7557] py-3 px-3.5 placeholder:text-[#83271F] sm:text-sm sm:leading-6 focus:outline-none" placeholder="Senha" />
                     </div>
                 </div> <!--inputs-email-password-->
+            
+                <div v-if="login_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-[10px] bg-[#83271F] p-1">
+                    <p class="text-white text-[12px] font-bold text-center">Email/CPNJ ou senha inválidos</p>
+                </div>
 
                 <div class="flex items-center justify-end pr-2">
                     <div class="text-sm ">
@@ -23,7 +27,7 @@
                 </div> <!--link-to-password-->
 
                 <div>
-                    <button type="submit" @click="sendInfo($event)" class="group relative flex w-full justify-center rounded-[10px] bg-[#9DBF69] py-2 px-3 text-sm font-semibold text-white hover:bg-[#9DBF69]">
+                    <button type="submit" class="group relative flex w-full justify-center rounded-[10px] bg-[#9DBF69] py-2 px-3 text-sm font-semibold text-white hover:bg-[#9DBF69]">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                         </span>
                         Login
@@ -35,7 +39,7 @@
                 </div> <!--text-to-register-->
 
                 <div>
-                    <button type="button" class="group relative flex w-full justify-center rounded-[10px] bg-[#9DBF69] py-2 px-3 text-sm font-semibold text-white hover:bg-[#9DBF69]">
+                    <button @click="goToRegister()" type="button" class="group relative flex w-full justify-center rounded-[10px] bg-[#83271F] py-2 px-3 text-sm font-semibold text-white">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                         </span>
                         Cadastre-se
@@ -48,23 +52,34 @@
 </template>
 
 <script>
+    import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+
     export default {
         data() {
             return {
-            email: '',
-            password: '',
+                email: '',
+                password: '',
+                login_failure: false,
             }
         },
         methods: {
-            sendInfo(e) {
-            
-            e.preventDefault()
-            const { email, password } = this
-            
-            console.log(email)
-            console.log(password)
-            // Fazer a Ajax mandando a requisição para o servidor e retornar se o usuário existe ou ñ
-            // Fazer a integração com o firebase
+            async doLogin() {
+                const { email, password } = this;
+                const auth = getAuth();
+                try {  
+                    await signInWithEmailAndPassword(auth, email, password);
+                    this.login_failure = false;
+                    // Próximo passo é mandar um push para a rota de /home-restaurante
+                } catch (error) {
+                    this.login_failure = true;
+                    console.log(error.message);
+                }
+            },
+            goToRegister() {
+                this.$router.push('/register-restaurant');
+            },
+            hideText() {
+                this.login_failure = false;
             }
         }
     }
