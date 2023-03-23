@@ -39,7 +39,7 @@
                 </div> <!--text-to-register-->
 
                 <div>
-                    <button type="button" class="group relative flex w-full justify-center rounded-[10px] bg-[#83271F] py-2 px-3 text-sm font-semibold text-white">
+                    <button @click="goToRegister()" type="button" class="group relative flex w-full justify-center rounded-[10px] bg-[#83271F] py-2 px-3 text-sm font-semibold text-white">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                         </span>
                         Cadastre-se
@@ -74,6 +74,9 @@
                     this.login_failure = true;
                     console.log(error.message);
                 }
+            },
+            goToRegister() {
+                this.$router.push('/register-restaurant');
             },
             hideText() {
                 this.login_failure = false;
