@@ -214,7 +214,7 @@
 
 
 <script scoped>
-import {mask} from 'vue-the-mask'
+import {mask} from 'vue-the-mask';
 import axios from 'axios';
 
 
@@ -264,8 +264,17 @@ export default {
       const endereco = this.endereco
       const numero = this.numero
       const complemento = this.complemento
+      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
+      const rgRegex = /^\d{1}.\d{3}.\d{3}$/
+      const cnpjRegex = /^\d{2}.\d{3}.\d{3}\/\d{4}-\d{2}$/
+      const telRegex = /^\(\d{2}\) \d{5}-\d{4}$/
+      const cepRegex = /^\d{5}-\d{3}$/
 
       if (!nome || !cpf || !rg || !cnpj || !razao_social || !nome_loja || !telefone || !especialidade || !cep || !estado_uf || !cidade || !bairro || !endereco || !numero) {
+        return;
+      }
+
+      if (!cpfRegex.test(cpf) || !rgRegex.test(rg) || !cnpjRegex.test(cnpj) || !telRegex.test(telefone) || !cepRegex.test(cep)) {
         return;
       }
       
@@ -289,10 +298,11 @@ export default {
       };
       axios.post('http://localhost:3000/register-restaurant', formData)
         .then(
-          this.$router.push('/')
+          this.$router.push('/update-register')
         )
-    },
+    }
   }
 }
+
 </script>
 
