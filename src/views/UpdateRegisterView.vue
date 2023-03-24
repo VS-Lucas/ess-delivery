@@ -24,21 +24,21 @@
                   <div class="grid grid-cols-11 gap-6">                     
                     <div class="col-span-11 sm:col-start-2 sm:col-span-9">
                       <div class="relative">
-                        <input type="text" id="nome" v-model="nome" :disabled="!editing[0]" @input="onlyLetters" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="nome" v-model="restaurant.nome" :disabled="!editing[0]" @input="onlyLetters" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="nome" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nome Completo</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-2 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="cpf" v-model="cpf" :disabled="!editing[0]" v-mask="['###.###.###-##']" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="cpf" v-model="restaurant.cpf" :disabled="!editing[0]" v-mask="['###.###.###-##']" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="cpf" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">CPF</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="rg" v-model="rg" :disabled="!editing[0]" v-mask="['#.###.###']" required pattern="\d{1}.\d{3}.\d{3}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="rg" v-model="restaurant.rg" :disabled="!editing[0]" v-mask="['#.###.###']" required pattern="\d{1}.\d{3}.\d{3}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="rg" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">RG</label>
                       </div>
                     </div>
@@ -70,28 +70,28 @@
                   <div class="grid grid-cols-11 gap-6">                    
                     <div class="col-span-11 sm:col-start-2 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="razao_social" v-model="razao_social" :disabled="!editing[1]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="razao_social" v-model="restaurant.razao_social" :disabled="!editing[1]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="razao_social" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Razão Social</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="nome_loja" v-model="nome_loja" :disabled="!editing[1]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="nome_loja" v-model="restaurant.nome_loja" :disabled="!editing[1]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="nome_loja" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nome da Loja</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-2 sm:col-span-4">
                       <div class="relative">
-                        <input type="tel" id="telefone" v-model="telefone" :disabled="!editing[1]" v-mask="['(##) #####-####']" required pattern="\(\d{2}\) \d{5}-\d{4}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
+                        <input type="tel" id="telefone" v-model="restaurant.telefone" :disabled="!editing[1]" v-mask="['(##) #####-####']" required pattern="\(\d{2}\) \d{5}-\d{4}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                         <label for="telefone" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Telefone</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">   
                       <div class="relative">
-                        <input type="text" id="especialidade" v-model="especialidade" :disabled="!editing[1]" @input="onlyLetters" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="especialidade" v-model="restaurant.especialidade" :disabled="!editing[1]" @input="onlyLetters" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="especialidade" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Especialidade</label>
                       </div>   
                     </div>
@@ -123,14 +123,14 @@
                   <div class="grid grid-cols-11 gap-6">                     
                     <div class="col-span-11 sm:col-start-2 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="cep" v-model="cep" :disabled="!editing[2]" v-mask="['#####-###']" required pattern="\d{5}-\d{3}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="cep" v-model="restaurant.cep" :disabled="!editing[2]" v-mask="['#####-###']" required pattern="\d{5}-\d{3}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="cep" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">CEP</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
                       <div class="relative">
-                        <select id="estado_uf" v-model="estado_uf" :disabled="!editing[2]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
+                        <select id="estado_uf" v-model="restaurant.estado_uf" :disabled="!editing[2]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
                           <option disabled selected>---</option>
                           <option value="AC">Acre</option>
                           <option value="AL">Alagoas</option>
@@ -166,35 +166,35 @@
 
                     <div class="col-span-11 sm:col-start-2 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="cidade" v-model="cidade" :disabled="!editing[2]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="cidade" v-model="restaurant.cidade" :disabled="!editing[2]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="cidade" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Cidade</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="bairro" v-model="bairro" :disabled="!editing[2]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="bairro" v-model="restaurant.bairro" :disabled="!editing[2]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="bairro" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Bairro</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-2 sm:col-span-9">
                       <div class="relative">
-                        <input type="adress" id="endereco" v-model="endereco" :disabled="!editing[2]" autocomplete="street-address" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="adress" id="endereco" v-model="restaurant.endereco" :disabled="!editing[2]" autocomplete="street-address" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="endereco" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Endereço</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-2 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="numero" v-model="numero" :disabled="!editing[2]" v-mask="['######']" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="numero" v-model="restaurant.numero" :disabled="!editing[2]" v-mask="['######']" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="numero" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Número</label>
                       </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
                       <div class="relative">
-                        <input type="text" id="complemento" v-model="complemento" :disabled="!editing[2]" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" id="complemento" v-model="restaurant.complemento" :disabled="!editing[2]" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="complemento" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Complemento</label>
                       </div>
                     </div>
@@ -217,6 +217,7 @@
 
 <script scoped>
 import {mask} from 'vue-the-mask'
+import axios from 'axios';
 
 export default {
   name: 'UpdateRegisterView',
@@ -226,25 +227,36 @@ export default {
   },
   data() {
     return {
-      nome: 'oi',
-      cpf: '',
-      rg: '',
-      razao_social: '',
-      nome_loja: '',
-      telefone: '',
-      especialidade: '',
-      cep: '',
-      estado_uf: '',
-      cidade: '',
-      bairro: '',
-      endereco: '',
-      numero: '',
-      complemento: '',
+      restaurant: {
+        nome: '',
+        cpf: '',
+        rg: '',
+        razao_social: '',
+        nome_loja: '',
+        telefone: '',
+        especialidade: '',
+        cep: '',
+        estado_uf: '',
+        cidade: '',
+        bairro: '',
+        endereco: '',
+        numero: '',
+        complemento: '',
+      },
       editing: [false, false, false],
       editing0: false,
       editing1: false,
       editing2: false,
     }
+  },
+  created() {
+    axios.get('http://localhost:3000/update-register')
+      .then(response => {
+        this.restaurant = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
   },
   methods: {
     onlyLetters() {
