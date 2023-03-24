@@ -10,12 +10,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        'primary': {
-          'red-bg': '#261918', //bg-primary-red-bg -> background color
-          'red-register': '#A62C21', 
-        },
-      },
+      
     },
   },
   plugins: [

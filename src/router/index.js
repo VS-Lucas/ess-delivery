@@ -1,26 +1,46 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import HomeRestaurant from '../views/HomeRestaurant.vue'
+import RegisterRestaurantView from '../views/RegisterRestaurantView.vue'
+import UpdateRegisterView from '../views/UpdateRegisterView.vue'
+import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
+import RegisterLoginView from '../views/RegisterLoginView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    name: 'register',
+    component: () => import('../views/HomeScreen.vue')
   },
   {
     path: '/home-restaurant',
     name: 'home-restaurant',
     component: HomeRestaurant
-  }
+  },
+  {
+    path: '/register-restaurant',
+    name: 'register-restaurant',
+    component: RegisterRestaurantView
+  },
+  {
+    path: '/update-register',
+    name: 'update-register',
+    component: UpdateRegisterView
+  },
+  {
+    path: '/unsubscribe-restaurant',
+    name: 'unsubscribe-restaurant',
+    component: UnsubscribeRestaurantView
+  },
+  {
+    path: '/register-login',
+    name: 'register-login',
+    component: RegisterLoginView
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue')
+  },
 ]
 
 const router = createRouter({
