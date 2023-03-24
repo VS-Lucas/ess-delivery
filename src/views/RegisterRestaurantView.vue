@@ -214,8 +214,8 @@
 
 
 <script scoped>
-import {mask} from 'vue-the-mask'
-import { getFirestore, collection, addDoc } from "firebase/firestore"
+import {mask} from 'vue-the-mask';
+import axios from 'axios';
 
 
 export default {
@@ -249,8 +249,6 @@ export default {
       this.especialidade = this.especialidade.replace(/[^a-zA-ZÀ-ú\s]/g, '')
     },
     submit() {
-      const db = getFirestore()
-      const userCollection = collection(db, "restaurantes")
       const nome = this.nome
       const cpf = this.cpf
       const rg = this.rg
@@ -266,12 +264,22 @@ export default {
       const endereco = this.endereco
       const numero = this.numero
       const complemento = this.complemento
+      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
+      const rgRegex = /^\d{1}.\d{3}.\d{3}$/
+      const cnpjRegex = /^\d{2}.\d{3}.\d{3}\/\d{4}-\d{2}$/
+      const telRegex = /^\(\d{2}\) \d{5}-\d{4}$/
+      const cepRegex = /^\d{5}-\d{3}$/
 
       if (!nome || !cpf || !rg || !cnpj || !razao_social || !nome_loja || !telefone || !especialidade || !cep || !estado_uf || !cidade || !bairro || !endereco || !numero) {
         return;
       }
 
-      addDoc(userCollection, {
+      if (!cpfRegex.test(cpf) || !rgRegex.test(rg) || !cnpjRegex.test(cnpj) || !telRegex.test(telefone) || !cepRegex.test(cep)) {
+        return;
+      }
+      
+
+      const formData = {
         nome,
         cpf,
         rg,
@@ -286,13 +294,15 @@ export default {
         bairro,
         endereco,
         numero,
-        complemento
-      })
-      .then(
-        this.$router.push('/')
-      )
+        complemento,
+      };
+      axios.post('http://localhost:3000/register-restaurant', formData)
+        .then(
+          this.$router.push('/update-register')
+        )
     }
   }
 }
+
 </script>
 
