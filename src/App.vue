@@ -1,13 +1,13 @@
-<template>
+<template> 
+  <div>
     <router-view/>
+  </div>
 </template>
 
-<!-- <script> 
+<style global>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
 
-  export default {
-    name: 'App',
-    components: {
-    }
+  body {
+    font-family: 'Montserrat';
   }
-
-</script> -->
+</style>

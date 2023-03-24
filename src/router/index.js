@@ -1,19 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
-// import PasswordRecovery from "../views/PasswordRecovery.vue"
-// import RecoverySent from "../views/RecoverySent.vue"
-// import OrderTracking from "../views/OrderTracking.vue"
+import RegisterRestaurantView from '../views/RegisterRestaurantView.vue'
+import UpdateRegisterView from '../views/UpdateRegisterView.vue'
+import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
+import RegisterLoginView from '../views/RegisterLoginView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: () => import('../views/HomeView.vue')
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/AboutView.vue')
+    name: 'register',
+    component: () => import('../views/HomeScreen.vue')
   },
   {
     path: '/passwordrecovery',
@@ -24,6 +19,31 @@ const routes = [
     path: '/recovery',
     name: 'recoverysent',
     component: () => import('../views/RecoverySent.vue')
+  },
+  {
+    path: '/register-restaurant',
+    name: 'register-restaurant',
+    component: RegisterRestaurantView
+  },
+  {
+    path: '/update-register',
+    name: 'update-register',
+    component: UpdateRegisterView
+  },
+  {
+    path: '/unsubscribe-restaurant',
+    name: 'unsubscribe-restaurant',
+    component: UnsubscribeRestaurantView
+  },
+  {
+    path: '/register-login',
+    name: 'register-login',
+    component: RegisterLoginView
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginView.vue')
   },
 ]
 
