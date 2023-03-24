@@ -15,4 +15,4 @@ export default {
     HelloWorld
   }
 }
-</script>
+</script>                       
