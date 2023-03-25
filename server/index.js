@@ -187,7 +187,6 @@ app.put('/update-register/:index', (req, res) => {
 
 
 
-
 app.listen(3000, ()=>{
   console.log('Servidor ON em http://localhost:3000')
 });
