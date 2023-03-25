@@ -47,7 +47,7 @@
                 </div>
                 <div class="bg-gray-200 flex justify-between px-4 py-3 text-right sm:px-6">
                   <button @click="toggleEditing(0)" type="button" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ editing0 ? 'Cancelar' : 'Editar' }}</button>
-                  <button @click="submit" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
+                  <button @click="submit(0)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
                 </div>
               </div>
                   
@@ -100,7 +100,7 @@
                 </div>
                 <div class="bg-gray-200 flex justify-between px-4 py-3 text-right sm:px-6">
                   <button @click="toggleEditing(1)" type="button" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ editing1 ? 'Cancelar' : 'Editar' }}</button>
-                  <button @click="submit" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
+                  <button @click="submit(1)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
                 </div>
               </div>
                   
@@ -203,7 +203,7 @@
                 </div>
                 <div class="bg-gray-200 flex justify-between px-4 py-3 text-right sm:px-6">
                   <button @click="toggleEditing(2)" type="button" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ editing2 ? 'Cancelar' : 'Editar' }}</button>
-                  <button @click="submit" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
+                  <button @click="submit(2)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
                 </div>
               </div>
             </div>
@@ -299,7 +299,58 @@ export default {
           this.restaurant.complemento = this.restaurant['original']['complemento'];
         }
       }
+    },
+    submit(index) {
+      event.preventDefault();
+      if (index == 0) {
+        axios.put('http://localhost:3000/update-register/0', {
+          nome: this.restaurant.nome,
+          cpf: this.restaurant.cpf,
+          rg: this.restaurant.rg
+        });
+        this.restaurant['original']['nome'] = this.restaurant.nome;
+        this.restaurant['original']['cpf'] = this.restaurant.cpf;
+        this.restaurant['original']['rg'] = this.restaurant.rg;
+        
+        this.editing[index] = !this.editing[index];
+        this.editing0 = !this.editing0;
+      } else if (index == 1) {
+          axios.put('http://localhost:3000/update-register/1', {
+            razao_social: this.restaurant.razao_social,
+            nome_loja: this.restaurant.nome_loja,
+            telefone: this.restaurant.telefone,
+            especialidade: this.restaurant.especialidade
+        });
+        this.restaurant['original']['razao_social'] = this.restaurant.razao_social;
+        this.restaurant['original']['nome_loja'] = this.restaurant.nome_loja;
+        this.restaurant['original']['telefone'] = this.restaurant.telefone;
+        this.restaurant['original']['especialidade'] = this.restaurant.especialidade;
+        
+        this.editing[index] = !this.editing[index];
+        this.editing1 = !this.editing1;
+      } else if (index == 2) {
+          axios.put('http://localhost:3000/update-register/2', {
+            cep: this.restaurant.cep,
+            estado_uf: this.restaurant.estado_uf,
+            cidade: this.restaurant.cidade,
+            bairro: this.restaurant.bairro,
+            endereco: this.restaurant.endereco,
+            numero: this.restaurant.numero,
+            complemento: this.restaurant.complemento
+        });
+        this.restaurant['original']['cep'] = this.restaurant.cep;
+        this.restaurant['original']['estado_uf'] = this.restaurant.estado_uf;
+        this.restaurant['original']['cidade'] = this.restaurant.cidade;
+        this.restaurant['original']['bairro'] = this.restaurant.bairro;
+        this.restaurant['original']['endereco'] = this.restaurant.endereco;
+        this.restaurant['original']['numero'] = this.restaurant.numero;
+        this.restaurant['original']['complemento'] = this.restaurant.complemento;
+        
+        this.editing[index] = !this.editing[index];
+        this.editing2 = !this.editing2;
+      }
     }
+
   }
 
 }

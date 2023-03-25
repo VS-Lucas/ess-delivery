@@ -78,8 +78,9 @@ app.post('/register-restaurant', (req, res) => {
 });
 
 
-// Rota GET do restaurante
+// Rota GET da atualização de restaurante
 app.get('/update-register', (req, res) => {
+  console.log('GET update');
   //const token = req.headers.authorization.split(' ')[1];
   //const decodedToken = jwt.decode(token);
   //const userId = decodedToken.sub;
@@ -112,23 +113,78 @@ app.get('/update-register', (req, res) => {
 });
 
 
-
-/*//Rota Post do cadastro de restaurante
-app.post('/register-restaurant', (req, res) => {
-  console.log('POST restaurant');
+// Rota PUT para atualizar os dados do restaurante
+app.put('/update-register/:index', (req, res) => {
+  console.log('PUT update');
   const data = req.body;
+  const index = req.params.index;
+  const userId = "59breiPESGPgPXKfN79gVcKRuyt2"; // Hardcoded para fins de teste
+
   admin.firestore()
-    .collection('restaurantes')
-    .add(data)
-    .then(docRef => {
-      const responseData = { id: docRef.id, ...data };
-      res.json(responseData);
+    .collection('usuarios')
+    .doc(userId)
+    .get()
+    .then(doc => {
+      const restauranteId = doc.data().restauranteId;
+
+      admin.firestore()
+        .collection('restaurantes')
+        .doc(restauranteId)
+        .get()
+        .then(doc => {
+          const restauranteData = doc.data();
+          // Atualiza os dados correspondentes ao índice recebido do cliente
+          switch (index) {
+            case '0':
+              restauranteData.nome = data.nome;
+              restauranteData.cpf = data.cpf;
+              restauranteData.rg = data.rg;
+              break;
+            case '1':
+              restauranteData.razao_social = data.razao_social;
+              restauranteData.nome_loja = data.nome_loja;
+              restauranteData.telefone = data.telefone;
+              restauranteData.especialidade = data.especialidade;
+              break;
+            case '2':
+              restauranteData.cep = data.cep;
+              restauranteData.estado_uf = data.estado_uf;
+              restauranteData.cidade = data.cidade;
+              restauranteData.bairro = data.bairro;
+              restauranteData.endereco = data.endereco;
+              restauranteData.numero = data.numero;
+              restauranteData.complemento = data.complemento;
+              break;
+            default:
+              console.error('Índice inválido');
+              res.status(400).send('Índice inválido');
+              return;
+          }
+
+          // Salva os dados atualizados no Firebase
+          admin.firestore()
+            .collection('restaurantes')
+            .doc(restauranteId)
+            .update(restauranteData)
+            .then(() => {
+              res.json(restauranteData);
+            })
+            .catch(err => {
+              console.error(err);
+              res.status(500).send('Erro ao atualizar dados do restaurante');
+            });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao buscar dados do restaurante');
+        });
     })
     .catch(err => {
       console.error(err);
-      res.status(500).send('Erro ao salvar restaurante');
+      res.status(500).send('Erro ao buscar ID do restaurante');
     });
-});*/
+});
+
 
 
 
