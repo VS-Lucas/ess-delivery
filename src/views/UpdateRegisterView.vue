@@ -242,6 +242,7 @@ export default {
         endereco: '',
         numero: '',
         complemento: '',
+        original: {},
       },
       editing: [false, false, false],
       editing0: false,
@@ -252,7 +253,8 @@ export default {
   created() {
     axios.get('http://localhost:3000/update-register')
       .then(response => {
-        this.restaurant = response.data;
+        this.restaurant = {...response.data, original: {...response.data}};
+        //this.restaurant = response.data;
       })
       .catch(error => {
         console.error(error);
@@ -266,14 +268,38 @@ export default {
     toggleEditing(index) {
       this.editing = this.editing.map((value, i) => i === index ? !value : value);
     
+      //if (!this.editing[index]) { // Verifica se a edição está sendo desabilitada
+      //this.restaurant = {...this.restaurant, ...this.restaurant.original}; // Restaura os valores originais
+      //}
+
       if (index === 0) {
         this.editing0 = !this.editing0;
+        if (!this.editing[index]) {
+          this.restaurant.nome = this.restaurant['original']['nome'];
+          this.restaurant.cpf = this.restaurant['original']['cpf'];
+          this.restaurant.rg = this.restaurant['original']['rg'];
+        }
       } else if (index === 1) {
         this.editing1 = !this.editing1;
+        if (!this.editing[index]) {
+          this.restaurant.razao_social = this.restaurant['original']['razao_social'];
+          this.restaurant.nome_loja = this.restaurant['original']['nome_loja'];
+          this.restaurant.telefone = this.restaurant['original']['telefone'];
+          this.restaurant.especialidade = this.restaurant['original']['especialidade'];
+        }
       } else if (index === 2) {
         this.editing2 = !this.editing2;
+        if (!this.editing[index]) {
+          this.restaurant.cep = this.restaurant['original']['cep'];
+          this.restaurant.estado_uf = this.restaurant['original']['estado_uf'];
+          this.restaurant.cidade = this.restaurant['original']['cidade'];
+          this.restaurant.bairro = this.restaurant['original']['bairro'];
+          this.restaurant.endereco = this.restaurant['original']['endereco'];
+          this.restaurant.numero = this.restaurant['original']['numero'];
+          this.restaurant.complemento = this.restaurant['original']['complemento'];
+        }
       }
-    },
+    }
   }
 
 }
