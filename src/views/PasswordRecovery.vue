@@ -5,7 +5,7 @@
         <div>
           <img class="w-1/2 mx-auto" src="../assets/logo.png" alt="Forra Bucho" />
         </div>
-        <form class="mt-5 space-y-6 bg-[#A62C21] p-5 rounded-lg overflow-hidden" action="#" method="POST">
+        <form @submit.prevent="sendEmail($event)" class="mt-5 space-y-6 bg-[#A62C21] p-5 rounded-lg overflow-hidden" action="#" method="POST">
             <h3 class="text-center text-2xl	text-white">
                 Recuperar senha
             </h3>
@@ -17,7 +17,7 @@
             </div>
           </div>
           <div>
-            <button @click="sendEmail()" type="button" class="group relative flex w-full justify-center rounded-md bg-[#9DBF69] py-2 px-3 text-sm font-semibold text-white hover:bg-[#c9e3a1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <button @click="goToRecovery()" type="submit" class="group relative flex w-full justify-center rounded-md bg-[#9DBF69] py-2 px-3 text-sm font-semibold text-white hover:bg-[#c9e3a1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
               ENVIAR
             </button>
           </div>
@@ -36,19 +36,18 @@
         email: '',
       }
     },
-    method: {
+    methods: {
       async sendEmail(){
-        try{
-          const response = await axios.post('http://localhost:3000/password-recovery', {
-            email: this.email,
-          });
-          console.log(response.data)
-          this.$router.push('/recovery');
-        }
-        catch(error){
-          console.error(error);
-        }
+        console.log('oioi')
+        await axios.post('http://localhost:3000/password-recovery', {
+          email: this.email,
+        });
+        // console.log(response.data)
+        this.$router.push('/recovery')
       },
+      goToRecovery(){
+        this.$router.push('/recovery');
+      }
     }
-}
+  }
 </script>

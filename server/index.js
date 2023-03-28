@@ -136,6 +136,12 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// Rota para a recuperação de senha
+app.post("/password-recovery", async (req, res) =>{
+  console.log('POST RECOVERY')
+});
+
+
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
