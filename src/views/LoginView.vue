@@ -52,8 +52,8 @@
 </template>
 
 <script>
-    import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-
+    import axios from "axios"
+    
     export default {
         data() {
             return {
@@ -65,18 +65,19 @@
         methods: {
             async doLogin() {
                 const { email, password } = this;
-                const auth = getAuth();
-                try {  
-                    await signInWithEmailAndPassword(auth, email, password);
+                await axios.post('http://localhost:3000/login', {
+                    email: email,
+                    password: password
+                })
+                .then(() => {
                     this.login_failure = false;
-                    // Próximo passo é mandar um push para a rota de /home-restaurante
-                } catch (error) {
+                })
+                .catch(() => {
                     this.login_failure = true;
-                    console.log(error.message);
-                }
+                });
             },
             goToRegister() {
-                this.$router.push('/register-restaurant');
+                this.$router.push('/register-login');
             },
             hideText() {
                 this.login_failure = false;
