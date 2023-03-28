@@ -11,9 +11,9 @@
             </h3>
 
             <div class="text-white text-center">
-                <h2>
+                <p>
                     Um código de confirmação foi enviado para o seu e-mail. Siga os procedimentos indicados nele para recuperar sua senha
-                </h2>
+                </p>
             </div>
   
           <div>

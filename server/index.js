@@ -138,7 +138,31 @@ app.post("/login", async (req, res) => {
 
 // Rota para a recuperação de senha
 app.post("/password-recovery", async (req, res) =>{
-  console.log('POST RECOVERY')
+  // console.log('POST RECOVERY');
+
+  const email = req.body.email;
+  try{
+    const userRecord = await admin.auth().getUserByEmail(email);
+
+    if (email == userRecord.email) {
+      console.log('ACHOU')
+      res.json({found: true});
+    }
+  }
+  catch(error){
+      console.log('NÃO ACHOU')
+      res.json({found: false});   
+  }
+  // if (email != userRecord.email) {
+  //   // Caso o email não exista no banco de dados
+  //   console.log('NÃO ACHOU')
+  //   res.status(404).send('E-mail não encontrado');
+  // }
+  // else {
+  //   // Caso o email exista no banco de dados
+  //   console.log('ACHOU')
+  //   res.status(200).send('E-mail encontrado');
+  // }
 });
 
 
