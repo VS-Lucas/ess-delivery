@@ -6,11 +6,11 @@
           <img class="w-1/2 mx-auto" src="../assets/logo.png" alt="Forra Bucho" />
         </div>
         <div class="mt-8 space-y-6 bg-[#A62C21] p-5 rounded-lg">
-            <h3 class="mx-auto text-2xl	text-white">
+            <h3 class="text-center text-2xl	text-white">
                 Recuperar senha 
             </h3>
 
-            <div class="mx-auto text-white text-center">
+            <div class="text-white text-center">
                 <h2>
                     Um código de confirmação foi enviado para o seu e-mail. Siga os procedimentos indicados nele para recuperar sua senha
                 </h2>
