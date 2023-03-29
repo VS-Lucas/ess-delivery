@@ -12,12 +12,12 @@
 
             <div class="text-white text-center">
                 <p>
-                    Um código de confirmação foi enviado para o seu e-mail. Siga os procedimentos indicados nele para recuperar sua senha
+                  Sua nova senha é: {{ this.password }}
                 </p>
             </div>
   
           <div>
-            <button type="submit" class="group relative flex w-full justify-center rounded-md bg-[#9DBF69] py-2 px-3 text-sm font-semibold text-white hover:bg-[#c9e3a1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <button @click="toLogin()" type="submit" class="group relative flex w-full justify-center rounded-md bg-[#9DBF69] py-2 px-3 text-sm font-semibold text-white hover:bg-[#c9e3a1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
               OK
             </button>
           </div>
@@ -27,11 +27,27 @@
     </div>
 </template>
   
-  <script scoped>
+  <script>
     export default {
-        name: 'RecoverySent',
+        name: 'recoverySent',
+        data(){
+          return{
+            password: '',
+          }
+        },
         props: {
             msg: String
-        }
+        }, 
+        created() {
+          const password = this.$route.params.password_param;
+          this.password = password;
+        }, 
+        methods: {
+          toLogin(){
+            this.$router.push({
+              path: '/login'
+            })
+          }
+        },
     }
   </script>

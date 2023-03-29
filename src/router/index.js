@@ -16,8 +16,8 @@ const routes = [
     component: () => import('../views/PasswordRecovery.vue')
   },
   {
-    path: '/recovery',
-    name: 'recoverysent',
+    path: '/recovery/:password_param',
+    name: 'recovery',
     component: () => import('../views/RecoverySent.vue')
   },
   {

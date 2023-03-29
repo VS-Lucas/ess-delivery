@@ -138,33 +138,34 @@ app.post("/login", async (req, res) => {
 
 // Rota para a recuperação de senha
 app.post("/password-recovery", async (req, res) =>{
-  // console.log('POST RECOVERY');
-
   const email = req.body.email;
+  
   try{
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 8; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
     const userRecord = await admin.auth().getUserByEmail(email);
 
     if (email == userRecord.email) {
-      console.log('ACHOU')
-      res.json({found: true});
+      console.log('ACHOU');
+      
+      const userRef = admin.firestore().collection('usuarios').doc(userRecord.uid);
+      await userRef.update({
+        password: result
+      });
+
+      res.json({found: true, password: result});
     }
   }
   catch(error){
       console.log('NÃO ACHOU')
       res.json({found: false});   
   }
-  // if (email != userRecord.email) {
-  //   // Caso o email não exista no banco de dados
-  //   console.log('NÃO ACHOU')
-  //   res.status(404).send('E-mail não encontrado');
-  // }
-  // else {
-  //   // Caso o email exista no banco de dados
-  //   console.log('ACHOU')
-  //   res.status(200).send('E-mail encontrado');
-  // }
 });
-
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')

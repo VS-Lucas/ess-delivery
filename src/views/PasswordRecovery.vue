@@ -36,10 +36,12 @@
   import axios from 'axios';
 
   export default {
+    name: 'passwordRecovery',
     data(){
       return{
         email: '',
-        found: Boolean,
+        password: '',
+        found: Boolean
       }
     },
     methods: {
@@ -47,9 +49,15 @@
         const response = await axios.post('http://localhost:3000/password-recovery', {
           email: this.email,
         });
+
         this.found = response.data.found;
+        this.password = response.data.password;
+
         if (this.found){
-          this.$router.push('/recovery');
+          this.$router.push({
+            name: 'recovery',
+            params: { password_param: this.password}
+          });
         }
       },
       mouseCheck(){
