@@ -3,6 +3,7 @@ import RegisterRestaurantView from '../views/RegisterRestaurantView.vue'
 import UpdateRegisterView from '../views/UpdateRegisterView.vue'
 import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
 import RegisterLoginView from '../views/RegisterLoginView.vue'
+import ClientHome from '../views/ClientHome.vue'
 
 const routes = [
   {
@@ -45,6 +46,11 @@ const routes = [
     name: 'login',
     component: () => import('../views/LoginView.vue')
   },
+  {
+    path: '/clienthome',
+    name: 'clienthome',
+    component: ClientHome
+  }
 ]
 
 const router = createRouter({
