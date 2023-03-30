@@ -28,7 +28,7 @@
         <div class="flex items-center col-span-1 text-white font-medium">
             <div class="flex items-center justify-center">
                 <p class="text-white font-bold sm:text-[17px] text-[12px]">R$ {{ price }} ({{ form_pay }})</p>
-                <button class="ml-6" type="submit"><img src="../assets/img/next-button.png" alt=""></button>
+                <button class="ml-6" @click="goToDetails()" type="submit"><img src="../assets/img/next-button.png" alt=""></button>
             </div>
         </div>
     </div>    
@@ -45,6 +45,23 @@
             date: String,
             price: String,
             form_pay: String
+        },
+        methods: {
+            goToDetails() {
+                this.$router.push({
+                    name: 'history-details',
+                    params: 
+                    {
+                        id: this.id, 
+                        imgSrc: this.imgSrc,
+                        name: this.name,
+                        items: this.items,
+                        date: this.date,
+                        price: this.price,
+                        form_pay: this.form_pay
+                    }
+                })
+            }
         }
     }
 </script>
