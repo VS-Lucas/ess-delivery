@@ -268,10 +268,6 @@ export default {
     toggleEditing(index) {
       this.editing = this.editing.map((value, i) => i === index ? !value : value);
     
-      //if (!this.editing[index]) { // Verifica se a edição está sendo desabilitada
-      //this.restaurant = {...this.restaurant, ...this.restaurant.original}; // Restaura os valores originais
-      //}
-
       if (index === 0) {
         this.editing0 = !this.editing0;
         if (!this.editing[index]) {
@@ -301,34 +297,67 @@ export default {
       }
     },
     submit(index) {
+      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
+      const rgRegex = /^\d{1}.\d{3}.\d{3}$/
+      const cnpjRegex = /^\d{2}.\d{3}.\d{3}\/\d{4}-\d{2}$/
+      const telRegex = /^\(\d{2}\) \d{5}-\d{4}$/
+      const cepRegex = /^\d{5}-\d{3}$/
+
+      if (!this.restaurant.nome || !this.restaurant.cpf || !this.restaurant.rg || !this.restaurant.cnpj || !this.restaurant.razao_social || !this.restaurant.nome_loja || !this.restaurant.telefone || !this.restaurant.especialidade || !this.restaurant.cep || !this.restaurant.estado_uf || !this.restaurant.cidade || !this.restaurant.bairro || !this.restaurant.endereco || !this.restaurant.numero) {
+        return;
+      }
+
+      if (!cpfRegex.test(this.restaurant.cpf) || !rgRegex.test(this.restaurant.rg) || !cnpjRegex.test(this.restaurant.cnpj) || !telRegex.test(this.restaurant.telefone) || !cepRegex.test(this.restaurant.cep)) {
+        return;
+      }
+
       event.preventDefault();
       if (index == 0) {
-        axios.put('http://localhost:3000/update-register/0', {
-          nome: this.restaurant.nome,
-          cpf: this.restaurant.cpf,
-          rg: this.restaurant.rg
-        });
-        this.restaurant['original']['nome'] = this.restaurant.nome;
-        this.restaurant['original']['cpf'] = this.restaurant.cpf;
-        this.restaurant['original']['rg'] = this.restaurant.rg;
-        
-        this.editing[index] = !this.editing[index];
-        this.editing0 = !this.editing0;
+        if (this.restaurant['original']['nome'] != this.restaurant.nome ||
+            (this.restaurant['original']['cpf'] != this.restaurant.cpf ||
+            this.restaurant['original']['rg'] != this.restaurant.rg)) {
+
+          axios.put('http://localhost:3000/update-register/0', {
+            nome: this.restaurant.nome,
+            cpf: this.restaurant.cpf,
+            rg: this.restaurant.rg
+          });
+          this.restaurant['original']['nome'] = this.restaurant.nome;
+          this.restaurant['original']['cpf'] = this.restaurant.cpf;
+          this.restaurant['original']['rg'] = this.restaurant.rg;
+                
+          this.editing[index] = !this.editing[index];
+          this.editing0 = !this.editing0;
+        }
       } else if (index == 1) {
+        if (this.restaurant['original']['razao_social'] != this.restaurant.razao_social ||
+            this.restaurant['original']['nome_loja'] != this.restaurant.nome_loja ||
+            this.restaurant['original']['telefone'] != this.restaurant.telefone ||
+            this.restaurant['original']['especialidade'] != this.restaurant.especialidade) {
+
           axios.put('http://localhost:3000/update-register/1', {
             razao_social: this.restaurant.razao_social,
             nome_loja: this.restaurant.nome_loja,
             telefone: this.restaurant.telefone,
             especialidade: this.restaurant.especialidade
-        });
-        this.restaurant['original']['razao_social'] = this.restaurant.razao_social;
-        this.restaurant['original']['nome_loja'] = this.restaurant.nome_loja;
-        this.restaurant['original']['telefone'] = this.restaurant.telefone;
-        this.restaurant['original']['especialidade'] = this.restaurant.especialidade;
-        
-        this.editing[index] = !this.editing[index];
-        this.editing1 = !this.editing1;
+          });
+          this.restaurant['original']['razao_social'] = this.restaurant.razao_social;
+          this.restaurant['original']['nome_loja'] = this.restaurant.nome_loja;
+          this.restaurant['original']['telefone'] = this.restaurant.telefone;
+          this.restaurant['original']['especialidade'] = this.restaurant.especialidade;
+          
+          this.editing[index] = !this.editing[index];
+          this.editing1 = !this.editing1;
+        }
       } else if (index == 2) {
+        if (this.restaurant['original']['cep'] != this.restaurant.cep ||
+            this.restaurant['original']['estado_uf'] != this.restaurant.estado_uf ||
+            this.restaurant['original']['cidade'] != this.restaurant.cidade ||
+            this.restaurant['original']['bairro'] != this.restaurant.bairro ||
+            this.restaurant['original']['endereco'] != this.restaurant.endereco ||
+            this.restaurant['original']['numero'] != this.restaurant.numero ||
+            this.restaurant['original']['complemento'] != this.restaurant.complemento) {
+
           axios.put('http://localhost:3000/update-register/2', {
             cep: this.restaurant.cep,
             estado_uf: this.restaurant.estado_uf,
@@ -337,17 +366,18 @@ export default {
             endereco: this.restaurant.endereco,
             numero: this.restaurant.numero,
             complemento: this.restaurant.complemento
-        });
-        this.restaurant['original']['cep'] = this.restaurant.cep;
-        this.restaurant['original']['estado_uf'] = this.restaurant.estado_uf;
-        this.restaurant['original']['cidade'] = this.restaurant.cidade;
-        this.restaurant['original']['bairro'] = this.restaurant.bairro;
-        this.restaurant['original']['endereco'] = this.restaurant.endereco;
-        this.restaurant['original']['numero'] = this.restaurant.numero;
-        this.restaurant['original']['complemento'] = this.restaurant.complemento;
-        
-        this.editing[index] = !this.editing[index];
-        this.editing2 = !this.editing2;
+          });
+          this.restaurant['original']['cep'] = this.restaurant.cep;
+          this.restaurant['original']['estado_uf'] = this.restaurant.estado_uf;
+          this.restaurant['original']['cidade'] = this.restaurant.cidade;
+          this.restaurant['original']['bairro'] = this.restaurant.bairro;
+          this.restaurant['original']['endereco'] = this.restaurant.endereco;
+          this.restaurant['original']['numero'] = this.restaurant.numero;
+          this.restaurant['original']['complemento'] = this.restaurant.complemento;
+          
+          this.editing[index] = !this.editing[index];
+          this.editing2 = !this.editing2;
+        }
       }
     }
 
