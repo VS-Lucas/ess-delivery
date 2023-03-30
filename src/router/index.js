@@ -50,6 +50,11 @@ const routes = [
     path: '/clienthome',
     name: 'clienthome',
     component: ClientHome
+  },
+  {
+    path: '/order-history',
+    name: 'order-history',
+    component: () => import('../views/HistoryView.vue')
   }
 ]
 
