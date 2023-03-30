@@ -1,7 +1,10 @@
 <template>
 <body>
   <div class="h-screen bg-[#541F1B] pt-20">
-    <NavBar />
+    <NavBar />    
+    <button @click='goToClientHome()' class="absolute left-10 top-32 focus:outline-none bg-[#A62C21] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l inline-block px-6 py-1 mr-10 mb-2 ">
+      <img src="@\assets\img\Home_Icon.png" alt="Descrição da imagem" class=" h-10 w-11" >
+    </button>
     <h1 class="mt-16 mb-10 text-center text-3xl font-bold text-white">Meu carrinho</h1>
     <div class="mx-auto max-w-6xl justify-center px-6 md:flex md:space-x-7 xl:px-0">
       <div class="rounded-lg md:w-2/3">
@@ -85,6 +88,11 @@ export default {
   name: 'ShoppingCart',
   components: {
     NavBar
+  },
+  methods: {
+    goToClientHome() {
+                    this.$router.push('/clienthome');
+                }
   }
 }
 </script>
