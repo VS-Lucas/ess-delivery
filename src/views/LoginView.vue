@@ -22,7 +22,7 @@
 
                 <div class="flex items-center justify-end pr-2">
                     <div class="text-sm ">
-                        <a href="#" class="font-medium text-[#FF8973] hover:text-[#261918]">Esqueci minha senha</a>
+                        <a href="/passwordrecovery" class="font-medium text-[#FF8973] hover:text-[#261918]">Esqueci minha senha</a>
                     </div>
                 </div> <!--link-to-password-->
 

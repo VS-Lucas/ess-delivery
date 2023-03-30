@@ -53,10 +53,20 @@ const routes = [
     component: ClientHome
   },
   {
+    path: '/order-history',
+    name: 'order-history',
+    component: () => import('../views/HistoryView.vue')
+  },
+  {
     path:'/shoppingcart',
     name: 'shoppingcart',
     component: ShoppingCart
-  }
+  },
+  {
+    path: '/history-details/:id/:imgSrc/:name/:date/:price/:form_pay/:items+',
+    name: 'history-details',
+    component: () => import('../views/HistoryDetailsView.vue')
+  },
 ]
 
 const router = createRouter({
