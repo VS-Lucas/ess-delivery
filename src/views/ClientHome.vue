@@ -1,7 +1,7 @@
 <template>
     <div class="clienthome bg-[#261918] h-screen relative">
        <NavBar /> <!-- NavBar dos componentes-->
-        <div class="absolute left-10 top-32"> <!-- Button "Meus Pedidos"-->
+        <div class="absolute left-40 top-32"> <!-- Button "Meus Pedidos"-->
           <button type="button" class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Meus pedidos</button>
         </div>
   
@@ -18,11 +18,10 @@
         </form>
     </div>
   
-    <div class= " absolute right-32 top-32 focus:outline-none bg-[#A62C21] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l inline-block px-6 py-1 mr-10 mb-2 "> <!-- Button "Carrinho"-->
-          <button class="px-0 hover:bg-red-800 focus:ring-4 focus:ring-red-300  ">
-          <img src="@\assets\img\carrinho.png" alt="Descrição da imagem" class=" h-10 w-11" >
-          </button>
-    </div>
+     <!-- Button "Carrinho"-->
+    <button  @click='goToShoppingCart()' type="submit" class=" hover:bg-red-800 focus:ring-4 absolute right-32 top-32 focus:outline-none bg-[#A62C21]  focus:ring-red-300 font-medium rounded-lg text-l inline-block px-6 py-1 mr-10 mb-2 ">
+        <img src="@\assets\img\carrinho.png" alt="Carrinho de Compras" class=" h-10 w-11" >
+    </button>
 
     <div class="absolute flex justify-center space-x-10  top-56 bg-cover inset-x-0"> <!-- Flexbox dos cards do restaurante e das comidas-->
       <!-- Botão dos restaurantes -->
@@ -73,6 +72,11 @@
     name: 'ClientHome',
     components: {
       NavBar,
+    },
+    methods:{
+      goToShoppingCart() {
+      this.$router.push('/shoppingcart');
+      }
     }
   }
   </script>
