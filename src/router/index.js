@@ -4,6 +4,7 @@ import UpdateRegisterView from '../views/UpdateRegisterView.vue'
 import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
 import RegisterLoginView from '../views/RegisterLoginView.vue'
 import ClientHome from '../views/ClientHome.vue'
+import ShoppingCart from '../views/ShoppingCart.vue'
 
 const routes = [
   {
@@ -50,6 +51,11 @@ const routes = [
     path: '/clienthome',
     name: 'clienthome',
     component: ClientHome
+  },
+  {
+    path:'/shoppingcart',
+    name: 'shoppingcart',
+    component: ShoppingCart
   }
 ]
 
