@@ -17,7 +17,7 @@ admin.initializeApp({
 });
 
 
-// Rota Post do cadastro de login
+// Rota POST do cadastro de login
 let userId;
 app.post('/register-login', (req, res) => {
   console.log('POST login');
@@ -49,7 +49,7 @@ app.post('/register-login', (req, res) => {
 });
 
 
-// Rota Post do cadastro de restaurante
+// Rota POST do cadastro de restaurante
 app.post('/register-restaurant', (req, res) => {
   console.log('POST restaurant');
   const data = req.body;
@@ -184,6 +184,139 @@ app.put('/update-register/:index', (req, res) => {
       res.status(500).send('Erro ao buscar ID do restaurante');
     });
 });
+
+/*
+// Rota POST que verifica a existência dos dados da atualização do restaurante
+app.post('/verify-data/:index', (req, res) => {
+  console.log('POST verify');
+  const data = req.body;
+  const index = req.params.index;
+  const restaurantId = "WgPfCDmqtBf2255Z0idC";
+
+
+  switch (index) {
+    case '0':
+      admin.firestore()
+      .collection('restaurantes')
+      .where('cpf', '==', data.cpf)
+      .where('__name__', '!=', restaurantId)
+      .get()
+      .then(cpfSnapshot => {
+        admin.firestore()
+          .collection('restaurantes')
+          .where('__name__', '!=', restaurantId)
+          .where('rg', '==', data.rg)
+          .get()
+          .then(rgSnapshot => {
+            if (cpfSnapshot.empty && rgSnapshot.empty) {
+              // O CPF e o RG não existem no Firestore
+              res.status(200).send('CPF e RG não existem');
+            } else if (!cpfSnapshot.empty && rgSnapshot.empty) {
+              // O CPF já existe no Firestore
+              res.status(200).send('CPF já cadastrado');
+            } else if (cpfSnapshot.empty && !rgSnapshot.empty) {
+              // O RG já existe no Firestore
+              res.status(200).send('RG já cadastrado');
+            } else if (!cpfSnapshot.empty && !rgSnapshot.empty) {
+              // O RG já existe no Firestore
+              res.status(200).send('CPF e RG já cadastrado');
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500).send('Erro ao verificar o RG no Firestore');
+          });
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).send('Erro ao verificar o CPF no Firestore');
+      });
+      console.log('CPF e RG');
+      break;
+    
+    case 1:
+      admin.firestore()
+      .collection('restaurantes')
+      .where('razao_social', '==', data.razao_social)
+      .where('__name__', '!=', restaurantId)
+      .get()
+      .then(rzSnapshot => {
+        admin.firestore()
+          .collection('restaurantes')
+          .where('__name__', '!=', restaurantId)
+          .where('telefone', '==', data.telefone)
+          .get()
+          .then(telSnapshot => {
+            if (rzSnapshot.empty && telSnapshot.empty) {
+              res.status(200).send('Razão sacial e telefone não existem');
+            } else if (!rzSnapshot.empty && telSnapshot.empty) {
+              res.status(200).send('Razão social já cadastrado');
+            } else if (rzSnapshot.empty && !telSnapshot.empty) {
+              res.status(200).send('Telefone já cadastrado');
+            } else if (!rzSnapshot.empty && !telSnapshot.empty) {
+              res.status(200).send('Razão social e telefone já cadastrado');
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500).send('Erro ao verificar o telefone no Firestore');
+          });
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).send('Erro ao verificar o razão social no Firestore');
+      });
+      console.log('RZ e Tel');
+      break;
+
+    case 2:
+      admin.firestore()
+      .collection('restaurantes')
+      .where('cep', '==', data.cep)
+      .where('__name__', '!=', restaurantId)
+      .get()
+      .then(cepSnapshot => {
+        if (cepSnapshot.empty) {
+          res.status(200).send('CEP não existe');
+        } else if (!cepSnapshot.empty) {
+          res.status(200).send('CEP já cadastrado');
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).send('Erro ao verificar o CEP no Firestore');
+      });
+      console.log('CEP');
+      break;
+  }
+});
+*/
+
+
+app.delete('/unsubscribe', (req, res) => {
+  //const id = req.params.id;
+  const userId = "BuwSgxz6R4aRj9rUw6LFBDWOzDP2";
+  const restaurantId = "Iafa3wJVBL8fGNGyCJoY";
+
+  admin.firestore().collection('restaurantes').doc(restaurantId).delete()
+    .then(() => {
+      console.log(`Restaurante excluído com sucesso.`);
+      admin.firestore().collection('usuarios').doc(userId).delete()
+        .then(() => {
+          console.log(`Usuário excluído com sucesso.`);
+          res.send('Exclusão realizada com sucesso.');
+        })
+        .catch((error) => {
+          console.error(`Erro ao excluir usuário: ${error}`);
+          res.status(500).send('Erro ao excluir usuário.');
+        });
+    })
+    .catch((error) => {
+      console.error(`Erro ao excluir restaurante: ${error}`);
+      res.status(500).send('Erro ao excluir restaurante.');
+    });
+});
+
 
 
 
