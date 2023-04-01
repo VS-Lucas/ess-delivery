@@ -5,6 +5,7 @@ import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
 import RegisterLoginView from '../views/RegisterLoginView.vue'
 import ClientHome from '../views/ClientHome.vue'
 import ShoppingCart from '../views/ShoppingCart.vue'
+import HomeRestaurant from '../views/HomeRestaurant.vue'
 
 const routes = [
   {
@@ -66,6 +67,11 @@ const routes = [
     path: '/history-details/:id/:imgSrc/:name/:date/:price/:form_pay/:items+',
     name: 'history-details',
     component: () => import('../views/HistoryDetailsView.vue')
+  },
+  {
+    path: '/home-restaurant',
+    name: 'home-restaurant',
+    component: HomeRestaurant
   },
 ]
 
