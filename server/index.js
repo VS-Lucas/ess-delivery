@@ -84,7 +84,7 @@ app.get('/update-register', (req, res) => {
   //const token = req.headers.authorization.split(' ')[1];
   //const decodedToken = jwt.decode(token);
   //const userId = decodedToken.sub;
-  const userId = "59breiPESGPgPXKfN79gVcKRuyt2";
+  const userId = "gEMFXSSkCLb9o3qYNpS2F9eANlx1";
   
   admin.firestore()
     .collection('usuarios')
@@ -118,7 +118,7 @@ app.put('/update-register/:index', (req, res) => {
   console.log('PUT update');
   const data = req.body;
   const index = req.params.index;
-  const userId = "59breiPESGPgPXKfN79gVcKRuyt2"; // Hardcoded para fins de teste
+  const userId = "gEMFXSSkCLb9o3qYNpS2F9eANlx1"; // Hardcoded para fins de teste
 
   admin.firestore()
     .collection('usuarios')
@@ -185,56 +185,21 @@ app.put('/update-register/:index', (req, res) => {
     });
 });
 
-/*
+
+
 // Rota POST que verifica a existência dos dados da atualização do restaurante
 app.post('/verify-data/:index', (req, res) => {
   console.log('POST verify');
   const data = req.body;
+  //const telefone = "(22) 22222-2222"
+  //const razao_social = "222222222222"
+  //const index = '1'
   const index = req.params.index;
-  const restaurantId = "WgPfCDmqtBf2255Z0idC";
+  const restaurantId = "toUh4qu8nbLCJatawak7";
 
 
-  switch (index) {
-    case '0':
-      admin.firestore()
-      .collection('restaurantes')
-      .where('cpf', '==', data.cpf)
-      .where('__name__', '!=', restaurantId)
-      .get()
-      .then(cpfSnapshot => {
-        admin.firestore()
-          .collection('restaurantes')
-          .where('__name__', '!=', restaurantId)
-          .where('rg', '==', data.rg)
-          .get()
-          .then(rgSnapshot => {
-            if (cpfSnapshot.empty && rgSnapshot.empty) {
-              // O CPF e o RG não existem no Firestore
-              res.status(200).send('CPF e RG não existem');
-            } else if (!cpfSnapshot.empty && rgSnapshot.empty) {
-              // O CPF já existe no Firestore
-              res.status(200).send('CPF já cadastrado');
-            } else if (cpfSnapshot.empty && !rgSnapshot.empty) {
-              // O RG já existe no Firestore
-              res.status(200).send('RG já cadastrado');
-            } else if (!cpfSnapshot.empty && !rgSnapshot.empty) {
-              // O RG já existe no Firestore
-              res.status(200).send('CPF e RG já cadastrado');
-            }
-          })
-          .catch(error => {
-            console.error(error);
-            res.status(500).send('Erro ao verificar o RG no Firestore');
-          });
-      })
-      .catch(error => {
-        console.error(error);
-        res.status(500).send('Erro ao verificar o CPF no Firestore');
-      });
-      console.log('CPF e RG');
-      break;
-    
-    case 1:
+  switch (index) {  
+    case '1':
       admin.firestore()
       .collection('restaurantes')
       .where('razao_social', '==', data.razao_social)
@@ -252,6 +217,7 @@ app.post('/verify-data/:index', (req, res) => {
             } else if (!rzSnapshot.empty && telSnapshot.empty) {
               res.status(200).send('Razão social já cadastrado');
             } else if (rzSnapshot.empty && !telSnapshot.empty) {
+              console.log('Telefone já cadastrado SERVER')
               res.status(200).send('Telefone já cadastrado');
             } else if (!rzSnapshot.empty && !telSnapshot.empty) {
               res.status(200).send('Razão social e telefone já cadastrado');
@@ -266,10 +232,9 @@ app.post('/verify-data/:index', (req, res) => {
         console.error(error);
         res.status(500).send('Erro ao verificar o razão social no Firestore');
       });
-      console.log('RZ e Tel');
       break;
 
-    case 2:
+    case '2':
       admin.firestore()
       .collection('restaurantes')
       .where('cep', '==', data.cep)
@@ -286,11 +251,10 @@ app.post('/verify-data/:index', (req, res) => {
         console.error(error);
         res.status(500).send('Erro ao verificar o CEP no Firestore');
       });
-      console.log('CEP');
       break;
   }
 });
-*/
+
 
 
 app.delete('/unsubscribe', (req, res) => {
