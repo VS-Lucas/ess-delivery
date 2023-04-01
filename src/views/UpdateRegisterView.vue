@@ -47,7 +47,7 @@
                 </div>
                 <div class="bg-gray-200 flex justify-between px-4 py-3 text-right sm:px-6">
                   <button @click="toggleEditing(0)" type="button" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ editing0 ? 'Cancelar' : 'Editar' }}</button>
-                  <button @click="submit(0)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
+                  <button @click="verifyInput(0)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
                 </div>
               </div>
                   
@@ -100,7 +100,7 @@
                 </div>
                 <div class="bg-gray-200 flex justify-between px-4 py-3 text-right sm:px-6">
                   <button @click="toggleEditing(1)" type="button" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ editing1 ? 'Cancelar' : 'Editar' }}</button>
-                  <button @click="submit(1)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
+                  <button @click="verifyInput(1)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
                 </div>
               </div>
                   
@@ -203,7 +203,7 @@
                 </div>
                 <div class="bg-gray-200 flex justify-between px-4 py-3 text-right sm:px-6">
                   <button @click="toggleEditing(2)" type="button" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ editing2 ? 'Cancelar' : 'Editar' }}</button>
-                  <button @click="submit(2)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
+                  <button @click="verifyInput(2)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
                 </div>
               </div>
             </div>
@@ -254,7 +254,6 @@ export default {
     axios.get('http://localhost:3000/update-register')
       .then(response => {
         this.restaurant = {...response.data, original: {...response.data}};
-        //this.restaurant = response.data;
       })
       .catch(error => {
         console.error(error);
@@ -297,20 +296,6 @@ export default {
       }
     },
     submit(index) {
-      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
-      const rgRegex = /^\d{1}.\d{3}.\d{3}$/
-      const cnpjRegex = /^\d{2}.\d{3}.\d{3}\/\d{4}-\d{2}$/
-      const telRegex = /^\(\d{2}\) \d{5}-\d{4}$/
-      const cepRegex = /^\d{5}-\d{3}$/
-
-      if (!this.restaurant.nome || !this.restaurant.cpf || !this.restaurant.rg || !this.restaurant.cnpj || !this.restaurant.razao_social || !this.restaurant.nome_loja || !this.restaurant.telefone || !this.restaurant.especialidade || !this.restaurant.cep || !this.restaurant.estado_uf || !this.restaurant.cidade || !this.restaurant.bairro || !this.restaurant.endereco || !this.restaurant.numero) {
-        return;
-      }
-
-      if (!cpfRegex.test(this.restaurant.cpf) || !rgRegex.test(this.restaurant.rg) || !cnpjRegex.test(this.restaurant.cnpj) || !telRegex.test(this.restaurant.telefone) || !cepRegex.test(this.restaurant.cep)) {
-        return;
-      }
-
       event.preventDefault();
       if (index == 0) {
         if (this.restaurant['original']['nome'] != this.restaurant.nome ||
@@ -379,8 +364,83 @@ export default {
           this.editing2 = !this.editing2;
         }
       }
-    }
+    },
+    async verifyData(index) {
+      event.preventDefault();
+      try {
+        let response;
 
+        if (index == 0) {
+          response = await axios.post('http://localhost:3000/verify-data/0', {
+            cpf: this.restaurant.cpf,
+            rg: this.restaurant.rg
+          });
+
+          if (response.data === "CPF já cadastrado") {
+            return;
+          } else if (response.data === "RG já cadastrado") {
+            return;
+          } else if (response.data === "CPF e RG já cadastrado") {
+            return;
+          } else if (response.data === "CPF e RG não existem") {
+            this.submit(index);
+          }
+        } else if (index == 1) {
+          response = await axios.post('http://localhost:3000/verify-data/1', {
+            razao_social: this.restaurant.razao_social,
+            telefone: this.restaurant.telefone
+          });
+
+          if (response.data === "Razão social já cadastrado") {
+            return;
+          } else if (response.data === "Telefone já cadastrado") {
+            return;
+          } else if (response.data === "Razão social e telefone já cadastrado") {
+            return;
+          } else if (response.data === "Razão sacial e telefone não existem") {
+            this.submit(index);
+          }
+        } else if (index == 2) {
+          response = await axios.post('http://localhost:3000/verify-data/2', {
+            cep: this.restaurant.cep
+          });
+
+          if (response.data === "CEP já cadastrado") {
+            return;
+          } else if (response.data === "CEP não existe") {
+            this.submit(index);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    verifyInput(index) {
+      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
+      const rgRegex = /^\d{1}.\d{3}.\d{3}$/
+      const telRegex = /^\(\d{2}\) \d{5}-\d{4}$/
+      const cepRegex = /^\d{5}-\d{3}$/
+
+      if (index == 0 && (!this.restaurant.nome || !this.restaurant.cpf || !this.restaurant.rg)) {
+        return;
+      } else if (index == 1 && (!this.restaurant.razao_social || !this.restaurant.nome_loja || !this.restaurant.telefone || !this.restaurant.especialidade)) {
+        return;
+      } else if (index == 2 && (!this.restaurant.cep || !this.restaurant.estado_uf || !this.restaurant.cidade || !this.restaurant.bairro || !this.restaurant.endereco || !this.restaurant.numero)) {
+        return;
+      }
+
+      if (index == 0 && (!cpfRegex.test(this.restaurant.cpf) || !rgRegex.test(this.restaurant.rg))) {
+        return;
+      } else if (index == 1 && !telRegex.test(this.restaurant.telefone)) {
+        return;
+      } else if (index == 2 && !cepRegex.test(this.restaurant.cep)) {
+        return;
+      }
+
+      this.verifyData(index);
+
+    },
+    
   }
 
 }
