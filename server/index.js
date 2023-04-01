@@ -2,7 +2,7 @@ import express from 'express';
 import admin from 'firebase-admin';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const app = express();
 
@@ -111,9 +111,63 @@ app.get('/update-register', (req, res) => {
     });
 });
 
+// Rota POST para autenticação de login de usuário
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
+  try {
+    // Busca o usuário pelo email
+    const userRecord = await admin.auth().getUserByEmail(email);
 
-app.listen(3000, ()=>{
+    // Verifica a senha
+    const userDoc = await admin.firestore()
+                               .collection('usuarios')
+                               .doc(userRecord.uid)
+                               .get();      
+
+    if (userDoc.data().password == password) {
+      const token = await admin.auth().createCustomToken(userRecord.uid);
+      res.status(200).json({ token });
+    } else {
+      res.status(401).send("Senha incorreta");
+    }
+  } catch (error) {
+    res.status(404).send("Usuário não encontrado");
+  }
+});
+
+// Rota para a recuperação de senha
+app.post("/password-recovery", async (req, res) =>{
+  const email = req.body.email;
+  
+  try{
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 8; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    const userRecord = await admin.auth().getUserByEmail(email);
+
+    if (email == userRecord.email) {
+      console.log('ACHOU');
+      
+      const userRef = admin.firestore().collection('usuarios').doc(userRecord.uid);
+      await userRef.update({
+        password: result
+      });
+
+      res.json({found: true, password: result});
+    }
+  }
+  catch(error){
+      console.log('NÃO ACHOU')
+      res.json({found: false});   
+  }
+});
+
+app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
 
