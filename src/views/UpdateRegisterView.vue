@@ -73,6 +73,9 @@
                         <input type="text" id="razao_social" v-model="restaurant.razao_social" :disabled="!editing[1]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="razao_social" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Razão Social</label>
                       </div>
+                      <div v-if="razao_social_failure" @mousemove="hideText(1)" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">Razão social já cadastrada</p>
+                      </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
@@ -86,6 +89,9 @@
                       <div class="relative">
                         <input type="tel" id="telefone" v-model="restaurant.telefone" :disabled="!editing[1]" v-mask="['(##) #####-####']" required pattern="\(\d{2}\) \d{5}-\d{4}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                         <label for="telefone" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Telefone</label>
+                      </div>
+                      <div v-if="telefone_failure" @mousemove="hideText(1)" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">Telefone já cadastrado</p>
                       </div>
                     </div>
 
@@ -125,6 +131,9 @@
                       <div class="relative">
                         <input type="text" id="cep" v-model="restaurant.cep" :disabled="!editing[2]" v-mask="['#####-###']" required pattern="\d{5}-\d{3}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="cep" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">CEP</label>
+                      </div>
+                      <div v-if="cep_failure" @mousemove="hideText(2)" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">CEP já cadastrado</p>
                       </div>
                     </div>
 
@@ -248,6 +257,9 @@ export default {
       editing0: false,
       editing1: false,
       editing2: false,
+      razao_social_failure: false,
+      telefone_failure: false,
+      cep_failure: false,
     }
   },
   created() {
@@ -261,8 +273,8 @@ export default {
   },
   methods: {
     onlyLetters() {
-      this.nome = this.nome.replace(/[^a-zA-ZÀ-ú\s]/g, ''),
-      this.especialidade = this.especialidade.replace(/[^a-zA-ZÀ-ú\s]/g, '')
+      this.restaurant.nome = this.restaurant.nome.replace(/[^a-zA-ZÀ-ú\s]/g, ''),
+      this.restaurant.especialidade = this.restaurant.especialidade.replace(/[^a-zA-ZÀ-ú\s]/g, '')
     },
     toggleEditing(index) {
       this.editing = this.editing.map((value, i) => i === index ? !value : value);
@@ -299,8 +311,8 @@ export default {
       event.preventDefault();
       if (index == 0) {
         if (this.restaurant['original']['nome'] != this.restaurant.nome ||
-            (this.restaurant['original']['cpf'] != this.restaurant.cpf ||
-            this.restaurant['original']['rg'] != this.restaurant.rg)) {
+            this.restaurant['original']['cpf'] != this.restaurant.cpf ||
+            this.restaurant['original']['rg'] != this.restaurant.rg) {
 
           axios.put('http://localhost:3000/update-register/0', {
             nome: this.restaurant.nome,
@@ -369,22 +381,8 @@ export default {
       event.preventDefault();
       try {
         let response;
-
         if (index == 0) {
-          response = await axios.post('http://localhost:3000/verify-data/0', {
-            cpf: this.restaurant.cpf,
-            rg: this.restaurant.rg
-          });
-
-          if (response.data === "CPF já cadastrado") {
-            return;
-          } else if (response.data === "RG já cadastrado") {
-            return;
-          } else if (response.data === "CPF e RG já cadastrado") {
-            return;
-          } else if (response.data === "CPF e RG não existem") {
-            this.submit(index);
-          }
+          this.submit(index);
         } else if (index == 1) {
           response = await axios.post('http://localhost:3000/verify-data/1', {
             razao_social: this.restaurant.razao_social,
@@ -392,12 +390,18 @@ export default {
           });
 
           if (response.data === "Razão social já cadastrado") {
+            this.razao_social_failure = true;
             return;
           } else if (response.data === "Telefone já cadastrado") {
+            this.telefone_failure = true;
             return;
           } else if (response.data === "Razão social e telefone já cadastrado") {
+            this.razao_social_failure = true;
+            this.telefone_failure = true;
             return;
           } else if (response.data === "Razão sacial e telefone não existem") {
+            this.razao_social_failure = false;
+            this.telefone_failure = false;
             this.submit(index);
           }
         } else if (index == 2) {
@@ -406,8 +410,10 @@ export default {
           });
 
           if (response.data === "CEP já cadastrado") {
+            this.cep_failure = true;
             return;
           } else if (response.data === "CEP não existe") {
+            this.cep_failure = false;
             this.submit(index);
           }
         }
@@ -440,6 +446,14 @@ export default {
       this.verifyData(index);
 
     },
+    hideText(index) {
+      if (index == 1) {
+        this.razao_social_failure = false;
+        this.telefone_failure = false;
+      } else if (index == 2) {
+        this.cep_failure = false;
+      }
+    }
     
   }
 
