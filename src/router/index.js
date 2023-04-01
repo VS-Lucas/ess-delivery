@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeRestaurant from '../views/HomeRestaurant.vue'
 import RegisterRestaurantView from '../views/RegisterRestaurantView.vue'
 import UpdateRegisterView from '../views/UpdateRegisterView.vue'
 import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
 import RegisterLoginView from '../views/RegisterLoginView.vue'
+import ClientHome from '../views/ClientHome.vue'
+import ShoppingCart from '../views/ShoppingCart.vue'
+import HomeRestaurant from '../views/HomeRestaurant.vue'
 
 const routes = [
   {
@@ -12,9 +14,14 @@ const routes = [
     component: () => import('../views/HomeScreen.vue')
   },
   {
-    path: '/home-restaurant',
-    name: 'home-restaurant',
-    component: HomeRestaurant
+    path: '/passwordrecovery',
+    name: 'passwordrecovery',
+    component: () => import('../views/PasswordRecovery.vue')
+  },
+  {
+    path: '/recovery/:password_param',
+    name: 'recovery',
+    component: () => import('../views/RecoverySent.vue')
   },
   {
     path: '/register-restaurant',
@@ -40,6 +47,31 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('../views/LoginView.vue')
+  },
+  {
+    path: '/clienthome',
+    name: 'clienthome',
+    component: ClientHome
+  },
+  {
+    path: '/order-history',
+    name: 'order-history',
+    component: () => import('../views/HistoryView.vue')
+  },
+  {
+    path:'/shoppingcart',
+    name: 'shoppingcart',
+    component: ShoppingCart
+  },
+  {
+    path: '/history-details/:id/:imgSrc/:name/:date/:price/:form_pay/:items+',
+    name: 'history-details',
+    component: () => import('../views/HistoryDetailsView.vue')
+  },
+  {
+    path: '/home-restaurant',
+    name: 'home-restaurant',
+    component: HomeRestaurant
   },
 ]
 
