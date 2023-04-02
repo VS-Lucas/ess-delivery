@@ -49,6 +49,89 @@ app.post('/register-login', (req, res) => {
 });
 
 
+// Rota POST que verifica a existência no DB dos dados do cadastro de restaurante
+app.post('/verify-data', (req, res) => {
+  console.log('POST verify');
+  const data = req.body;
+  //const restaurantId = "toUh4qu8nbLCJatawak7";
+
+  admin.firestore()
+  .collection('restaurantes')
+  .where('razao_social', '==', data.razao_social)
+  .get()
+  .then(rzSnapshot => {
+      admin.firestore()
+      .collection('restaurantes')
+      .where('nome_loja', '==', data.nome_loja)
+      .get()
+      .then(nomeSnapshot => {
+        admin.firestore()
+        .collection('restaurantes')
+        .where('telefone', '==', data.telefone)
+        .get()
+        .then(telSnapshot => {
+          admin.firestore()
+          .collection('restaurantes')
+          .where('cnpj', '==', data.cnpj)
+          .get()
+          .then(cnpjSnapshot => {
+            if (!rzSnapshot.empty && telSnapshot.empty && nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Razão social já cadastrado');
+            } else if (rzSnapshot.empty && !telSnapshot.empty && nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Telefone já cadastrado');
+            } else if (rzSnapshot.empty && telSnapshot.empty && !nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Nome da loja já cadastrado');
+            } else if (rzSnapshot.empty && telSnapshot.empty && nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('CNPJ já cadastrado');
+            } else if (!rzSnapshot.empty && !telSnapshot.empty && nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Razão social e telefone já cadastrado');
+            } else if (!rzSnapshot.empty && telSnapshot.empty && !nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Razão social e nome da loja já cadastrado');
+            } else if (!rzSnapshot.empty && telSnapshot.empty && nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('Razão social e CNPJ já cadastrado');
+            } else if (rzSnapshot.empty && !telSnapshot.empty && !nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Nome da loja e telefone já cadastrado');
+            } else if (rzSnapshot.empty && telSnapshot.empty && !nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('Nome da loja e CNPJ já cadastrado');
+            } else if (rzSnapshot.empty && !telSnapshot.empty && nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('Telefone e CNPJ já cadastrado');
+            } else if (!rzSnapshot.empty && !telSnapshot.empty && !nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Razão social, nome da loja e telefone já cadastrado');
+            } else if (!rzSnapshot.empty && telSnapshot.empty && !nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('Razão social, nome da loja e CNPJ já cadastrado');
+            } else if (!rzSnapshot.empty && !telSnapshot.empty && nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('Razão social, telefone e CNPJ já cadastrado');
+            } else if (rzSnapshot.empty && !telSnapshot.empty && !nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('Nome da loja, telefone e CNPJ já cadastrado');
+            } else if (!rzSnapshot.empty && !telSnapshot.empty && !nomeSnapshot.empty && !cnpjSnapshot.empty) {
+              res.status(200).send('Razão social, nome da loja, telefone e CNPJ existem');
+            } else if (rzSnapshot.empty && telSnapshot.empty && nomeSnapshot.empty && cnpjSnapshot.empty) {
+              res.status(200).send('Razão social, nome da loja, telefone e CNPJ não existem');
+            }
+
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500).send('Erro ao verificar o CNPJ no Firestore');
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).send('Erro ao verificar o telefone no Firestore');
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).send('Erro ao verificar o nome da loja no Firestore');
+      });
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(500).send('Erro ao verificar razão social no Firestore');
+  });
+});
+
+
 // Rota POST do cadastro de restaurante
 app.post('/register-restaurant', (req, res) => {
   console.log('POST restaurant');
@@ -186,17 +269,12 @@ app.put('/update-register/:index', (req, res) => {
 });
 
 
-
-// Rota POST que verifica a existência dos dados da atualização do restaurante
+// Rota POST que verifica a existência no DB dos dados da atualização do restaurante
 app.post('/verify-data/:index', (req, res) => {
   console.log('POST verify');
   const data = req.body;
-  //const telefone = "(22) 22222-2222"
-  //const razao_social = "222222222222"
-  //const index = '1'
   const index = req.params.index;
   const restaurantId = "toUh4qu8nbLCJatawak7";
-
 
   switch (index) {  
     case '1':
@@ -206,57 +284,55 @@ app.post('/verify-data/:index', (req, res) => {
       .where('__name__', '!=', restaurantId)
       .get()
       .then(rzSnapshot => {
-        admin.firestore()
+          admin.firestore()
           .collection('restaurantes')
+          .where('nome_loja', '==', data.nome_loja)
           .where('__name__', '!=', restaurantId)
-          .where('telefone', '==', data.telefone)
           .get()
-          .then(telSnapshot => {
-            if (rzSnapshot.empty && telSnapshot.empty) {
-              res.status(200).send('Razão sacial e telefone não existem');
-            } else if (!rzSnapshot.empty && telSnapshot.empty) {
-              res.status(200).send('Razão social já cadastrado');
-            } else if (rzSnapshot.empty && !telSnapshot.empty) {
-              console.log('Telefone já cadastrado SERVER')
-              res.status(200).send('Telefone já cadastrado');
-            } else if (!rzSnapshot.empty && !telSnapshot.empty) {
-              res.status(200).send('Razão social e telefone já cadastrado');
-            }
+          .then(nomeSnapshot => {
+            admin.firestore()
+            .collection('restaurantes')
+            .where('telefone', '==', data.telefone)
+            .where('__name__', '!=', restaurantId)
+            .get()
+            .then(telSnapshot => {
+              if (!rzSnapshot.empty && telSnapshot.empty && nomeSnapshot.empty) {
+                res.status(200).send('Razão social já cadastrado');
+              } else if (rzSnapshot.empty && !telSnapshot.empty && nomeSnapshot.empty) {
+                res.status(200).send('Telefone já cadastrado');
+              } else if (rzSnapshot.empty && telSnapshot.empty && !nomeSnapshot.empty) {
+                res.status(200).send('Nome da loja já cadastrado');
+              } else if (!rzSnapshot.empty && !telSnapshot.empty && nomeSnapshot.empty) {
+                res.status(200).send('Razão social e telefone já cadastrado');
+              } else if (!rzSnapshot.empty && telSnapshot.empty && !nomeSnapshot.empty) {
+                res.status(200).send('Razão social e nome da loja já cadastrado');
+              } else if (rzSnapshot.empty && !telSnapshot.empty && !nomeSnapshot.empty) {
+                res.status(200).send('Nome da loja e telefone já cadastrado');
+              } else if (!rzSnapshot.empty && !telSnapshot.empty && !nomeSnapshot.empty) {
+                res.status(200).send('Razão social, nome da loja e telefone já cadastrado');
+              } else if (rzSnapshot.empty && telSnapshot.empty && nomeSnapshot.empty) {
+                res.status(200).send('Razão social, nome da loja e telefone não existem');
+              }
+            })
+            .catch(error => {
+              console.error(error);
+              res.status(500).send('Erro ao verificar o telefone no Firestore');
+            });
           })
           .catch(error => {
             console.error(error);
-            res.status(500).send('Erro ao verificar o telefone no Firestore');
+            res.status(500).send('Erro ao verificar o nome da loja no Firestore');
           });
       })
       .catch(error => {
         console.error(error);
-        res.status(500).send('Erro ao verificar o razão social no Firestore');
+        res.status(500).send('Erro ao verificar razão social no Firestore');
       });
-      break;
-
-    case '2':
-      admin.firestore()
-      .collection('restaurantes')
-      .where('cep', '==', data.cep)
-      .where('__name__', '!=', restaurantId)
-      .get()
-      .then(cepSnapshot => {
-        if (cepSnapshot.empty) {
-          res.status(200).send('CEP não existe');
-        } else if (!cepSnapshot.empty) {
-          res.status(200).send('CEP já cadastrado');
-        }
-      })
-      .catch(error => {
-        console.error(error);
-        res.status(500).send('Erro ao verificar o CEP no Firestore');
-      });
-      break;
   }
 });
 
 
-
+// Rota DELETE do descadastramento de restaurante
 app.delete('/unsubscribe', (req, res) => {
   //const id = req.params.id;
   const userId = "BuwSgxz6R4aRj9rUw6LFBDWOzDP2";
@@ -280,7 +356,6 @@ app.delete('/unsubscribe', (req, res) => {
       res.status(500).send('Erro ao excluir restaurante.');
     });
 });
-
 
 
 
