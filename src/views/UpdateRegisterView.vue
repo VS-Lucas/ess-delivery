@@ -73,7 +73,7 @@
                         <input type="text" id="razao_social" v-model="restaurant.razao_social" :disabled="!editing[1]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="razao_social" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Razão Social</label>
                       </div>
-                      <div v-if="razao_social_failure" @mousemove="hideText(1)" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                      <div v-if="razao_social_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
                         <p class="text-[#83271F] text-[12px] font-bold text-center">Razão social já cadastrada</p>
                       </div>
                     </div>
@@ -83,6 +83,9 @@
                         <input type="text" id="nome_loja" v-model="restaurant.nome_loja" :disabled="!editing[1]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="nome_loja" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nome da Loja</label>
                       </div>
+                      <div v-if="nome_loja_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">Nome da loja já cadastrado</p>
+                      </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-2 sm:col-span-4">
@@ -90,7 +93,7 @@
                         <input type="tel" id="telefone" v-model="restaurant.telefone" :disabled="!editing[1]" v-mask="['(##) #####-####']" required pattern="\(\d{2}\) \d{5}-\d{4}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                         <label for="telefone" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Telefone</label>
                       </div>
-                      <div v-if="telefone_failure" @mousemove="hideText(1)" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                      <div v-if="telefone_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
                         <p class="text-[#83271F] text-[12px] font-bold text-center">Telefone já cadastrado</p>
                       </div>
                     </div>
@@ -131,9 +134,6 @@
                       <div class="relative">
                         <input type="text" id="cep" v-model="restaurant.cep" :disabled="!editing[2]" v-mask="['#####-###']" required pattern="\d{5}-\d{3}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="cep" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">CEP</label>
-                      </div>
-                      <div v-if="cep_failure" @mousemove="hideText(2)" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
-                        <p class="text-[#83271F] text-[12px] font-bold text-center">CEP já cadastrado</p>
                       </div>
                     </div>
 
@@ -259,7 +259,7 @@ export default {
       editing2: false,
       razao_social_failure: false,
       telefone_failure: false,
-      cep_failure: false,
+      nome_loja_failure: false,
     }
   },
   created() {
@@ -386,8 +386,13 @@ export default {
         } else if (index == 1) {
           response = await axios.post('http://localhost:3000/verify-data/1', {
             razao_social: this.restaurant.razao_social,
-            telefone: this.restaurant.telefone
+            telefone: this.restaurant.telefone,
+            nome_loja: this.restaurant.nome_loja,
           });
+
+          this.razao_social_failure = false;
+          this.nome_loja_failure = false;
+          this.telefone_failure = false;
 
           if (response.data === "Razão social já cadastrado") {
             this.razao_social_failure = true;
@@ -395,27 +400,34 @@ export default {
           } else if (response.data === "Telefone já cadastrado") {
             this.telefone_failure = true;
             return;
+          } else if (response.data === "Nome da loja já cadastrado") {
+            this.nome_loja_failure = true;
+            return;
           } else if (response.data === "Razão social e telefone já cadastrado") {
             this.razao_social_failure = true;
             this.telefone_failure = true;
             return;
-          } else if (response.data === "Razão sacial e telefone não existem") {
+          } else if (response.data === "Razão social e nome da loja já cadastrado") {
+            this.razao_social_failure = true;
+            this.nome_loja_failure = true;
+            return;
+          } else if (response.data === "Nome da loja e telefone já cadastrado") {
+            this.nome_loja_failure = true;
+            this.telefone_failure = true;
+            return;
+          } else if (response.data === "Razão social, nome da loja e telefone já cadastrado") {
+            this.razao_social_failure = true;
+            this.nome_loja_failure = true;
+            this.telefone_failure = true;
+            return;
+          } else if (response.data === "Razão social, nome da loja e telefone não existem") {
             this.razao_social_failure = false;
+            this.nome_loja_failure = false;
             this.telefone_failure = false;
             this.submit(index);
           }
         } else if (index == 2) {
-          response = await axios.post('http://localhost:3000/verify-data/2', {
-            cep: this.restaurant.cep
-          });
-
-          if (response.data === "CEP já cadastrado") {
-            this.cep_failure = true;
-            return;
-          } else if (response.data === "CEP não existe") {
-            this.cep_failure = false;
-            this.submit(index);
-          }
+          this.submit(index);
         }
       } catch (error) {
         console.error(error);
@@ -446,14 +458,11 @@ export default {
       this.verifyData(index);
 
     },
-    hideText(index) {
-      if (index == 1) {
-        this.razao_social_failure = false;
-        this.telefone_failure = false;
-      } else if (index == 2) {
-        this.cep_failure = false;
-      }
-    }
+    hideText() {
+      this.razao_social_failure = false;
+      this.telefone_failure = false;
+      this.nome_loja_failure = false;
+    },
     
   }
 
