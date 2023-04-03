@@ -16,7 +16,7 @@
                     </div><!--restaurante-->
     
                     <div>
-                        <button type="submit" class="group relative flex w-full justify-center rounded-[10px] bg-[#83271F] py-2 px-3 text-sm font-semibold text-white hover:bg-[#9DBF69] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <button @click="goToClientHomePage()" type="submit" class="group relative flex w-full justify-center rounded-[10px] bg-[#83271F] py-2 px-3 text-sm font-semibold text-white hover:bg-[#9DBF69] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             </span>
                             Cliente
@@ -33,6 +33,9 @@
             methods: {
                 goToLoginRestaurant() {
                     this.$router.push('/login');
+                },
+                goToClientHomePage() {
+                    this.$router.push('/clienthome');
                 }
             }
         }
