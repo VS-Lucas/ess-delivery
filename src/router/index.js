@@ -67,6 +67,11 @@ const routes = [
     name: 'history-details',
     component: () => import('../views/HistoryDetailsView.vue')
   },
+  {
+    path:'/order-tracking',
+    name: 'order-tracking',
+    component: () => import('../views/OrderTracking.vue')
+  }
 ]
 
 const router = createRouter({
