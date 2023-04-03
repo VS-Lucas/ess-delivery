@@ -334,28 +334,36 @@ app.post('/verify-data/:index', (req, res) => {
 
 // Rota DELETE do descadastramento de restaurante
 app.delete('/unsubscribe', (req, res) => {
-  //const id = req.params.id;
-  const userId = "BuwSgxz6R4aRj9rUw6LFBDWOzDP2";
-  const restaurantId = "Iafa3wJVBL8fGNGyCJoY";
+  const userId = "5oh6OyShcgPcmJOIXwFY0ZuGLp62";
+  const restaurantId = "cuXhRcfk0rPq5rucfVBn";
 
-  admin.firestore().collection('restaurantes').doc(restaurantId).delete()
+  admin.auth().deleteUser(userId)
     .then(() => {
-      console.log(`Restaurante excluído com sucesso.`);
-      admin.firestore().collection('usuarios').doc(userId).delete()
+      console.log(`(auth)Usuário excluído com sucesso.`);
+      admin.firestore().collection('restaurantes').doc(restaurantId).delete()
         .then(() => {
-          console.log(`Usuário excluído com sucesso.`);
-          res.send('Exclusão realizada com sucesso.');
+          console.log(`Restaurante excluído com sucesso.`);
+          admin.firestore().collection('usuarios').doc(userId).delete()
+            .then(() => {
+              console.log(`Usuário excluído com sucesso.`);
+              res.send('Exclusão realizada com sucesso.');
+            })
+            .catch((error) => {
+              console.error(`Erro ao excluir usuário: ${error}`);
+              res.status(500).send('Erro ao excluir usuário.');
+            });
         })
         .catch((error) => {
-          console.error(`Erro ao excluir usuário: ${error}`);
-          res.status(500).send('Erro ao excluir usuário.');
+          console.error(`Erro ao excluir restaurante: ${error}`);
+          res.status(500).send('Erro ao excluir restaurante.');
         });
     })
     .catch((error) => {
-      console.error(`Erro ao excluir restaurante: ${error}`);
-      res.status(500).send('Erro ao excluir restaurante.');
+      console.error(`(auth)Erro ao excluir usuário: ${error}`);
+      res.status(500).send('(auth)Erro ao excluir usuário.');
     });
 });
+
 
 
 
