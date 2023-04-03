@@ -68,12 +68,18 @@
                         <input type="text" id="cnpj" v-model="cnpj" v-mask="['##.###.###/####-##']" required pattern="\d{2}.\d{3}.\d{3}/\d{4}-\d{2}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="cnpj" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">CNPJ</label>
                       </div>
+                      <div v-if="cnpj_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">CNPJ já cadastrado</p>
+                      </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
                       <div class="relative">
                         <input type="text" id="razao_social" v-model="razao_social" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="razao_social" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Razão Social</label>
+                      </div>
+                      <div v-if="razao_social_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">Razão social já cadastrado</p>
                       </div>
                     </div>
 
@@ -82,12 +88,18 @@
                         <input type="text" id="nome_loja" v-model="nome_loja" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="nome_loja" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nome da Loja</label>
                       </div>
+                      <div v-if="nome_loja_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">Nome da loja já cadastrado</p>
+                      </div>
                     </div>
 
                     <div class="col-span-11 sm:col-start-7 sm:col-span-4">
                       <div class="relative">
                         <input type="tel" id="telefone" v-model="telefone" v-mask="['(##) #####-####']" required pattern="\(\d{2}\) \d{5}-\d{4}" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                         <label for="telefone" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Telefone</label>
+                      </div>
+                      <div v-if="telefone_failure" @mousemove="hideText()" class="group flex w-full justify-center rounded-b-lg bg-gray-100 p-1">
+                        <p class="text-[#83271F] text-[12px] font-bold text-center">Telefone já cadastrado</p>
                       </div>
                     </div>
 
@@ -200,7 +212,7 @@
                   </div>            
                 </div>
                 <div class="bg-gray-200 px-4 py-3 text-right sm:px-6">
-                  <button @click="submit" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>
+                  <button @click="verifyInput" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>
                 </div>
               </div>
             </div>
@@ -240,7 +252,11 @@ export default {
       bairro: '',
       endereco: '',
       numero: '',
-      complemento: ''
+      complemento: '',
+      razao_social_failure: false,
+      nome_loja_failure: false,
+      telefone_failure: false,
+      cnpj_failure: false,
     }
   },
   methods: {
@@ -249,58 +265,145 @@ export default {
       this.especialidade = this.especialidade.replace(/[^a-zA-ZÀ-ú\s]/g, '')
     },
     submit() {
-      const nome = this.nome
-      const cpf = this.cpf
-      const rg = this.rg
-      const cnpj = this.cnpj
-      const razao_social = this.razao_social
-      const nome_loja = this.nome_loja
-      const telefone = this.telefone
-      const especialidade = this.especialidade
-      const cep = this.cep
-      const estado_uf = this.estado_uf
-      const cidade = this.cidade
-      const bairro = this.bairro
-      const endereco = this.endereco
-      const numero = this.numero
-      const complemento = this.complemento
+      const formData = {
+        nome: this.nome,
+        cpf: this.cpf,
+        rg: this.rg,
+        cnpj: this.cnpj,
+        razao_social: this.razao_social,
+        nome_loja: this.nome_loja,
+        telefone: this.telefone,
+        especialidade: this.especialidade,
+        cep: this.cep,
+        estado_uf: this.estado_uf,
+        cidade: this.cidade,
+        bairro: this.bairro,
+        endereco: this.endereco,
+        numero: this.numero,
+        complemento: this.complemento,
+      };
+      axios.post('http://localhost:3000/register-restaurant', formData)
+        .then(
+          this.$router.push('/update-register')
+        )
+    },
+    async verifyData() {
+      event.preventDefault();
+      try {
+        let response;
+        response = await axios.post('http://localhost:3000/verify-data', {
+          cnpj: this.cnpj,
+          razao_social: this.razao_social,
+          nome_loja: this.nome_loja,
+          telefone: this.telefone,
+        });
+
+        this.razao_social_failure = false;
+        this.nome_loja_failure = false;
+        this.telefone_failure = false;
+        this.cnpj_failure = false;
+
+        if (response.data === "Razão social já cadastrado") {
+          this.razao_social_failure = true;
+          return;
+        } else if (response.data === "Telefone já cadastrado") {
+          this.telefone_failure = true;
+          return;
+        } else if (response.data === "Nome da loja já cadastrado") {
+          this.nome_loja_failure = true;
+          return;
+        } else if (response.data === "CNPJ já cadastrado") {
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Razão social e telefone já cadastrado") {
+          this.razao_social_failure = true;
+          this.telefone_failure = true;
+          return;
+        } else if (response.data === "Razão social e nome da loja já cadastrado") {
+          this.razao_social_failure = true;
+          this.nome_loja_failure = true;
+          return;
+        } else if (response.data === "Razão social e CNPJ já cadastrado") {
+          this.razao_social_failure = true;
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Nome da loja e telefone já cadastrado") {
+          this.nome_loja_failure = true;
+          this.telefone_failure = true;
+          return;
+        } else if (response.data === "Nome da loja e CNPJ já cadastrado") {
+          this.nome_loja_failure = true;
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Telefone e CNPJ já cadastrado") {
+          this.telefone_failure = true;
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Razão social, nome da loja e telefone já cadastrado") {
+          this.razao_social_failure = true;
+          this.nome_loja_failure = true;
+          this.telefone_failure = true;
+          return;
+        } else if (response.data === "Razão social, nome da loja e CNPJ já cadastrado") {
+          this.razao_social_failure = true;
+          this.nome_loja_failure = true;
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Razão social, telefone e CNPJ já cadastrado") {
+          this.razao_social_failure = true;
+          this.telefone_failure = true;
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Nome da loja, telefone e CNPJ já cadastrado") {
+          this.nome_loja_failure = true;
+          this.telefone_failure = true;
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Razão social, nome da loja, telefone e CNPJ existem") {
+          this.razao_social_failure = true;
+          this.nome_loja_failure = true;
+          this.telefone_failure = true;
+          this.cnpj_failure = true;
+          return;
+        } else if (response.data === "Razão social, nome da loja, telefone e CNPJ não existem") {
+          this.razao_social_failure = false;
+          this.nome_loja_failure = false;
+          this.telefone_failure = false;
+          this.cnpj_failure = false;
+          this.submit();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    verifyInput() {
       const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
       const rgRegex = /^\d{1}.\d{3}.\d{3}$/
       const cnpjRegex = /^\d{2}.\d{3}.\d{3}\/\d{4}-\d{2}$/
       const telRegex = /^\(\d{2}\) \d{5}-\d{4}$/
       const cepRegex = /^\d{5}-\d{3}$/
 
-      if (!nome || !cpf || !rg || !cnpj || !razao_social || !nome_loja || !telefone || !especialidade || !cep || !estado_uf || !cidade || !bairro || !endereco || !numero) {
+      if (!this.nome || !this.cpf || !this.rg || !this.cnpj || 
+          !this.razao_social || !this.nome_loja || !this.telefone || !this.especialidade ||
+          !this.cep || !this.estado_uf || !this.cidade || !this.bairro ||
+          !this.endereco || !this.numero) {
         return;
       }
 
-      if (!cpfRegex.test(cpf) || !rgRegex.test(rg) || !cnpjRegex.test(cnpj) || !telRegex.test(telefone) || !cepRegex.test(cep)) {
+      if (!cpfRegex.test(this.cpf) || !rgRegex.test(this.rg) || !cnpjRegex.test(this.cnpj) ||
+          !telRegex.test(this.telefone) || !cepRegex.test(this.cep)) {
         return;
       }
-      
 
-      const formData = {
-        nome,
-        cpf,
-        rg,
-        cnpj,
-        razao_social,
-        nome_loja,
-        telefone,
-        especialidade,
-        cep,
-        estado_uf,
-        cidade,
-        bairro,
-        endereco,
-        numero,
-        complemento,
-      };
-      axios.post('http://localhost:3000/register-restaurant', formData)
-        .then(
-          this.$router.push('/update-register')
-        )
-    }
+      this.verifyData();
+
+    },
+    hideText() {
+        this.razao_social_failure = false;
+        this.nome_loja_failure = false;
+        this.cnpj_failure = false;
+        this.telefone_failure = false;
+    },
   }
 }
 
