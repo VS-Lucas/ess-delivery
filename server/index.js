@@ -420,6 +420,16 @@ app.delete('/unsubscribe', (req, res) => {
     });
 });
 
+// Rota GET do endereço
+app.get('/checkout', async(req, res) =>{
+  const clientesRef = admin.firestore().collection('cliente');
+  const clientesSnapshot = await clientesRef.get();
+  const clientesArray = clientesSnapshot.docs;
+  const clienteAleatorio = clientesArray[Math.floor(Math.random() * clientesArray.length)];
+  const jsonVar = {rua: clienteAleatorio.data().rua, bairro: clienteAleatorio.data().bairro,
+                  numero: clienteAleatorio.data().numero, cep: clienteAleatorio.data().cep}
+  res.json(jsonVar);
+});
 
 
 app.listen(3000, () => {
