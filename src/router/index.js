@@ -69,6 +69,11 @@ const routes = [
     component: () => import('../views/HistoryDetailsView.vue')
   },
   {
+    path:'/order-tracking',
+    name: 'order-tracking',
+    component: () => import('../views/OrderTracking.vue')
+  },
+  {
     path: '/home-restaurant',
     name: 'home-restaurant',
     component: HomeRestaurant
