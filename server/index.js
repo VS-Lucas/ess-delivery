@@ -436,3 +436,20 @@ app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
 
+// Get para pegar as informações dos pratos
+app.get('/clienthome', (req, res) => {
+  const restauranteId  = 'zS5ju80BSoQcStMG6a4b';
+  admin.firestore()
+    .collection('restaurantes')
+    .doc(restauranteId)
+    .get()
+    .then(doc => {
+      const restauranteData = doc.data();
+      const pratos = restauranteData.pratos;
+      res.json(pratos);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+});
