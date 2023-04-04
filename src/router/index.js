@@ -5,6 +5,7 @@ import UnsubscribeRestaurantView from '../views/UnsubscribeRestaurantView.vue'
 import RegisterLoginView from '../views/RegisterLoginView.vue'
 import ClientHome from '../views/ClientHome.vue'
 import ShoppingCart from '../views/ShoppingCart.vue'
+import HomeRestaurant from '../views/HomeRestaurant.vue'
 
 const routes = [
   {
@@ -71,6 +72,11 @@ const routes = [
     path:'/order-tracking',
     name: 'order-tracking',
     component: () => import('../views/OrderTracking.vue')
+  },
+  {
+    path: '/home-restaurant',
+    name: 'home-restaurant',
+    component: HomeRestaurant
   }
 ]
 
