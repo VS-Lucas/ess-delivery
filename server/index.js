@@ -423,7 +423,7 @@ app.delete('/unsubscribe', (_req, res) => {
 });
 
 // Rota GET do endereço
-app.get('/checkout', async(req, res) =>{
+app.get('/address', async(req, res) =>{
   try{
     const clientesRef = admin.firestore().collection('cliente');
     const clientesSnapshot = await clientesRef.get();
@@ -580,13 +580,26 @@ app.post('/clienthome', (req, res) => {
 // Rota GET da quantidade de pedidos
 app.get('/orders', async(req, res) =>{
   try{
-    const doc = await admin.firestore().collection('cliente').doc(cliente_id).get();
+    const doc = await admin.firestore().collection('cliente').doc(client_id).get();
     
     const data = doc.data();
     const orders = data.pedidos;
     const ordersAmount = orders.length;
 
     res.json({amount: ordersAmount})
+  }
+  catch(error){
+    console.log(error)
+  }
+});
+
+// Rota GET do nome do cliente
+app.get('/clientname', async(req, res) =>{
+  try{
+    const doc = await admin.firestore().collection('cliente').doc(client_id).get();
+    const nome = doc.data().nome
+
+    res.json({nome: nome})
   }
   catch(error){
     console.log(error)
