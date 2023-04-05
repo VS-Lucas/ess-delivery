@@ -2,13 +2,13 @@ import express from 'express';
 import admin from 'firebase-admin';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const app = express();
 
 app.use(cors());
 
-let client_id = ''
+let client_id = '';
+let restaurant_id = '';
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -198,7 +198,7 @@ app.get('/update-register', (_req, res) => {
 });
 
 // Rota POST para autenticação de login de usuário
-app.post("/login", async (req, res) => {
+app.post("/restaurant-login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -209,7 +209,9 @@ app.post("/login", async (req, res) => {
     const userDoc = await admin.firestore()
                                .collection('usuarios')
                                .doc(userRecord.uid)
-                               .get();      
+                               .get();
+    
+    restaurant_id = userRecord.uid;
 
     if (userDoc.data().password == password) {
       const token = await admin.auth().createCustomToken(userRecord.uid);

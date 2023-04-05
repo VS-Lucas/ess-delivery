@@ -53,7 +53,7 @@
 
 <script>
     import axios from "axios"
-    
+
     export default {
         data() {
             return {
@@ -65,14 +65,15 @@
         methods: {
             async doLogin() {
                 const { email, password } = this;
-                await axios.post('http://localhost:3000/login', {
+                await axios.post('http://localhost:3000/restaurant-login', {
                     email: email,
                     password: password
                 })
-                .then(() => {
-                    this.login_failure = false;
+                .then(()  =>  {
+                    this.$router.push('/home-restaurant');
                 })
-                .catch(() => {
+                .catch((error) => {
+                    console.log(`ERROR: ${error.code} ${error.message}`)
                     this.login_failure = true;
                 });
             },
