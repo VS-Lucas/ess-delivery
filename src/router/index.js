@@ -77,7 +77,12 @@ const routes = [
     path: '/home-restaurant',
     name: 'home-restaurant',
     component: HomeRestaurant
-  }
+  },
+  {
+    path: '/checkout',
+    name: 'checkout',
+    component: () => import('../views/CheckoutView.vue')
+  },
 ]
 
 const router = createRouter({

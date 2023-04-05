@@ -422,6 +422,18 @@ app.delete('/unsubscribe', (_req, res) => {
 
 });
 
+// Rota GET do endereço
+app.get('/checkout', async(req, res) =>{
+  const clientesRef = admin.firestore().collection('cliente');
+  const clientesSnapshot = await clientesRef.get();
+  const clientesArray = clientesSnapshot.docs;
+  const clienteAleatorio = clientesArray[Math.floor(Math.random() * clientesArray.length)];
+  const jsonVar = {rua: clienteAleatorio.data().rua, bairro: clienteAleatorio.data().bairro,
+                  numero: clienteAleatorio.data().numero, cep: clienteAleatorio.data().cep, 
+                  complemento: clienteAleatorio.data().complemento}
+  res.json(jsonVar);
+});
+
 app.get('/client-login', async (_req, _res) => {
   var collections = []
   await admin.firestore().collection('cliente').get()
@@ -458,4 +470,106 @@ app.get('/get-orders', async (_req, _res) => {
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
+
+// Não apagar por enquanto!!!
+//Get para pegar as informações dos pratos 
+// app.get('/clienthome', (req, res) => {
+//   const restauranteId  = 'oY1WhoFFdW2UUWrgADAY';
+//   admin.firestore()
+//     .collection('restaurantes')
+//     .doc(restauranteId)
+//     .get()
+//     .then(doc => {
+//       const restauranteData = doc.data();
+//       const pratos = restauranteData.pratos;
+//       res.json(pratos);
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send('Erro ao buscar dados do restaurante');
+//     });
+// });
+
+
+//Get para pegar as informações dos pratos
+app.get('/clienthome', (req, res) => {
+  // Lista de IDs de restaurantes
+  const restaurantesIds = ['oY1WhoFFdW2UUWrgADAY', 'zS5ju80BSoQcStMG6a4b', 'Cjq4SAjtFaa94WSN7UJ8'];
+
+  // Embaralhar a lista de IDs
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+  const restaurantesIdsEmbaralhados = shuffle(restaurantesIds);
+
+  // Pegar os dois primeiros IDs 
+  const idsAleatorios = restaurantesIdsEmbaralhados.slice(0, 2);
+
+// Utiliza os dois IDs
+  admin.firestore()
+    .collection('restaurantes')
+    .doc(idsAleatorios[0])
+    .get()
+    .then(doc1 => {
+      const restauranteData1 = doc1.data();
+      const pratos1 = restauranteData1.pratos;
+      admin.firestore()
+        .collection('restaurantes')
+        .doc(idsAleatorios[1])
+        .get()
+        .then(doc2 => {
+          const restauranteData2 = doc2.data();
+          const pratos2 = restauranteData2.pratos;
+          const pratosAleatorios = shuffle(pratos1.concat(pratos2)).slice(0, 4); // Pegar aleatoriamente 4 pratos
+          res.json(pratosAleatorios);
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao buscar dados do restaurante');
+        });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+
+});
+
+// Rota POST para adicionar itens no carrinho do usuário
+app.post('/clienthome', (req, res) => {
+  console.log("cliente on");
+  const clienteId = 'DI9BrQB5dFk0UgVES1XP'; // ID do cliente
+  const novoPrato = req.body; // Dados do novo prato a ser adicionado
+  
+  admin.firestore().collection('cliente').doc(clienteId).get()
+    .then(clienteDoc => {
+      if (!clienteDoc.exists) {
+        res.status(404).send('Cliente não encontrado');
+      } else {
+        // Adicionar o prato ao array de carrinho
+        const carrinho = clienteDoc.data().carrinho || [];
+        carrinho.push(novoPrato);
+
+        // Atualizar o cliente com o novo array de carrinho
+        admin.firestore().collection('cliente').doc(clienteId)
+          .update({ carrinho })
+          .then(() => {
+            res.json({ message: 'Prato adicionado ao carrinho com sucesso' });
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Erro ao atualizar carrinho do cliente');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao obter cliente');
+    });
+});
+
 

@@ -1,3 +1,7 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+</style>
+
 <template>
     <div class="clienthome bg-[#261918] h-screen relative">
        <NavBar /> <!-- NavBar dos componentes-->
@@ -18,7 +22,7 @@
         </form>
     </div>
   
-     <!-- Button "Carrinho"-->
+     <!-- Botão "Carrinho"-->
     <button  @click='goToShoppingCart()' type="submit" class=" hover:bg-red-800 focus:ring-4 absolute right-32 top-32 focus:outline-none bg-[#A62C21]  focus:ring-red-300 font-medium rounded-lg text-l inline-block px-6 py-1 mr-10 mb-2 ">
         <img src="@\assets\img\carrinho.png" alt="Carrinho de Compras" class=" h-10 w-11" >
     </button>
@@ -37,29 +41,22 @@
             <img src="@\assets\img\comidas.png" alt="Descrição da imagem" style="width: 600px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
           </button> 
         </div>
-        </div>
+      </div>
 
-    <div class="absolute flex justify-center space-x-10 bottom-12 bg-cover inset-x-0"> <!-- Flexbox dos cards de ofertas-->
-        
-        <div > <!-- Botão das ofertas (1) -->
-        <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-          <img src="@\assets\img\primeiraopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
-        </button> 
+    <!-- <div class=" absolute flex justify-center space-x-10 bottom-12 bg-cover inset-x-0" style="font-family: Montserrat">-->
+      <!-- Flexbox do cardápio-->
+        <div class=" absolute flex items-center justify-center  bottom-10 bg-cover inset-x-0" >
+          <div v-for="prato in pratos" :key="prato.id">
+            <button class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 max-w-xs dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 transform hover:scale-105 transition duration-300"
+              @click="addToCart(prato)">
+              <h2 style="font-family: 'Montserrat', sans-serif;  font-weight: 600; font-size: 1.2rem; line-height: 1.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ prato.nome }}</h2>
+              <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full mx-auto block'>
+              <h2 style="font-size: 0.9rem; line-height: 1.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ prato.descricao }}</h2>
+              <h2 style="font-size: 1rem; line-height: 1.2rem;">{{ prato.preco }}</h2>
+            </button>
+          </div>
         </div>
-
-        <div> <!-- Botão das ofertas (2) -->
-          <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-            <img src="@\assets\img\segundaopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
-          </button> 
-        </div>
-
-        <div> <!-- Botão das ofertas (3) -->
-          <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-            <img src="@\assets\img\terceiraopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
-          </button> 
-        </div>
-
-    </div>
+    
 
     </div>
   
@@ -67,18 +64,52 @@
   
   <script>
   import NavBar from '@/components/NavBar.vue'
-  
+  import axios from 'axios';
+
   export default {
     name: 'ClientHome',
     components: {
       NavBar,
     },
+    data() {
+    return {
+      pratos: []
+    }
+  },
+  created() {
+    axios.get('http://localhost:3000/clienthome')
+      .then(response => {
+        this.pratos = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  },
     methods:{
       goToShoppingCart() {
       this.$router.push('/shoppingcart');
+      },
+
+      addToCart(prato) {
+        const novoPrato = {
+           nome: prato.nome,
+           descricao: prato.descricao,
+           preco: prato.preco,
+           url: prato.url
+         }
+
+        axios.post('http://localhost:3000/clienthome',  {novoPrato}  )
+          .then(response => {
+            console.log(response.data.message);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+          
       }
+
     }
   }
   </script>
-  
-  
+
+
