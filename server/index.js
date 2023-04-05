@@ -427,7 +427,8 @@ app.get('/checkout', async(req, res) =>{
   const clientesArray = clientesSnapshot.docs;
   const clienteAleatorio = clientesArray[Math.floor(Math.random() * clientesArray.length)];
   const jsonVar = {rua: clienteAleatorio.data().rua, bairro: clienteAleatorio.data().bairro,
-                  numero: clienteAleatorio.data().numero, cep: clienteAleatorio.data().cep}
+                  numero: clienteAleatorio.data().numero, cep: clienteAleatorio.data().cep, 
+                  complemento: clienteAleatorio.data().complemento}
   res.json(jsonVar);
 });
 
