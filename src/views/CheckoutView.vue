@@ -102,9 +102,40 @@
                 </div>
                 <div class="col-start-4 col-span-1 bg-[#BA442A] h-[50px] rounded-[10px] mt-10">
                     <div class="text-center mt-[10px]">
-                        <button type="button">
+                        <button @click="OrderConfirmation" type="button">
                             <h1 class="text-2xl text-white">Confirmar</h1>
                         </button>
+                    </div>
+                </div>
+            </div>
+        <!-- Modal -->
+        <div v-if="this.modalCard">
+            <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+                <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+                    <div class="modal-container bg-white w-[300px] mx-auto h-[200px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
+                        <div class="modal-content py-4 text-left px-6">
+                            <div class="modal-body ">
+                                <!-- Conteúdo do modal aqui -->
+                                <div class="text-center font-bold">
+                                    <p>Seu pedido de número #{{ this.ordersAm }} foi realizado com sucesso!</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="mt-5">Deseja acompanhá-lo?</p>
+                                </div>
+                                <div class="grid grid-cols-2 mt-2">
+                                    <div class="col-span-1">
+                                        <button @click="OrderConfirmation" type="button" class="bg-[#9DBF69] hover:bg-green-500 rounded-lg text-sm px-9 py-2.5">
+                                            Voltar
+                                        </button>
+                                    </div>
+                                    <div class="col-start-3">
+                                        <button @click="toTracking" type="button" class="bg-[#9DBF69] hover:bg-green-500 rounded-lg text-sm px-4 py-2.5">
+                                            <p class="text-black font-bold">Acompanhar</p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,13 +144,15 @@
   </template>
 
 <script>
-    import axios from 'axios';
+import axios from 'axios';
 
     export default {
         name: 'checkoutView',
         data() {
             return {
-                addressDict: ''
+                addressDict: '',
+                modalCard: true,
+                ordersAm: -1,
             }
         },
         methods: {
@@ -131,10 +164,32 @@
                 .catch(error => {
                     console.error(error);
                 });
-            }
+            }, 
+            async OrdersAmount() {
+                await axios.get('http://localhost:3000/orders')
+                .then(response => {
+                    this.ordersAm = response.data.amount;
+                    this.ordersAm += 1;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }, 
+            OrderConfirmation(){
+                if (this.modalCard){
+                    this.modalCard = false;
+                }
+                else{
+                    this.modalCard = true;
+                }
+            }, 
+            toTracking(){
+
+            },
         },
         mounted() {
             this.getAddress();
+            this.OrdersAmount();
         }
     }
 </script>
