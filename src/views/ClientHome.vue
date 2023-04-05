@@ -41,22 +41,34 @@
 
     <div class="absolute flex justify-center space-x-10 bottom-12 bg-cover inset-x-0"> <!-- Flexbox dos cards de ofertas-->
         
-        <div > <!-- Botão das ofertas (1) -->
+       <!--  <div >  Botão das ofertas (1) 
         <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-          <img src="@\assets\img\primeiraopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
+          <img src="@\assets\img\primeiraopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> 
         </button> 
         </div>
 
-        <div> <!-- Botão das ofertas (2) -->
+        <div>  Botão das ofertas (2) 
           <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-            <img src="@\assets\img\segundaopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
+            <img src="@\assets\img\segundaopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> 
           </button> 
         </div>
 
-        <div> <!-- Botão das ofertas (3) -->
+        <div>  Botão das ofertas (3)
           <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-            <img src="@\assets\img\terceiraopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
+            <img src="@\assets\img\terceiraopcao.png" alt="Descrição da imagem" style="width: 320px;" class="rounded-lg transform hover:scale-105 transition duration-300"> 
           </button> 
+        </div> -->
+
+        <div>
+          <!-- <h1>Pratos de Restaurantes</h1>-->
+        <div v-for="prato in pratos" :key="prato.id">
+          <h2>{{ prato.nome }}</h2>
+          <!--<img :src="prato.imagem" :alt="prato.nome">-->
+          <h2>{{ prato.descricao }}</h2>
+          <h2>{{ prato.preco }}</h2>
+          
+
+        </div>
         </div>
 
     </div>
@@ -67,12 +79,27 @@
   
   <script>
   import NavBar from '@/components/NavBar.vue'
-  
+  import axios from 'axios';
+
   export default {
     name: 'ClientHome',
     components: {
       NavBar,
     },
+    data() {
+    return {
+      pratos: []
+    }
+  },
+  created() {
+    axios.get('http://localhost:3000/clienthome')
+      .then(response => {
+        this.pratos = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  },
     methods:{
       goToShoppingCart() {
       this.$router.push('/shoppingcart');
@@ -80,5 +107,5 @@
     }
   }
   </script>
-  
-  
+
+
