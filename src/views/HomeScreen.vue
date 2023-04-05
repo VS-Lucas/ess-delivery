@@ -1,5 +1,12 @@
 <template>
-    <div class="bg-[#261918] bg-cover h-screen overflow-hidden">    
+    <div class="bg-[#261918] bg-cover h-screen overflow-hidden">
+        <div v-if="ok" class="fixed right-10 top-5 ">
+            <div class="bg-[#A62C21] sm:w-[17rem] sm:h-[10rem] w-[13rem] h-[8rem] rounded-[20px] flex flex-col items-center justify-center">
+                <h1 class="font-bold text-white">Bem-vindo</h1>
+                <p class="text-white">{{ this.name }}</p>
+            </div>
+        </div>
+
         <div class="flex min-h-full items-center justify-center px-4 sm:px-6 lg:px-8">
             <div class="w-full max-w-md space-y-8">
                 <div class="image-logo">
@@ -24,19 +31,44 @@
                     </div><!--cliente-->
                 </div> <!--card-->
             </div>
+
+
         </div><!--div-center-->
+
+
+        
     </div>
     </template>
     
-    <script>
-        export default {
-            methods: {
-                goToLoginRestaurant() {
-                    this.$router.push('/login');
-                },
-                goToClientHomePage() {
+<script>
+    import axios from "axios"
+
+    export default {
+        data() {
+            return {
+                name: '',
+                ok: false,
+            }
+        },
+        methods: {
+            goToLoginRestaurant() {
+                this.$router.push('/login');
+            },
+            async goToClientHomePage() {
+
+                await axios.get('http://localhost:3000/client-login')
+                .then((res)  => {
+                    console.log(res.data);
+                    this.name = res.data;
+                }).catch((err) => {
+                    console.log(err.message);
+                });
+                this.ok = true;
+                setTimeout(() => {
                     this.$router.push('/clienthome');
-                }
+                    this.ok = false;
+                }, 2000); 
             }
         }
-    </script>
+    }
+</script>

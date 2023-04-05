@@ -8,6 +8,8 @@ const app = express();
 
 app.use(cors());
 
+let client_id = ''
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -162,7 +164,7 @@ app.post('/register-restaurant', (req, res) => {
 
 
 // Rota GET da atualização de restaurante
-app.get('/update-register', (req, res) => {
+app.get('/update-register', (_req, res) => {
   console.log('GET update');
   //const token = req.headers.authorization.split(' ')[1];
   //const decodedToken = jwt.decode(token);
@@ -387,9 +389,8 @@ app.post('/verify-data/:index', (req, res) => {
   }
 });
 
-
 // Rota DELETE do descadastramento de restaurante
-app.delete('/unsubscribe', (req, res) => {
+app.delete('/unsubscribe', (_req, res) => {
   const userId = "5oh6OyShcgPcmJOIXwFY0ZuGLp62";
   const restaurantId = "cuXhRcfk0rPq5rucfVBn";
 
@@ -418,6 +419,7 @@ app.delete('/unsubscribe', (req, res) => {
       console.error(`(auth)Erro ao excluir usuário: ${error}`);
       res.status(500).send('(auth)Erro ao excluir usuário.');
     });
+
 });
 
 // Rota GET do endereço
@@ -432,6 +434,38 @@ app.get('/checkout', async(req, res) =>{
   res.json(jsonVar);
 });
 
+app.get('/client-login', async (_req, _res) => {
+  var collections = []
+  await admin.firestore().collection('cliente').get()
+  .then(async (querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      collections.push(doc.id);
+    });
+  });
+
+  var id = collections[Math.floor(Math.random() * collections.length)];
+  client_id = id;
+  await admin.firestore().collection('cliente').doc(client_id)
+  .get()
+  .then(async (doc) => {
+      const name = doc.data().nome
+      _res.send(name);
+  }).catch(_err => {
+    _res.status(500).send("Erro ao adquirir usuário");
+  });
+
+});
+
+app.get('/get-orders', async (_req, _res) => {
+  
+  await admin.firestore().collection('cliente').doc(client_id)
+  .get()
+  .then( async (doc) => {
+    _res.send(doc.data().pedidos);
+  }).catch(() => {
+    _res.status(500).send("Não foi possível acessar os pedidos no momento")
+  });
+}); 
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
