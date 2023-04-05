@@ -472,10 +472,6 @@ app.get('/get-orders', async (_req, _res) => {
   });
 }); 
 
-app.listen(3000, () => {
-  console.log('Servidor ON em http://localhost:3000')
-});
-
 // Não apagar por enquanto!!!
 //Get para pegar as informações dos pratos 
 // app.get('/clienthome', (req, res) => {
@@ -604,4 +600,8 @@ app.get('/clientname', async(req, res) =>{
   catch(error){
     console.log(error)
   }
+});
+
+app.listen(3000, () => {
+  console.log('Servidor ON em http://localhost:3000')
 });
