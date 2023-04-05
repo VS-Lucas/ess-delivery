@@ -61,14 +61,16 @@
     export default {
         components: { InfoCard, SearchBar },
         mounted() {
-            const token = localStorage.getItem('authToken');
-            console.log(token);
-            axios.post('http://localhost:3000/get-orders', {token: token})
+            axios.get('http://localhost:3000/get-orders')
             .then((res) => {
                 this.orders = res.data;
-                console.log(this.orders);
-            }).catch(() => {
 
+                if (Object.keys(this.orders).length === 1)  {
+                    console.log("aqui");
+                    this.orders = []
+                }
+            }).catch((error) => {
+                console.log(error.message)
             })
         },
         data() {
