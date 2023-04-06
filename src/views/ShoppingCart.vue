@@ -98,7 +98,8 @@ export default {
   mounted() {
     axios.get('http://localhost:3000/shoppingcart')
       .then(response => {
-        this.pratos = response.data;
+        this.pratos = [...response.data];
+        console.log(this.pratos)
       })
       .catch(error=> {
         console.error(error);
