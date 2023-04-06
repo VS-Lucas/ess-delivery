@@ -53,7 +53,7 @@ app.post('/register-login', (req, res) => {
 app.post('/verify-data', (req, res) => {
   console.log('POST verify');
   const data = req.body;
-  //const restaurantId = "toUh4qu8nbLCJatawak7";
+
 
   admin.firestore()
   .collection('restaurantes')
@@ -133,6 +133,7 @@ app.post('/verify-data', (req, res) => {
 
 
 // Rota POST do cadastro de restaurante
+let restaurantId
 app.post('/register-restaurant', (req, res) => {
   console.log('POST restaurant');
   const data = req.body;
@@ -140,12 +141,13 @@ app.post('/register-restaurant', (req, res) => {
     .collection('restaurantes')
     .add(data)
     .then(docRef => {
+      restaurantId = docRef.id;
       const responseData = { id: docRef.id, ...data };
       // Atualizar o documento do usuário com o ID do restaurante
       admin.firestore()
         .collection('usuarios')
         .doc(userId)
-        .update({ restauranteId: docRef.id })
+        .update({ restauranteId: restaurantId })
         .then(() => {
           res.json(responseData);
         })
@@ -164,10 +166,6 @@ app.post('/register-restaurant', (req, res) => {
 // Rota GET da atualização de restaurante
 app.get('/update-register', (req, res) => {
   console.log('GET update');
-  //const token = req.headers.authorization.split(' ')[1];
-  //const decodedToken = jwt.decode(token);
-  //const userId = decodedToken.sub;
-  const userId = "gEMFXSSkCLb9o3qYNpS2F9eANlx1";
   
   admin.firestore()
     .collection('usuarios')
@@ -257,7 +255,6 @@ app.put('/update-register/:index', (req, res) => {
   console.log('PUT update');
   const data = req.body;
   const index = req.params.index;
-  const userId = "gEMFXSSkCLb9o3qYNpS2F9eANlx1"; // Hardcoded para fins de teste
 
   admin.firestore()
     .collection('usuarios')
@@ -330,7 +327,6 @@ app.post('/verify-data/:index', (req, res) => {
   console.log('POST verify');
   const data = req.body;
   const index = req.params.index;
-  const restaurantId = "toUh4qu8nbLCJatawak7";
 
   switch (index) {  
     case '1':
@@ -390,8 +386,6 @@ app.post('/verify-data/:index', (req, res) => {
 
 // Rota DELETE do descadastramento de restaurante
 app.delete('/unsubscribe', (req, res) => {
-  const userId = "5oh6OyShcgPcmJOIXwFY0ZuGLp62";
-  const restaurantId = "cuXhRcfk0rPq5rucfVBn";
 
   admin.auth().deleteUser(userId)
     .then(() => {
