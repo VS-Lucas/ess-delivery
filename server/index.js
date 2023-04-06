@@ -470,7 +470,22 @@ app.get('/get-orders', async (_req, _res) => {
   }).catch(() => {
     _res.status(500).send("Não foi possível acessar os pedidos no momento")
   });
-}); 
+});
+
+app.get('/shoppingcart', (req, res) => {
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(doc => {
+      const carrinhoData = doc.data().carrinho;
+      res.json(carrinhoData);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+});
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')

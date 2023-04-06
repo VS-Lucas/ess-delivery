@@ -59,7 +59,7 @@ const routes = [
     component: () => import('../views/HistoryView.vue')
   },
   {
-    path:'/shoppingcart',
+    path:'/shoppingcart/:pratos',
     name: 'shoppingcart',
     component: ShoppingCart
   },
