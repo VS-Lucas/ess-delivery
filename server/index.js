@@ -425,13 +425,11 @@ app.delete('/unsubscribe', (_req, res) => {
 // Rota GET do endereço
 app.get('/address', async(req, res) =>{
   try{
-    const clientesRef = admin.firestore().collection('cliente');
-    const clientesSnapshot = await clientesRef.get();
-    const clientesArray = clientesSnapshot.docs;
-    const clienteAleatorio = clientesArray[Math.floor(Math.random() * clientesArray.length)];
-    const jsonVar = {rua: clienteAleatorio.data().rua, bairro: clienteAleatorio.data().bairro,
-                    numero: clienteAleatorio.data().numero, cep: clienteAleatorio.data().cep, 
-                    complemento: clienteAleatorio.data().complemento}
+    const clientesRef = await admin.firestore().collection('cliente').doc(client_id).get()
+
+    const jsonVar = {rua: clientesRef.data().rua, bairro: clientesRef.data().bairro,
+                    numero: clientesRef.data().numero, cep: clientesRef.data().cep, 
+                    complemento: clientesRef.data().complemento}
     res.json(jsonVar);
   }
   catch(error){
@@ -616,6 +614,11 @@ app.get('/clientname', async(req, res) =>{
     console.log(error)
   }
 });
+
+// // Rota POST para salvar o pedido do cliente
+// app.post("/saveorder", async (req, res) =>{
+  
+// });
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')

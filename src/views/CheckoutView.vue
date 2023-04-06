@@ -150,7 +150,7 @@ import axios from 'axios';
         name: 'checkoutView',
         data() {
             return {
-                // clientDict: '',
+                clientDict: '',
                 addressDict: '',
                 modalCard: false,
                 ordersAm: -1,
@@ -186,6 +186,11 @@ import axios from 'axios';
                     console.error(error);
                 });
             },
+            // async sendEmail() {
+            //     const response = await axios.post('http://localhost:3000/saveorder', {
+                    
+            //     });
+            // },
             OrderConfirmation(){
                 if (this.modalCard){
                     this.modalCard = false;
@@ -195,16 +200,20 @@ import axios from 'axios';
                 }
             }, 
             toTracking(){
-
+                this.$router.push ({
+                    name: 'order-tracking',
+                    params: {  }
+                });
             },
         },
         mounted() {
             this.getAddress();
             this.OrdersAmount();
             this.getName();
+
+            const cDict = this.$route.params.pratos;
+            console.log(cDict);
+            this.clientDict = cDict;
         },
-        created() {
-            // const clientDict = this.$route.params;
-        }, 
     }
 </script>
