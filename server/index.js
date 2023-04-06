@@ -562,10 +562,10 @@ app.get('/clienthome', (req, res) => {
 // Rota POST para adicionar itens no carrinho do usuário
 app.post('/clienthome', (req, res) => {
   console.log("cliente on");
-  const clienteId = 'DI9BrQB5dFk0UgVES1XP'; // ID do cliente
+  // const clienteId = 'DI9BrQB5dFk0UgVES1XP'; // ID do cliente
   const novoPrato = req.body; // Dados do novo prato a ser adicionado
   
-  admin.firestore().collection('cliente').doc(clienteId).get()
+  admin.firestore().collection('cliente').doc(client_id).get()
     .then(clienteDoc => {
       if (!clienteDoc.exists) {
         res.status(404).send('Cliente não encontrado');
@@ -575,7 +575,7 @@ app.post('/clienthome', (req, res) => {
         carrinho.push(novoPrato);
 
         // Atualizar o cliente com o novo array de carrinho
-        admin.firestore().collection('cliente').doc(clienteId)
+        admin.firestore().collection('cliente').doc(client_id)
           .update({ carrinho })
           .then(() => {
             res.json({ message: 'Prato adicionado ao carrinho com sucesso' });
