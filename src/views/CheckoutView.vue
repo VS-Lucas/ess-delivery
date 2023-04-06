@@ -10,12 +10,37 @@
         </div> 
         <div class="mt-10">
             <div class="grid grid-cols-7">
-                <div class="col-start-2 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px]">
+                <div class="col-start-2 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
                     <div class="mt-[20px] ml-[20px]">
                         <h1 class="text-3xl text-white">Meu carrinho</h1>
+                        <div v-for="(object, index) in this.clientDict" :key="index" class="grid grid-cols-9 p-1 text-white">
+                            <div class="col-start-1 col-span-5">
+                                {{ object.nome }}
+                            </div>
+                            <div class="col-start-8">
+                                R${{ object.preco }} 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-3">
+                        <hr><hr/>
+                    </div>
+                    <div class="grid grid-cols-13 mt-[7px] ml-[30px] text-white">
+                        <div class="col-span-1">
+                            <p>Subtotal</p>
+                        </div>
+                        <div class="col-start-7">
+                            R${{ this.orderPrice }}
+                        </div>
+                        <div class="col-span-1">
+                            <p>Taxa de entrega</p>
+                        </div>
+                        <div class="col-start-7">
+                            R$xx,xx
+                        </div>
                     </div>
                 </div>
-                <div class="col-start-5 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px]">
+                <div class="col-start-5 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
                     <div class="mt-[20px] ml-[20px]">
                         <h1 class="text-3xl text-white">Pagamento</h1>
                         <p class="text-white  mt-[20px]">
@@ -145,6 +170,7 @@
 
 <script>
 import axios from 'axios';
+import qs from 'qs';
 
     export default {
         name: 'checkoutView',
@@ -155,6 +181,7 @@ import axios from 'axios';
                 modalCard: false,
                 ordersAm: -1,
                 clientName: '',
+                orderPrice: null, 
             }
         },
         methods: {
@@ -202,7 +229,7 @@ import axios from 'axios';
             toTracking(){
                 this.$router.push ({
                     name: 'order-tracking',
-                    params: {  }
+                    params: { clientOrder: qs.stringify(this.clientDict) }
                 });
             },
         },
@@ -211,9 +238,17 @@ import axios from 'axios';
             this.OrdersAmount();
             this.getName();
 
-            const cDict = this.$route.params.pratos;
-            console.log(cDict);
-            this.clientDict = cDict;
+            const objectString = this.$route.params.pratos;
+            const object = qs.parse(objectString);
+            const objectLength = Object.keys(object).length;
+            
+            this.clientDict = object;
+
+            for (var i = 0; i < objectLength; i++) {
+                this.clientDict[i].preco = this.clientDict[i].preco.replace(',', '.');
+                let floatPrice = parseFloat(this.clientDict[i].preco);
+                this.orderPrice += floatPrice;
+            }
         },
     }
 </script>
