@@ -2,7 +2,7 @@
     <body class="bg-[#261918] min-h-screen">
         <div class="w-full">
             <nav class="bg-[#541F1B] border-gray-200 flex items-center p-4">
-                <button type="button">
+                <button @click="toCart" type="button">
                     <img src="../assets/img/back-button.png" alt="Back button">
                 </button>
                 <span class="text-3xl text-white text-center flex-1 mr-[60px]">Checkout</span>
@@ -213,7 +213,7 @@ import qs from 'qs';
                     console.error(error);
                 });
             },
-            // async sendEmail() {
+            // async saveOrder() {
             //     const response = await axios.post('http://localhost:3000/saveorder', {
                     
             //     });
@@ -232,6 +232,11 @@ import qs from 'qs';
                     params: { clientOrder: qs.stringify(this.clientDict) }
                 });
             },
+            toCart(){
+                this.$router.push({
+                    path: '/shoppingcart'
+                })
+            }
         },
         mounted() {
             this.getAddress();
@@ -249,6 +254,7 @@ import qs from 'qs';
                 let floatPrice = parseFloat(this.clientDict[i].preco);
                 this.orderPrice += floatPrice;
             }
+            this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
         },
     }
 </script>
