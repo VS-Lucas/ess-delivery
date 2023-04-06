@@ -423,7 +423,7 @@ app.delete('/unsubscribe', (_req, res) => {
 });
 
 // Rota GET do endereço
-app.get('/checkout', async(req, res) =>{
+app.get('/address', async(req, res) =>{
   try{
     const clientesRef = admin.firestore().collection('cliente');
     const clientesSnapshot = await clientesRef.get();
@@ -485,10 +485,6 @@ app.get('/shoppingcart', (req, res) => {
       console.error(err);
       res.status(500).send('Erro ao buscar dados do restaurante');
     });
-});
-
-app.listen(3000, () => {
-  console.log('Servidor ON em http://localhost:3000')
 });
 
 // Não apagar por enquanto!!!
@@ -595,7 +591,7 @@ app.post('/clienthome', (req, res) => {
 // Rota GET da quantidade de pedidos
 app.get('/orders', async(req, res) =>{
   try{
-    const doc = await admin.firestore().collection('cliente').doc(cliente_id).get();
+    const doc = await admin.firestore().collection('cliente').doc(client_id).get();
     
     const data = doc.data();
     const orders = data.pedidos;
@@ -606,4 +602,21 @@ app.get('/orders', async(req, res) =>{
   catch(error){
     console.log(error)
   }
+});
+
+// Rota GET do nome do cliente
+app.get('/clientname', async(req, res) =>{
+  try{
+    const doc = await admin.firestore().collection('cliente').doc(client_id).get();
+    const nome = doc.data().nome
+
+    res.json({nome: nome})
+  }
+  catch(error){
+    console.log(error)
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Servidor ON em http://localhost:3000')
 });

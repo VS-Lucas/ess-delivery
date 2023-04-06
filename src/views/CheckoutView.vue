@@ -59,7 +59,7 @@
                         <div class="grid grid-cols-7">
                             <div class="bg-[#A62C21] col-span-6 rounded-[10px] h-[30px] mt-[5px]">
                                 <div class="text-white mt-[6px] ml-[10px]">
-                                    <p class="text-sm">Nivan Roberto Ferreira Júnior</p>
+                                    <p class="text-sm">{{ this.clientName }}</p>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                 <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
                     <div class="modal-container bg-white w-[300px] mx-auto h-[200px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
                         <div class="modal-content py-4 text-left px-6">
-                            <div class="modal-body ">
+                            <div class="modal-body mt-2">
                                 <!-- Conteúdo do modal aqui -->
                                 <div class="text-center font-bold">
                                     <p>Seu pedido de número #{{ this.ordersAm }} foi realizado com sucesso!</p>
@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="grid grid-cols-2 mt-2">
                                     <div class="col-span-1">
-                                        <button @click="OrderConfirmation" type="button" class="bg-[#9DBF69] hover:bg-green-500 rounded-lg text-sm px-9 py-2.5">
+                                        <button @click="OrderConfirmation" type="button" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5">
                                             Voltar
                                         </button>
                                     </div>
@@ -150,14 +150,16 @@ import axios from 'axios';
         name: 'checkoutView',
         data() {
             return {
+                // clientDict: '',
                 addressDict: '',
-                modalCard: true,
+                modalCard: false,
                 ordersAm: -1,
+                clientName: '',
             }
         },
         methods: {
             async getAddress() {
-                await axios.get('http://localhost:3000/checkout')
+                await axios.get('http://localhost:3000/address')
                 .then(response => {
                     this.addressDict = response.data;
                 })
@@ -175,6 +177,15 @@ import axios from 'axios';
                     console.error(error);
                 });
             }, 
+            async getName() {
+                await axios.get('http://localhost:3000/clientname')
+                .then(response => {
+                    this.clientName = response.data.nome;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            },
             OrderConfirmation(){
                 if (this.modalCard){
                     this.modalCard = false;
@@ -190,6 +201,10 @@ import axios from 'axios';
         mounted() {
             this.getAddress();
             this.OrdersAmount();
-        }
+            this.getName();
+        },
+        created() {
+            // const clientDict = this.$route.params;
+        }, 
     }
 </script>
