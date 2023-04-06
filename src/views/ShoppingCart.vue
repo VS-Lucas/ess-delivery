@@ -84,6 +84,7 @@
 // @ is an alias to /src
 import NavBar from '@/components/NavBar.vue'
 import axios from 'axios';
+import qs from 'qs';
 
 export default {
   name: 'ShoppingCart',
@@ -98,7 +99,8 @@ export default {
   mounted() {
     axios.get('http://localhost:3000/shoppingcart')
       .then(response => {
-        this.pratos = response.data;
+        this.pratos = [...response.data];
+        console.log(this.pratos)
       })
       .catch(error=> {
         console.error(error);
@@ -111,7 +113,7 @@ export default {
     goToCheckout() {
       this.$router.push ({
             name: 'checkout',
-            params: { pratos: this.pratos}
+            params: { pratos: qs.stringify(this.pratos)}
           });
     }
   }

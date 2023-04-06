@@ -470,8 +470,8 @@ app.get('/get-orders', async (_req, _res) => {
   });
 });
 
-app.get('/shoppingcart', (req, res) => {
-  admin.firestore()
+app.get('/shoppingcart', async (req, res) => {
+  await admin.firestore()
     .collection('cliente')
     .doc(client_id)
     .get()
