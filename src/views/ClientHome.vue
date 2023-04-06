@@ -56,8 +56,6 @@
             </button>
           </div>
         </div>
-    
-
     </div>
   
   </template>
@@ -91,23 +89,22 @@
       },
 
       addToCart(prato) {
-        const novoPrato = {
-           nome: prato.nome,
-           descricao: prato.descricao,
-           preco: prato.preco,
-           url: prato.url
-         }
+        // const novoPrato = {
+        //    nome: prato.nome,
+        //    descricao: prato.descricao,
+        //    preco: prato.preco,
+        //    url: prato.url
+        //  }
 
-        axios.post('http://localhost:3000/clienthome',  {novoPrato}  )
+        axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}
+        )
           .then(response => {
             console.log(response.data.message);
           })
           .catch(error => {
             console.error(error);
           });
-          
       }
-
     }
   }
   </script>

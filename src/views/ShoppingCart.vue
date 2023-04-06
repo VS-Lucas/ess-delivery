@@ -7,8 +7,8 @@
     </button>
     <h1 class="mt-16 mb-10 text-center text-3xl font-bold text-white">Meu carrinho</h1>
     <div class="mx-auto max-w-6xl justify-center px-6 md:flex md:space-x-7 xl:px-0">
-      <div class="rounded-lg md:w-2/3">
-        <div class="justify-between mb-6 rounded-lg bg-[#A62C21] p-6 shadow-md sm:flex sm:justify-start">
+      <div class="rounded-lg md:w-2/3 bg-[#062C21]">
+        <!-- <div class="justify-between mb-6 rounded-lg bg-[#A62C21] p-6 shadow-md sm:flex sm:justify-start">
           <img src="https://static.wixstatic.com/media/f9b308_1c5f63bb08554629a0bad7ea90247378~mv2.jpg/v1/fill/w_925,h_615,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/f9b308_1c5f63bb08554629a0bad7ea90247378~mv2.jpg" alt="product-image" class="w-full rounded-lg sm:w-40" />
           <div class="sm:ml-4 sm:flex md:w-3/4 sm:justify-between">
             <div class="mt-5 sm:mt-0">
@@ -51,7 +51,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- Sub total -->
       <div class="mt-6 h-full rounded-lg border bg-[#A62C21] p-6 shadow-md md:mt-0 md:w-2/4">
@@ -73,7 +73,7 @@
             <p class="text-sm text-white">including VAT</p>
           </div>-->
         </div>
-        <button class="mt-2 w-full rounded-md bg-[#F26938] py-1.5 font-medium text-blue-50 hover:bg-[#C55730]">Check out</button>
+        <button @click="goToCheckout" class="mt-2 w-full rounded-md bg-[#F26938] py-1.5 font-medium text-blue-50 hover:bg-[#C55730]">Check out</button>
       </div>
     </div>
   </div>
@@ -83,16 +83,37 @@
 <script>
 // @ is an alias to /src
 import NavBar from '@/components/NavBar.vue'
+import axios from 'axios';
 
 export default {
   name: 'ShoppingCart',
   components: {
     NavBar
   },
+  data() {
+   return {
+    pratos: []
+   }
+  },
+  mounted() {
+    axios.get('http://localhost:3000/shoppingcart')
+      .then(response => {
+        this.pratos = response.data;
+      })
+      .catch(error=> {
+        console.error(error);
+      });
+  },
   methods: {
     goToClientHome() {
                     this.$router.push('/clienthome');
-                }
+                },
+    goToCheckout() {
+      this.$router.push ({
+            name: 'checkout',
+            params: { pratos: this.pratos}
+          });
+    }
   }
 }
 </script>
