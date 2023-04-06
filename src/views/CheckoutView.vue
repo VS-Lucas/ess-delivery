@@ -213,11 +213,17 @@ import qs from 'qs';
                     console.error(error);
                 });
             },
-            // async saveOrder() {
-            //     const response = await axios.post('http://localhost:3000/saveorder', {
-                    
-            //     });
-            // },
+            async saveOrder() {
+                try {
+                    const response = await axios.post('http://localhost:3000/saveorder', {
+                        orderData: this.clientDict,
+                    });
+
+                    console.log(response.data.message);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
             OrderConfirmation(){
                 if (this.modalCard){
                     this.modalCard = false;
@@ -227,6 +233,8 @@ import qs from 'qs';
                 }
             }, 
             toTracking(){
+                this.saveOrder();
+
                 this.$router.push ({
                     name: 'order-tracking',
                     params: { clientOrder: qs.stringify(this.clientDict) }
