@@ -3,7 +3,7 @@
 </style>
 
 <template>
-    <div class="clienthome bg-[#261918] h-screen relative">
+    <div class="clienthome bg-[#261918] min-h-screen relative">
        <NavBar /> <!-- NavBar dos componentes-->
         <div class="absolute left-40 top-32"> <!-- Button "Meus Pedidos"-->
           <button type="button" class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Meus pedidos</button>
@@ -20,13 +20,14 @@
                 <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
             </div>
         </form>
-    </div>
+        </div>
   
      <!-- Botão "Carrinho"-->
     <button  @click='goToShoppingCart()' type="submit" class=" hover:bg-red-800 focus:ring-4 absolute right-32 top-32 focus:outline-none bg-[#A62C21]  focus:ring-red-300 font-medium rounded-lg text-l inline-block px-6 py-1 mr-10 mb-2 ">
         <img src="@\assets\img\carrinho.png" alt="Carrinho de Compras" class=" h-10 w-11" >
     </button>
 
+    <!-- DIV A -->
     <div class="absolute flex justify-center space-x-10  top-56 bg-cover inset-x-0"> <!-- Flexbox dos cards do restaurante e das comidas-->
       <!-- Botão dos restaurantes -->
         <div>
@@ -41,21 +42,44 @@
             <img src="@\assets\img\comidas.png" alt="Descrição da imagem" style="width: 600px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
           </button> 
         </div>
-      </div>
+    </div>
 
     <!-- <div class=" absolute flex justify-center space-x-10 bottom-12 bg-cover inset-x-0" style="font-family: Montserrat">-->
       <!-- Flexbox do cardápio-->
-        <div class=" absolute flex items-center justify-center  bottom-10 bg-cover inset-x-0" >
+        <!-- <div class=" absolute flex   items-center justify-center  bottom-10 bg-cover inset-x-0 " >
           <div v-for="prato in pratos" :key="prato.id">
-            <button class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 max-w-xs dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 transform hover:scale-105 transition duration-300"
-              @click="addToCart(prato)">
+            <button class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 max-w-xs transform hover:scale-105 transition duration-300"
+            @click="addToCart(prato)">
               <h2 style="font-family: 'Montserrat', sans-serif;  font-weight: 600; font-size: 1.2rem; line-height: 1.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ prato.nome }}</h2>
               <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full mx-auto block'>
               <h2 style="font-size: 0.9rem; line-height: 1.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ prato.descricao }}</h2>
               <h2 style="font-size: 1rem; line-height: 1.2rem;">{{ prato.preco }}</h2>
             </button>
           </div>
-        </div>
+        </div> -->
+
+      <!-- DIV B -->
+      <div class=" absolute flex flex-wrap items-center space-x-12 justify-center bottom-4 bg-cover inset-x-0 " >
+      <div v-for="prato in pratos" :key="prato.id">
+      <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 ">
+        <a href="#">
+          <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full  mx-auto block'>
+        </a>
+        <div class="px-5 pb-5">
+            <a href="#">
+                <h5 class="text-lg font-semibold tracking-tight text-white ">{{prato.nome}}</h5>
+            </a>
+            <div class="text-xs text-white">{{prato.descricao}} </div>
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-bold text-white">{{prato.preco}} </div>
+                <a href="#" class="text-white bg-blue-700   font-medium rounded-lg text-sm px-1 py-1.5 text-center ">Add to cart</a>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+    
+
     
 
     </div>
@@ -76,7 +100,7 @@
       pratos: []
     }
   },
-  created() {
+  mounted() {
     axios.get('http://localhost:3000/clienthome')
       .then(response => {
         this.pratos = response.data;
@@ -91,14 +115,14 @@
       },
 
       addToCart(prato) {
-        const novoPrato = {
-           nome: prato.nome,
-           descricao: prato.descricao,
-           preco: prato.preco,
-           url: prato.url
-         }
+        // const novoPrato = {
+        //    nome: prato.nome,
+        //    descricao: prato.descricao,
+        //    preco: prato.preco,
+        //    url: prato.url
+        //  }
 
-        axios.post('http://localhost:3000/clienthome',  {novoPrato}  )
+        axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}  )
           .then(response => {
             console.log(response.data.message);
           })
