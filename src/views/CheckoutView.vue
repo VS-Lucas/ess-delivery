@@ -179,7 +179,7 @@ import qs from 'qs';
                 clientDict: '',
                 addressDict: '',
                 modalCard: false,
-                ordersAm: -1,
+                ordersAm: 0,
                 clientName: '',
                 orderPrice: null, 
             }
@@ -217,6 +217,7 @@ import qs from 'qs';
                 try {
                     const response = await axios.post('http://localhost:3000/storeclientorder', {
                         orderData: this.clientDict,
+                        orderID: this.ordersAm,
                     });
 
                     console.log(response.data.message);
@@ -228,6 +229,7 @@ import qs from 'qs';
                 try {
                     const response = await axios.post('http://localhost:3000/reststore', {
                         orderData: this.clientDict,
+                        orderID: this.ordersAm,
                     });
 
                     console.log(response.data.message);
@@ -256,7 +258,7 @@ import qs from 'qs';
                 this.storeOrder();
                 this.storeResOrder();
                 this.clearCart();
-
+                
                 this.$router.push ({
                     name: 'order-tracking',
                     params: { clientOrder: qs.stringify(this.clientDict) }

@@ -588,7 +588,7 @@ app.get('/orders', async(req, res) =>{
     const doc = await admin.firestore().collection('cliente').doc(client_id).get();
     
     const data = doc.data();
-    const orders = data.pedidos;
+    const orders = Object.keys(data.pedidos);
     const ordersAmount = orders.length;
 
     res.json({amount: ordersAmount})
@@ -615,62 +615,64 @@ app.get('/clientname', async(req, res) =>{
 app.post("/storeclientorder", async (req, res) =>{
 
   const orderData = req.body.orderData;
-  const pedidos = [];
+  const orderID = req.body.orderID;
 
-  for (const key in orderData) {
-    if (Object.hasOwnProperty.call(orderData, key)) {
-      const pedido = {
-        preco: orderData[key].preco,
-        nome: orderData[key].nome,
-        url: orderData[key].url,
-        descricao: orderData[key].descricao
-      };
-      pedidos.push(pedido);
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+    if (!clienteDoc.exists) {
+      res.status(404).send('Cliente não encontrado');
+    } else {
+
+      const pedidos = clienteDoc.data().pedidos || {};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          res.json({ message: 'Pedido com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao adicionar pedido');
+        });
     }
-  }
-
-  admin.firestore()
-       .collection('cliente')
-       .doc(client_id)
-       .update({ pedidos })
-  .then(() => {
-    res.json({ message: 'Pedido(s) adicionado(s) com sucesso' });
   })
   .catch(err => {
     console.error(err);
-    res.status(500).send('Erro ao adicionar pedidos do cliente');
-  }); 
+    res.status(500).send('Erro ao obter cliente');
+  });
 });
 
 // Rota POST para salvar a demanda do restaurante
 app.post("/reststore", async (req, res) =>{
 
   const orderData = req.body.orderData;
-  const pedidos = [];
+  const orderID = req.body.orderID;
 
-  for (const key in orderData) {
-    if (Object.hasOwnProperty.call(orderData, key)) {
-      const pedido = {
-        preco: orderData[key].preco,
-        nome: orderData[key].nome,
-        url: orderData[key].url,
-        descricao: orderData[key].descricao
-      };
-      pedidos.push(pedido);
+  admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8').get()
+  .then(clienteDoc => {
+    if (!clienteDoc.exists) {
+      res.status(404).send('Cliente não encontrado');
+    } else {
+
+      const pedidos = clienteDoc.data().pedidos || {};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+
+      admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8')
+        .update({ pedidos })
+        .then(() => {
+          res.json({ message: 'Pedido com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao adicionar pedido');
+        });
     }
-  }
-
-  admin.firestore()
-       .collection('restaurantes')
-       .doc(id_restaurant)
-       .update({ pedidos })
-  .then(() => {
-    res.json({ message: 'Demanda adicionada com sucesso' });
   })
   .catch(err => {
     console.error(err);
-    res.status(500).send('Erro ao adicionar a demanda do restaurante');
-  }); 
+    res.status(500).send('Erro ao salvar pedido');
+  });
 });
 
 // Rota PUT para limpar o carrinho
