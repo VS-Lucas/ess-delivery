@@ -8,6 +8,7 @@
             </div>
             <div class="border-l border-white h-28 mx-auto"></div>
         </div>
+        
         <div class="flex col-span-1 text-white">
             <div class="flex flex-col items-center justify-center ml-6">
                 <div v-for="(dish, index) in items" :key="index">
@@ -16,7 +17,11 @@
             </div>
         </div>
         
-        <div class="col-span-1 text-white font-medium">
+        <div class="col-span-1 text-white font-medium flex items-center justify-center">
+            <div class="flex flex-col items-center justify-center">
+                <p class="bg-[#261918] p-1 rounded-[15px]"> Status:</p>
+                <p>{{ this.status }}</p>
+            </div>
         </div>
 
         <div class="flex col-span-1 text-white font-medium">
@@ -25,9 +30,10 @@
                 <p class="text-white font-bold sm:text-[17px] text-[12px] sm:mr-0 mr-3">{{ date }}</p>
             </div>
         </div>
+
         <div class="flex items-center col-span-1 text-white font-medium">
             <div class="flex items-center justify-center">
-                <p class="text-white font-bold sm:text-[17px] text-[12px]">R$ {{ price }} ({{ form_pay }})</p>
+                <p class="text-white font-bold sm:text-[17px] text-[12px]">R$ {{ total_price }} ({{ form_pay }})</p>
                 <button class="ml-6" @click="goToDetails()" type="submit"><img src="../assets/img/next-button.png" alt=""></button>
             </div>
         </div>
@@ -43,11 +49,14 @@
             name: String,
             items: Array,
             date: String,
-            price: String,
-            form_pay: String
+            total_price: String,
+            form_pay: String,
+            status: String,
+            prices: Array
         },
         methods: {
             goToDetails() {
+                console.log(this.prices);
                 this.$router.push({
                     name: 'history-details',
                     params: 
@@ -57,8 +66,10 @@
                         name: this.name,
                         items: this.items,
                         date: this.date,
-                        price: this.price,
-                        form_pay: this.form_pay
+                        total_price: this.total_price,
+                        form_pay: this.form_pay,
+                        status: this.status,
+                        prices: this.prices
                     }
                 })
             }

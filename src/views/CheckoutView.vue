@@ -261,6 +261,7 @@ import qs from 'qs';
 
                 this.clientDict['orderID'] = this.ordersAm;
                 this.clientDict['address'] = this.addressDict;
+                this.clientDict['totalprice'] = this.orderPrice;
                 
                 this.$router.push ({
                     name: 'order-tracking',
