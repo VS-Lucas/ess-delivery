@@ -12,15 +12,13 @@
                 
                 <div class="inline-flex justify-end items-center">
 
-                    <button type="button" @click="showNotificationsMenu" data-modal-target="notifications" data-modal-toggle="notifications" class="z-20 text-sm font-medium text-center text-white hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400">
+                    <button type="button" @click="showNotificationsMenu" data-modal-target="notifications" data-modal-toggle="notifications" class="z-20 text-sm font-medium text-center text-white focus:outline-none dark:text-gray-400">
                         <svg class="w-8 h-8" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
                     </button>
-
-                    <div>
-                        <button class="px-5">
-                            <img src="@\assets\img\user_icon.png" alt="Descrição da imagem" class="h-14" >
-                        </button>
-                    </div>
+                    
+                    <button class="px-5" @click="showProfileMenu" data-modal-target="profile" data-modal-toggle="profile">
+                        <img src="@\assets\img\user_icon.png" alt="Descrição da imagem" class="h-14" >
+                    </button>
 
                 </div>
 
@@ -30,10 +28,12 @@
 
         <div v-if="this.notificationsMenu" class="right-0">
 
-            <div id="notifications" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mt-16 z-50 w-[500px] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
-                
+            <div class="fixed z-10 inset-0 overflow-y-auto bg-opacity-60 bg-[#261918] flex items-center justify-center min-h-screen px-4 rounded-lg overflow-hidden shadow-xl"></div>
+
+            <div id="notifications" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mr-4 mt-16 z-50 w-[500px] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
+
                 <div class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
-                    Notificações
+                    Notificações:
                 </div>
 
                 <div class="divide-y bg-white divide-gray-100 dark:divide-gray-700">
@@ -83,17 +83,39 @@
 
                     </a>
 
-                    <button type="button" class="block py-2 text-sm w-full font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
-                        <div class="inline-flex items-center ">
-                            <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
-                                Ver tudo
-                        </div>
-                    </button>
-
                 </div>
+
+                <button type="button" class="block rounded-b-lg py-2 text-sm w-full font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
+                    <div class="inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2 rounded-b-lg text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
+                            Ver tudo
+                    </div>
+                </button>
                 
             </div>
+
         </div>
+
+        <div v-if="this.profileMenu">
+
+            <div class="fixed z-10 inset-0 overflow-y-auto bg-opacity-60 bg-[#261918] flex items-center justify-center min-h-screen px-4 rounded-lg overflow-hidden shadow-xl"></div>
+
+                <div id="profile" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mr-4 mt-16 z-50 w-[300px] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
+
+                <div class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
+                    Perfil:
+                </div>
+
+                <button type="button" @click="goToUpdateRegister" class="block rounded-b-lg py-2 text-sm w-full font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
+                    <div class="inline-flex items-center">
+                        Atualizar dados cadastrais
+                    </div>
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
 </template>
@@ -104,7 +126,8 @@
         name: 'RestaurantNavBar',
         data() {
             return {
-                notificationsMenu: false
+                notificationsMenu: false,
+                profileMenu: false
             }
         },
         props: {
@@ -118,6 +141,17 @@
                 else {
                     this.notificationsMenu = true;
                 }
+            },
+            showProfileMenu() {
+                if (this.profileMenu) {
+                    this.profileMenu = false;
+                }
+                else {
+                    this.profileMenu = true;
+                }
+            },
+            goToUpdateRegister() {
+                this.$router.push('/update-register')
             }
         }
     }  

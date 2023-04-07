@@ -9,7 +9,7 @@
 
       <div class="p-4">
 
-         <div class="p-4 mt-16" style="font-family: Montserrat;">
+         <div class="p-4 mt-[5rem]" style="font-family: Montserrat;">
 
             <div class="grid grid-cols-4 gap-4 mb-7">
 
@@ -17,7 +17,7 @@
                   <h1 class="text-white" style="font-size: 30px;">Dashboard</h1>
                </div>
 
-               <div class="col-end-5">
+               <div class="col-end-5 mt-3">
                   <label for="table-search" class="sr-only">Search</label>
                      <div class="flex items-center justify-center relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
