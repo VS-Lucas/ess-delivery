@@ -61,7 +61,7 @@
       <!-- DIV B -->
       <div class=" absolute flex flex-wrap items-center space-x-12 justify-center bottom-4 bg-cover inset-x-0 " >
       <div v-for="prato in pratos" :key="prato.id">
-      <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 ">
+      <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 " @click="addToCart(prato)">
         <a href="#">
           <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full  mx-auto block'>
         </a>
@@ -122,12 +122,7 @@
         //    url: prato.url
         //  }
 
-<<<<<<< HEAD
         axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}  )
-=======
-        axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}
-        )
->>>>>>> 9511c77e4c5b0b8bf33d442738e974e85c32696d
           .then(response => {
             console.log(response.data.message);
           })
