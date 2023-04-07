@@ -2,13 +2,13 @@ import express from 'express';
 import admin from 'firebase-admin';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const app = express();
 
 app.use(cors());
 
-let client_id = ''
+let client_id = '';
+let restaurant_id = '';
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -55,7 +55,7 @@ app.post('/register-login', (req, res) => {
 app.post('/verify-data', (req, res) => {
   console.log('POST verify');
   const data = req.body;
-  //const restaurantId = "toUh4qu8nbLCJatawak7";
+
 
   admin.firestore()
   .collection('restaurantes')
@@ -135,6 +135,7 @@ app.post('/verify-data', (req, res) => {
 
 
 // Rota POST do cadastro de restaurante
+let restaurantId
 app.post('/register-restaurant', (req, res) => {
   console.log('POST restaurant');
   const data = req.body;
@@ -142,12 +143,13 @@ app.post('/register-restaurant', (req, res) => {
     .collection('restaurantes')
     .add(data)
     .then(docRef => {
+      restaurantId = docRef.id;
       const responseData = { id: docRef.id, ...data };
       // Atualizar o documento do usuário com o ID do restaurante
       admin.firestore()
         .collection('usuarios')
         .doc(userId)
-        .update({ restauranteId: docRef.id })
+        .update({ restauranteId: restaurantId })
         .then(() => {
           res.json(responseData);
         })
@@ -166,10 +168,6 @@ app.post('/register-restaurant', (req, res) => {
 // Rota GET da atualização de restaurante
 app.get('/update-register', (_req, res) => {
   console.log('GET update');
-  //const token = req.headers.authorization.split(' ')[1];
-  //const decodedToken = jwt.decode(token);
-  //const userId = decodedToken.sub;
-  const userId = "gEMFXSSkCLb9o3qYNpS2F9eANlx1";
   
   admin.firestore()
     .collection('usuarios')
@@ -198,7 +196,7 @@ app.get('/update-register', (_req, res) => {
 });
 
 // Rota POST para autenticação de login de usuário
-app.post("/login", async (req, res) => {
+app.post("/restaurant-login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -209,7 +207,9 @@ app.post("/login", async (req, res) => {
     const userDoc = await admin.firestore()
                                .collection('usuarios')
                                .doc(userRecord.uid)
-                               .get();      
+                               .get();
+    
+    restaurant_id = userRecord.uid;
 
     if (userDoc.data().password == password) {
       const token = await admin.auth().createCustomToken(userRecord.uid);
@@ -259,7 +259,6 @@ app.put('/update-register/:index', (req, res) => {
   console.log('PUT update');
   const data = req.body;
   const index = req.params.index;
-  const userId = "gEMFXSSkCLb9o3qYNpS2F9eANlx1"; // Hardcoded para fins de teste
 
   admin.firestore()
     .collection('usuarios')
@@ -332,7 +331,6 @@ app.post('/verify-data/:index', (req, res) => {
   console.log('POST verify');
   const data = req.body;
   const index = req.params.index;
-  const restaurantId = "toUh4qu8nbLCJatawak7";
 
   switch (index) {  
     case '1':
@@ -390,9 +388,7 @@ app.post('/verify-data/:index', (req, res) => {
 });
 
 // Rota DELETE do descadastramento de restaurante
-app.delete('/unsubscribe', (_req, res) => {
-  const userId = "5oh6OyShcgPcmJOIXwFY0ZuGLp62";
-  const restaurantId = "cuXhRcfk0rPq5rucfVBn";
+app.delete('/unsubscribe', (req, res) => {
 
   admin.auth().deleteUser(userId)
     .then(() => {
@@ -487,71 +483,71 @@ app.get('/shoppingcart', async (req, res) => {
 
 // Não apagar por enquanto!!!
 //Get para pegar as informações dos pratos 
-// app.get('/clienthome', (req, res) => {
-//   const restauranteId  = 'oY1WhoFFdW2UUWrgADAY';
-//   admin.firestore()
-//     .collection('restaurantes')
-//     .doc(restauranteId)
-//     .get()
-//     .then(doc => {
-//       const restauranteData = doc.data();
-//       const pratos = restauranteData.pratos;
-//       res.json(pratos);
-//     })
-//     .catch(err => {
-//       console.error(err);
-//       res.status(500).send('Erro ao buscar dados do restaurante');
-//     });
-// });
-
-
-//Get para pegar as informações dos pratos
 app.get('/clienthome', (req, res) => {
-  // Lista de IDs de restaurantes
-  const restaurantesIds = ['oY1WhoFFdW2UUWrgADAY', 'zS5ju80BSoQcStMG6a4b', 'Cjq4SAjtFaa94WSN7UJ8'];
-
-  // Embaralhar a lista de IDs
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
-  const restaurantesIdsEmbaralhados = shuffle(restaurantesIds);
-
-  // Pegar os dois primeiros IDs 
-  const idsAleatorios = restaurantesIdsEmbaralhados.slice(0, 2);
-
-// Utiliza os dois IDs
+  const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
   admin.firestore()
     .collection('restaurantes')
-    .doc(idsAleatorios[0])
+    .doc(restauranteId)
     .get()
-    .then(doc1 => {
-      const restauranteData1 = doc1.data();
-      const pratos1 = restauranteData1.pratos;
-      admin.firestore()
-        .collection('restaurantes')
-        .doc(idsAleatorios[1])
-        .get()
-        .then(doc2 => {
-          const restauranteData2 = doc2.data();
-          const pratos2 = restauranteData2.pratos;
-          const pratosAleatorios = shuffle(pratos1.concat(pratos2)).slice(0, 4); // Pegar aleatoriamente 4 pratos
-          res.json(pratosAleatorios);
-        })
-        .catch(err => {
-          console.error(err);
-          res.status(500).send('Erro ao buscar dados do restaurante');
-        });
+    .then(doc => {
+      const restauranteData = doc.data();
+      const pratos = restauranteData.pratos;
+      res.json(pratos);
     })
     .catch(err => {
       console.error(err);
       res.status(500).send('Erro ao buscar dados do restaurante');
     });
-
 });
+
+
+//Get para pegar as informações dos pratos
+// app.get('/clienthome', (req, res) => {
+//   // Lista de IDs de restaurantes
+//   const restaurantesIds = ['oY1WhoFFdW2UUWrgADAY', 'zS5ju80BSoQcStMG6a4b', 'Cjq4SAjtFaa94WSN7UJ8'];
+
+//   // Embaralhar a lista de IDs
+//   function shuffle(array) {
+//     for (let i = array.length - 1; i > 0; i--) {
+//       const j = Math.floor(Math.random() * (i + 1));
+//       [array[i], array[j]] = [array[j], array[i]];
+//     }
+//     return array;
+//   }
+//   const restaurantesIdsEmbaralhados = shuffle(restaurantesIds);
+
+//   // Pegar os dois primeiros IDs 
+//   const idsAleatorios = restaurantesIdsEmbaralhados.slice(0, 2);
+
+// // Utiliza os dois IDs
+//   admin.firestore()
+//     .collection('restaurantes')
+//     .doc(idsAleatorios[0])
+//     .get()
+//     .then(doc1 => {
+//       const restauranteData1 = doc1.data();
+//       const pratos1 = restauranteData1.pratos;
+//       admin.firestore()
+//         .collection('restaurantes')
+//         .doc(idsAleatorios[1])
+//         .get()
+//         .then(doc2 => {
+//           const restauranteData2 = doc2.data();
+//           const pratos2 = restauranteData2.pratos;
+//           const pratosAleatorios = shuffle(pratos1.concat(pratos2)).slice(0, 4); // Pegar aleatoriamente 4 pratos
+//           res.json(pratosAleatorios);
+//         })
+//         .catch(err => {
+//           console.error(err);
+//           res.status(500).send('Erro ao buscar dados do restaurante');
+//         });
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send('Erro ao buscar dados do restaurante');
+//     });
+
+// });
 
 // Rota POST para adicionar itens no carrinho do usuário
 app.post('/clienthome', (req, res) => {
@@ -615,10 +611,84 @@ app.get('/clientname', async(req, res) =>{
   }
 });
 
-// // Rota POST para salvar o pedido do cliente
-// app.post("/saveorder", async (req, res) =>{
-  
-// });
+// Rota POST para salvar o(s) pedido(s) do cliente
+app.post("/storeclientorder", async (req, res) =>{
+
+  const orderData = req.body.orderData;
+  const pedidos = [];
+
+  for (const key in orderData) {
+    if (Object.hasOwnProperty.call(orderData, key)) {
+      const pedido = {
+        preco: orderData[key].preco,
+        nome: orderData[key].nome,
+        url: orderData[key].url,
+        descricao: orderData[key].descricao
+      };
+      pedidos.push(pedido);
+    }
+  }
+
+  admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ pedidos })
+  .then(() => {
+    res.json({ message: 'Pedido(s) adicionado(s) com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao adicionar pedidos do cliente');
+  }); 
+});
+
+// Rota POST para salvar a demanda do restaurante
+app.post("/reststore", async (req, res) =>{
+
+  const orderData = req.body.orderData;
+  const pedidos = [];
+
+  for (const key in orderData) {
+    if (Object.hasOwnProperty.call(orderData, key)) {
+      const pedido = {
+        preco: orderData[key].preco,
+        nome: orderData[key].nome,
+        url: orderData[key].url,
+        descricao: orderData[key].descricao
+      };
+      pedidos.push(pedido);
+    }
+  }
+
+  admin.firestore()
+       .collection('restaurantes')
+       .doc(id_restaurant)
+       .update({ pedidos })
+  .then(() => {
+    res.json({ message: 'Demanda adicionada com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao adicionar a demanda do restaurante');
+  }); 
+});
+
+// Rota PUT para limpar o carrinho
+app.put("/clearcart", async (req, res) =>{
+
+  admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ carrinho: [] })
+  .then(() => {
+    res.json({ message: 'Carrinho limpo com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao adicionar ao limpar carrinho');
+  }); 
+});
+
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
