@@ -618,7 +618,7 @@ app.get('/clientname', async(req, res) =>{
 });
 
 // Rota POST para salvar o(s) pedido(s) do cliente
-app.post("/saveorder", async (req, res) =>{
+app.post("/storeclientorder", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const pedidos = [];
@@ -647,6 +647,54 @@ app.post("/saveorder", async (req, res) =>{
     res.status(500).send('Erro ao adicionar pedidos do cliente');
   }); 
 });
+
+// Rota POST para salvar a demanda do restaurante
+app.post("/reststore", async (req, res) =>{
+
+  const orderData = req.body.orderData;
+  const pedidos = [];
+
+  for (const key in orderData) {
+    if (Object.hasOwnProperty.call(orderData, key)) {
+      const pedido = {
+        preco: orderData[key].preco,
+        nome: orderData[key].nome,
+        url: orderData[key].url,
+        descricao: orderData[key].descricao
+      };
+      pedidos.push(pedido);
+    }
+  }
+
+  admin.firestore()
+       .collection('restaurantes')
+       .doc(id_restaurant)
+       .update({ pedidos })
+  .then(() => {
+    res.json({ message: 'Demanda adicionada com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao adicionar a demanda do restaurante');
+  }); 
+});
+
+// Rota PUT para limpar o carrinho
+app.put("/clearcart", async (req, res) =>{
+
+  admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ carrinho: [] })
+  .then(() => {
+    res.json({ message: 'Carrinho limpo com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao adicionar ao limpar carrinho');
+  }); 
+});
+
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')

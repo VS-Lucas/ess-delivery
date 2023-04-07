@@ -213,14 +213,34 @@ import qs from 'qs';
                     console.error(error);
                 });
             },
-            async saveOrder() {
+            async storeOrder() {
                 try {
-                    const response = await axios.post('http://localhost:3000/saveorder', {
+                    const response = await axios.post('http://localhost:3000/storeclientorder', {
                         orderData: this.clientDict,
                     });
 
                     console.log(response.data.message);
                 } catch (error) {
+                    console.log(error);
+                }
+            },
+            async storeResOrder() {
+                try {
+                    const response = await axios.post('http://localhost:3000/reststore', {
+                        orderData: this.clientDict,
+                    });
+
+                    console.log(response.data.message);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async clearCart() {
+                try {
+                    const response = await axios.put('http://localhost:3000/clearcart')
+                    console.log(response.data.message);
+                }
+                catch (error) {
                     console.log(error);
                 }
             },
@@ -233,7 +253,9 @@ import qs from 'qs';
                 }
             }, 
             toTracking(){
-                this.saveOrder();
+                this.storeOrder();
+                this.storeResOrder();
+                this.clearCart();
 
                 this.$router.push ({
                     name: 'order-tracking',
