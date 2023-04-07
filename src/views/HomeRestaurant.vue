@@ -222,6 +222,7 @@
 </template>
 
 <script>
+import RestaurantNavBar from '@/components/RestaurantNavBar.vue'
 // import axios from 'axios';
 
 export default ({
@@ -238,6 +239,9 @@ export default ({
          },
          modalCard: false
       }
+   },
+   components: {
+      RestaurantNavBar
    },
    methods: {
       showDetail() {
