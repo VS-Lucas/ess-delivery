@@ -6,7 +6,7 @@
     <div class="clienthome bg-[#261918] min-h-screen relative">
        <NavBar /> <!-- NavBar dos componentes-->
         <div class="absolute left-40 top-32"> <!-- Button "Meus Pedidos"-->
-          <button type="button" class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Meus pedidos</button>
+          <button type="button" @click='goToOrderHistory()' class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Meus pedidos</button>
         </div>
   
         <div class= "absolute right-72 top-32"> <!-- Search Bar, onde muda o tamanho é em pl-10 na linha 15, e na linha 8 define a posição, relativa a div da linha 2-->
@@ -111,6 +111,10 @@
     methods:{
       goToShoppingCart() {
       this.$router.push('/shoppingcart');
+      },
+      
+      goToOrderHistory() {
+      this.$router.push('/order-history');
       },
 
       addToCart(prato) {
