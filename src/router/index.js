@@ -69,9 +69,19 @@ const routes = [
     component: () => import('../views/HistoryDetailsView.vue')
   },
   {
+    path:'/order-tracking/:clientOrder+',
+    name: 'order-tracking',
+    component: () => import('../views/OrderTracking.vue')
+  },
+  {
     path: '/home-restaurant',
     name: 'home-restaurant',
     component: HomeRestaurant
+  },
+  {
+    path: '/checkout/:pratos+',
+    name: 'checkout',
+    component: () => import('../views/CheckoutView.vue')
   },
 ]
 
