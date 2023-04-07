@@ -33,7 +33,7 @@
                 </div>
                 <div class="mt-4 flex items-center space-x-2">
                   <p class="text-white flex items-center">{{prato.preco}} <span class="ml-1">R$</span></p>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 cursor-pointer duration-150 hover:text-red-500 " @click="deleteItem(prato)">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
@@ -77,7 +77,7 @@
                                     <p>Preencha seu carrinho antes de proceder para checkout!</p>
                                 </div>
                                 <div class="flex justify-center">
-                                  <button @click="fecharModal" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5 mt-7">
+                                  <button @click="fecharModal" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5 mt-7" >
                                     Voltar
                                   </button>
                                 </div>
@@ -124,6 +124,11 @@ export default {
     itens: 0
    }
   },
+  // computed: {
+  //   pratosFiltrados() {
+  //     return this.pratos.filter(prato => prato.no_carrinho === true);
+  //   },
+  // },
   async mounted() {
     await axios.get('http://localhost:3000/shoppingcart')
       .then(response => {
@@ -165,7 +170,25 @@ export default {
     },
     fecharModal(){
       this.vazio = false;
+    },
+    deleteItem(prato) {
+      const nomePrato = prato.nome
+      console.log(prato.nome);
+      console.log(prato.nome);
+      axios.delete('http://localhost:3000/shoppingcart', {
+        data: {
+          nome: nomePrato
+        }
+      })
+      .then(response => {
+        console.log(response.data)
+        location.reload();
+      })
+      .catch(error => {
+        console.error(error)
+      })
     }
+
   }
 }
 </script>

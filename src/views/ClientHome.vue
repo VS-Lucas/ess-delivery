@@ -124,6 +124,7 @@
         axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}  )
           .then(response => {
             console.log(response.data.message);
+            //prato.no_carrinho = true; //aq
           })
           .catch(error => {
             console.error(error);
