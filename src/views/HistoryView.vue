@@ -36,8 +36,10 @@
                 :name="object.restaurant_name"
                 :items="object.items"
                 :date="object.date"
-                :price="object.price"
+                :total_price="object.price"
                 :form_pay="object.form_of_payment"
+                :status="object.status"
+                :prices="object.prices"
                 />
             </div>
         </div>
@@ -59,23 +61,71 @@
     import axios from 'axios';
     
     export default {
-        components: { InfoCard, SearchBar },
+        components: { SearchBar, InfoCard},
+        data() {
+            return {
+                orders: [],
+                keys: []
+            }
+        },
         mounted() {
             axios.get('http://localhost:3000/get-orders')
             .then((res) => {
-                this.orders = res.data;
+                const base_orders = res.data;
+                console.log(base_orders);
+                let aux = []
+                this.keys = Object.keys(base_orders);
 
-                if (Object.keys(this.orders).length === 1)  {
-                    console.log("aqui");
-                    this.orders = []
-                }
+                this.keys.forEach(key => {
+                    aux.push({
+                        order_id: key,
+                        img_src: 'https://www.pizzariaatlantico.com.br/mobile/img/logo.png',
+                        restaurant_name: 'Anonymous',
+                        items: this.get_item(key, base_orders),
+                        date: 'xx/xx/xx',
+                        price: this.get_total_price(key, base_orders),
+                        form_of_payment: 'Cartão de crédito',
+                        status: this.get_status(key, base_orders),
+                        prices: this.get_prices(key, base_orders)
+                    });
+                });
+
+                this.orders = [...aux];
             }).catch((error) => {
                 console.log(error.message)
-            })
+            });
         },
-        data() {
-            return {
-                orders: []
+        methods: {
+            get_item(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                const items = [];
+                keys.forEach(ky =>{
+                    items.push(orders[key]['pratos'][ky].nome);
+                }) 
+                return items;
+                
+            },
+            get_total_price(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                var price = 0;
+                keys.forEach(ky =>{
+                    var n = orders[key]['pratos'][ky].preco.replace(',', '.');
+                    price += parseFloat(n);
+                }) 
+                return `${price}`;
+            },
+            get_status(key, orders) {
+                console.log(orders[key]['status']);
+                return orders[key]['status'];
+            },
+            get_prices(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                var prices = [];
+                keys.forEach(ky =>{
+                    prices.push(orders[key]['pratos'][ky].preco);
+                });
+                console.log(prices)
+                return prices;
             }
         }
     }
