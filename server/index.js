@@ -629,7 +629,7 @@ app.post("/storeclientorder", async (req, res) =>{
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
         .then(() => {
-          res.json({ message: 'Pedido com sucesso' });
+          res.json({ message: 'Pedido adicionado com sucesso' });
         })
         .catch(err => {
           console.error(err);

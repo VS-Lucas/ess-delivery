@@ -3,7 +3,7 @@
     <header class="bg-[#541F1B] w-full h-[6rem] flex items-center py-4 mb-8">
         <button class="ml-4"><img src="../assets/img/back-button.png" alt="back"></button>
 
-        <h1 class="text-white font-bold mx-auto text-3xl">Pedido #</h1>
+        <h1 class="text-white font-bold mx-auto text-3xl">Pedido #{{this.$route.params.clientOrder.orderID}}</h1>
     </header>
     
 
@@ -95,17 +95,25 @@
             </div>
             
             <div class="col-span-1 bg-[#83271F] lg:w-[20rem] lg:h-[15rem] rounded-[15px]">
-
+                <div class="flex items-center justify-center">
+                    <h2 class="text-white mt-3">Endereço de entrega</h2>
+                </div>
+                <hr class="w-11/12 m-2 border-[#541F1B]">
+                <div class="flex flex-col flex-wrap items-center text-white mt-5">
+                    <h2 class="mt-3">{{ this.address.cep }}</h2>
+                    <h2 class="mt-3">{{ this.address.rua }}, {{ this.address.numero }}, {{ this.address.bairro }}</h2>
+                    <h2 class="mt-3">{{ this.address.complemento }}</h2>
+                </div>
             </div>
             
             <div class="col-span-1 bg-[#A62C21] lg:w-[20rem] lg:h-[15rem] rounded-[15px]">
                 <div class="flex items-center justify-center">
-                    <h2 class="text-white">Previsão de entrega</h2>
+                    <h2 class="text-white mt-3">Previsão de entrega</h2>
                 </div>
                 <hr class="w-11/12 m-2 border-[#541F1B]">
                 <div class="flex items-center">   
                     <img class="ml-2" src="@/assets/img/delivery.png" alt="delivery">
-                    <h2 class="ml-6">12:12-12:40</h2>
+                    <h2 class="ml-6 text-white">12:12-12:40</h2>
                 </div>
                 
             </div>
@@ -124,12 +132,14 @@
 
 <script>
 import qs from 'qs';
-import axios from 'axios';
+// import axios from 'axios';
 
 export default {
     data() {
         return {
-            freq: {}
+            freq: {},
+            id: '',
+            address: {}
         }
     }, 
     mounted() {
@@ -137,12 +147,21 @@ export default {
         const object = qs.parse(objectString);
         console.log(object)
         const keys = Object.keys(object);
+       
         keys.forEach(key => {
-            this.freq[object[key].nome] = 0;
+            if (key !== "address" && key !== "orderID") {
+                console.log(key)
+                this.freq[object[key].nome] = 0;
+            }
+            
         });
 
+        this.id = object.orderID;
+        this.address = object.address;
         keys.forEach(key => {
-            this.freq[object[key].nome]++;
+            if (key !== "address" && key !== "orderID") {
+                this.freq[object[key].nome]++;
+            }
         }); 
     },
     methods: {
