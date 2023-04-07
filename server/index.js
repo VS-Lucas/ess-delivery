@@ -483,71 +483,71 @@ app.get('/shoppingcart', async (req, res) => {
 
 // Não apagar por enquanto!!!
 //Get para pegar as informações dos pratos 
-// app.get('/clienthome', (req, res) => {
-//   const restauranteId  = 'oY1WhoFFdW2UUWrgADAY';
-//   admin.firestore()
-//     .collection('restaurantes')
-//     .doc(restauranteId)
-//     .get()
-//     .then(doc => {
-//       const restauranteData = doc.data();
-//       const pratos = restauranteData.pratos;
-//       res.json(pratos);
-//     })
-//     .catch(err => {
-//       console.error(err);
-//       res.status(500).send('Erro ao buscar dados do restaurante');
-//     });
-// });
-
-
-//Get para pegar as informações dos pratos
 app.get('/clienthome', (req, res) => {
-  // Lista de IDs de restaurantes
-  const restaurantesIds = ['oY1WhoFFdW2UUWrgADAY', 'zS5ju80BSoQcStMG6a4b', 'Cjq4SAjtFaa94WSN7UJ8'];
-
-  // Embaralhar a lista de IDs
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
-  const restaurantesIdsEmbaralhados = shuffle(restaurantesIds);
-
-  // Pegar os dois primeiros IDs 
-  const idsAleatorios = restaurantesIdsEmbaralhados.slice(0, 2);
-
-// Utiliza os dois IDs
+  const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
   admin.firestore()
     .collection('restaurantes')
-    .doc(idsAleatorios[0])
+    .doc(restauranteId)
     .get()
-    .then(doc1 => {
-      const restauranteData1 = doc1.data();
-      const pratos1 = restauranteData1.pratos;
-      admin.firestore()
-        .collection('restaurantes')
-        .doc(idsAleatorios[1])
-        .get()
-        .then(doc2 => {
-          const restauranteData2 = doc2.data();
-          const pratos2 = restauranteData2.pratos;
-          const pratosAleatorios = shuffle(pratos1.concat(pratos2)).slice(0, 4); // Pegar aleatoriamente 4 pratos
-          res.json(pratosAleatorios);
-        })
-        .catch(err => {
-          console.error(err);
-          res.status(500).send('Erro ao buscar dados do restaurante');
-        });
+    .then(doc => {
+      const restauranteData = doc.data();
+      const pratos = restauranteData.pratos;
+      res.json(pratos);
     })
     .catch(err => {
       console.error(err);
       res.status(500).send('Erro ao buscar dados do restaurante');
     });
-
 });
+
+
+//Get para pegar as informações dos pratos
+// app.get('/clienthome', (req, res) => {
+//   // Lista de IDs de restaurantes
+//   const restaurantesIds = ['oY1WhoFFdW2UUWrgADAY', 'zS5ju80BSoQcStMG6a4b', 'Cjq4SAjtFaa94WSN7UJ8'];
+
+//   // Embaralhar a lista de IDs
+//   function shuffle(array) {
+//     for (let i = array.length - 1; i > 0; i--) {
+//       const j = Math.floor(Math.random() * (i + 1));
+//       [array[i], array[j]] = [array[j], array[i]];
+//     }
+//     return array;
+//   }
+//   const restaurantesIdsEmbaralhados = shuffle(restaurantesIds);
+
+//   // Pegar os dois primeiros IDs 
+//   const idsAleatorios = restaurantesIdsEmbaralhados.slice(0, 2);
+
+// // Utiliza os dois IDs
+//   admin.firestore()
+//     .collection('restaurantes')
+//     .doc(idsAleatorios[0])
+//     .get()
+//     .then(doc1 => {
+//       const restauranteData1 = doc1.data();
+//       const pratos1 = restauranteData1.pratos;
+//       admin.firestore()
+//         .collection('restaurantes')
+//         .doc(idsAleatorios[1])
+//         .get()
+//         .then(doc2 => {
+//           const restauranteData2 = doc2.data();
+//           const pratos2 = restauranteData2.pratos;
+//           const pratosAleatorios = shuffle(pratos1.concat(pratos2)).slice(0, 4); // Pegar aleatoriamente 4 pratos
+//           res.json(pratosAleatorios);
+//         })
+//         .catch(err => {
+//           console.error(err);
+//           res.status(500).send('Erro ao buscar dados do restaurante');
+//         });
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send('Erro ao buscar dados do restaurante');
+//     });
+
+// });
 
 // Rota POST para adicionar itens no carrinho do usuário
 app.post('/clienthome', (req, res) => {
@@ -588,7 +588,7 @@ app.get('/orders', async(req, res) =>{
     const doc = await admin.firestore().collection('cliente').doc(client_id).get();
     
     const data = doc.data();
-    const orders = data.pedidos;
+    const orders = Object.keys(data.pedidos);
     const ordersAmount = orders.length;
 
     res.json({amount: ordersAmount})
@@ -612,35 +612,85 @@ app.get('/clientname', async(req, res) =>{
 });
 
 // Rota POST para salvar o(s) pedido(s) do cliente
-app.post("/saveorder", async (req, res) =>{
+app.post("/storeclientorder", async (req, res) =>{
 
   const orderData = req.body.orderData;
-  const pedidos = [];
+  const orderID = req.body.orderID;
 
-  for (const key in orderData) {
-    if (Object.hasOwnProperty.call(orderData, key)) {
-      const pedido = {
-        preco: orderData[key].preco,
-        nome: orderData[key].nome,
-        url: orderData[key].url,
-        descricao: orderData[key].descricao
-      };
-      pedidos.push(pedido);
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+    if (!clienteDoc.exists) {
+      res.status(404).send('Cliente não encontrado');
+    } else {
+
+      const pedidos = clienteDoc.data().pedidos || {};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          res.json({ message: 'Pedido com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao adicionar pedido');
+        });
     }
-  }
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+// Rota POST para salvar a demanda do restaurante
+app.post("/reststore", async (req, res) =>{
+
+  const orderData = req.body.orderData;
+  const orderID = req.body.orderID;
+
+  admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8').get()
+  .then(clienteDoc => {
+    if (!clienteDoc.exists) {
+      res.status(404).send('Restaurante não encontrado');
+    } else {
+
+      const pedidos = clienteDoc.data().pedidos || {};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+
+      admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8')
+        .update({ pedidos })
+        .then(() => {
+          res.json({ message: 'Demanda adicionada com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao adicionar pedido');
+        });
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao salvar pedido');
+  });
+});
+
+// Rota PUT para limpar o carrinho
+app.put("/clearcart", async (req, res) =>{
 
   admin.firestore()
        .collection('cliente')
        .doc(client_id)
-       .update({ pedidos })
+       .update({ carrinho: [] })
   .then(() => {
-    res.json({ message: 'Pedido(s) adicionado(s) com sucesso' });
+    res.json({ message: 'Carrinho limpo com sucesso' });
   })
   .catch(err => {
     console.error(err);
-    res.status(500).send('Erro ao adicionar pedidos do cliente');
+    res.status(500).send('Erro ao adicionar ao limpar carrinho');
   }); 
 });
+
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')

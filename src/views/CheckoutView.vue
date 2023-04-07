@@ -179,7 +179,7 @@ import qs from 'qs';
                 clientDict: '',
                 addressDict: '',
                 modalCard: false,
-                ordersAm: -1,
+                ordersAm: 0,
                 clientName: '',
                 orderPrice: null, 
             }
@@ -213,14 +213,36 @@ import qs from 'qs';
                     console.error(error);
                 });
             },
-            async saveOrder() {
+            async storeOrder() {
                 try {
-                    const response = await axios.post('http://localhost:3000/saveorder', {
+                    const response = await axios.post('http://localhost:3000/storeclientorder', {
                         orderData: this.clientDict,
+                        orderID: this.ordersAm,
                     });
 
                     console.log(response.data.message);
                 } catch (error) {
+                    console.log(error);
+                }
+            },
+            async storeResOrder() {
+                try {
+                    const response = await axios.post('http://localhost:3000/reststore', {
+                        orderData: this.clientDict,
+                        orderID: this.ordersAm,
+                    });
+
+                    console.log(response.data.message);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async clearCart() {
+                try {
+                    const response = await axios.put('http://localhost:3000/clearcart')
+                    console.log(response.data.message);
+                }
+                catch (error) {
                     console.log(error);
                 }
             },
@@ -233,8 +255,13 @@ import qs from 'qs';
                 }
             }, 
             toTracking(){
-                this.saveOrder();
+                this.storeOrder();
+                this.storeResOrder();
+                this.clearCart();
 
+                this.clientDict['orderID'] = this.ordersAm;
+                this.clientDict['address'] = this.addressDict;
+                
                 this.$router.push ({
                     name: 'order-tracking',
                     params: { clientOrder: qs.stringify(this.clientDict) }
