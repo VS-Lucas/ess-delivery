@@ -811,6 +811,20 @@ app.put("/clearcart", async (req, res) =>{
   }); 
 });
 
+// // Rota GET do tempo estimado de entrega
+// app.get('/estimatedtime', async(req, res) =>{
+//   try{
+//     const doc = await admin.firestore().collection('restaurantes').doc(id_restaurant).get();
+//     const est_time = doc.data().tempo_entrega;
+//     const fee = doc.data().taxa;
+
+//     res.json({tempo_estimado: est_time, taxa: fee})
+//   }
+//   catch(error){
+//     console.log(error)
+//   }
+// });
+
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')

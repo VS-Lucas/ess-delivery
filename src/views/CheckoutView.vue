@@ -36,8 +36,9 @@
                             <p>Taxa de entrega</p>
                         </div>
                         <div class="col-start-7">
-                            R$xx,xx
+                            <!-- {{ this.fee }} -->
                         </div>
+                        
                     </div>
                 </div>
                 <div class="col-start-5 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
@@ -182,9 +183,12 @@ import qs from 'qs';
                 ordersAm: 0,
                 clientName: '',
                 orderPrice: null, 
+                estTime: '',
+                fee: '',
             }
         },
         methods: {
+            // Dar um merge nos métodos getAddress() e getName()!!!!!!!
             async getAddress() {
                 await axios.get('http://localhost:3000/address')
                 .then(response => {
@@ -246,6 +250,19 @@ import qs from 'qs';
                     console.log(error);
                 }
             },
+            // async getEstimatedTime() {
+            //     await axios.get('http://localhost:3000/estimatedtime')
+            //     .then(response => {
+            //         const auxFee = response.data.taxa;
+            //         this.fee = auxFee.replace(',', '.');
+            //         this.fee = parseFloat(this.fee);
+
+            //         this.estTime = response.data.tempo_estimado;
+            //     })
+            //     .catch(error => {
+            //         console.error(error);
+            //     });
+            // }, 
             OrderConfirmation(){
                 if (this.modalCard){
                     this.modalCard = false;
@@ -262,6 +279,7 @@ import qs from 'qs';
                 this.clientDict['orderID'] = this.ordersAm;
                 this.clientDict['address'] = this.addressDict;
                 this.clientDict['totalprice'] = this.orderPrice;
+                this.clientDict['name'] = this.clientName;
                 
                 this.$router.push ({
                     name: 'order-tracking',
@@ -278,6 +296,7 @@ import qs from 'qs';
             this.getAddress();
             this.OrdersAmount();
             this.getName();
+            // this.getEstimatedTime();
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);
@@ -290,6 +309,7 @@ import qs from 'qs';
                 let floatPrice = parseFloat(this.clientDict[i].preco);
                 this.orderPrice += floatPrice;
             }
+            // this.orderPrice += this.fee;
             this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
         },
     }
