@@ -122,16 +122,19 @@
         //    url: prato.url
         //  }
 
+<<<<<<< HEAD
         axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}  )
+=======
+        axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}
+        )
+>>>>>>> 9511c77e4c5b0b8bf33d442738e974e85c32696d
           .then(response => {
             console.log(response.data.message);
           })
           .catch(error => {
             console.error(error);
           });
-          
       }
-
     }
   }
   </script>

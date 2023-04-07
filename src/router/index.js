@@ -69,7 +69,7 @@ const routes = [
     component: () => import('../views/HistoryDetailsView.vue')
   },
   {
-    path:'/order-tracking',
+    path:'/order-tracking/:clientOrder+',
     name: 'order-tracking',
     component: () => import('../views/OrderTracking.vue')
   },
@@ -79,7 +79,7 @@ const routes = [
     component: HomeRestaurant
   },
   {
-    path: '/checkout',
+    path: '/checkout/:pratos+',
     name: 'checkout',
     component: () => import('../views/CheckoutView.vue')
   },
