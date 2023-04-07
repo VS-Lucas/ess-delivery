@@ -16,7 +16,7 @@
                         <svg class="w-8 h-8" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
                     </button>
                     
-                    <button class="px-5" @click="showProfileMenu" data-modal-target="profile" data-modal-toggle="profile">
+                    <button type="button" class="px-5" @click="showProfileMenu" data-modal-target="profile" data-modal-toggle="profile">
                         <img src="@\assets\img\user_icon.png" alt="Descrição da imagem" class="h-14" >
                     </button>
 
@@ -36,7 +36,7 @@
                     Notificações:
                 </div>
 
-                <div class="divide-y bg-white divide-gray-100 dark:divide-gray-700">
+                <div class="divide-y bg-gray-50 divide-gray-100 dark:divide-gray-700">
 
                     <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
                         
@@ -93,22 +93,33 @@
                 </button>
                 
             </div>
-
         </div>
 
         <div v-if="this.profileMenu">
 
             <div class="fixed z-10 inset-0 overflow-y-auto bg-opacity-60 bg-[#261918] flex items-center justify-center min-h-screen px-4 rounded-lg overflow-hidden shadow-xl"></div>
 
-                <div id="profile" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mr-4 mt-16 z-50 w-[300px] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
+            <div id="profile" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mr-4 mt-16 z-50 w-[300px] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
 
                 <div class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
                     Perfil:
                 </div>
 
-                <button type="button" @click="goToUpdateRegister" class="block rounded-b-lg py-2 text-sm w-full font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
-                    <div class="inline-flex items-center">
+                <button type="button" @click="goToUpdateRegister" class="block py-2 text-sm w-full font-medium text-center text-gray-500 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
+                    <div class="inline-flex items-center text-sm">
                         Atualizar dados cadastrais
+                    </div>
+                </button>
+
+                <button type="button" @click="goToUnsubscribe" class="block py-2 text-sm w-full font-medium text-center text-gray-500 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
+                    <div class="inline-flex items-center text-sm">
+                        Descadastrar restaurante
+                    </div>
+                </button>
+
+                <button type="button" @click="logOutAccount" class="block rounded-b-lg py-2 text-sm w-full font-medium text-center text-gray-500 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
+                    <div class="inline-flex items-center text-sm">
+                        Sair da conta
                     </div>
                 </button>
 
@@ -152,6 +163,12 @@
             },
             goToUpdateRegister() {
                 this.$router.push('/update-register')
+            },
+            goToUnsubscribe() {
+                this.$router.push('/unsubscribe-restaurant')
+            },
+            logOutAccount() {
+                this.$router.push('/login')
             }
         }
     }  
