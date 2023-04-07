@@ -652,7 +652,7 @@ app.post("/reststore", async (req, res) =>{
   admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8').get()
   .then(clienteDoc => {
     if (!clienteDoc.exists) {
-      res.status(404).send('Cliente não encontrado');
+      res.status(404).send('Restaurante não encontrado');
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
@@ -661,7 +661,7 @@ app.post("/reststore", async (req, res) =>{
       admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8')
         .update({ pedidos })
         .then(() => {
-          res.json({ message: 'Pedido com sucesso' });
+          res.json({ message: 'Demanda adicionada com sucesso' });
         })
         .catch(err => {
           console.error(err);

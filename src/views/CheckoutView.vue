@@ -258,6 +258,9 @@ import qs from 'qs';
                 this.storeOrder();
                 this.storeResOrder();
                 this.clearCart();
+
+                this.clientDict['orderID'] = this.ordersAm;
+                this.clientDict['address'] = this.addressDict;
                 
                 this.$router.push ({
                     name: 'order-tracking',
