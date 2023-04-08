@@ -9,15 +9,6 @@
     <div class="mx-auto max-w-6xl justify-center px-6 md:flex md:space-x-7 xl:px-0">
       <div class="rounded-lg md:w-2/3">
         <div v-for="prato in pratos" :key="prato.id">
-          <!-- <div v-for="prato in pratos" :key="prato.id">
-            <div class="justify-between mb-6 rounded-lg bg-[#A62C21] p-6 shadow-md sm:flex sm:justify-start">
-              <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full mx-auto block'>
-              <h2 style="font-family: 'Montserrat', sans-serif;  font-weight: 600; font-size: 1.2rem; line-height: 1.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ prato.nome }}</h2>
-              
-              <h2 style="font-size: 0.9rem; line-height: 1.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ prato.descricao }}</h2>
-              <h2 style="font-size: 1rem; line-height: 1.2rem;">{{ prato.preco }}</h2>
-            </div>
-          </div> -->
           <div class="justify-between mb-6 rounded-lg bg-[#A62C21] p-6 shadow-md sm:flex sm:justify-start">
             <img :src="prato.url" :alt="prato.nome" class="w-full rounded-lg sm:w-40" />
             <div class="sm:ml-4 sm:flex md:w-3/4 sm:justify-between">
@@ -27,15 +18,17 @@
               </div>
               <div class="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-5">
                 <div class="flex items-center border-gray-100">
-                  <!-- <span class="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"> - </span> -->
+                  <button @click="reduceAmount(prato)" class="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"> - </button>
                   <!-- <input class="h-8 w-8 border bg-white text-center text-xs outline-none" type="number" value="2" min="1" /> -->
-                  <!-- <span class="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"> + </span> -->
-                </div>
-                <div class="mt-4 flex items-center space-x-2">
-                  <p class="text-white flex items-center">{{prato.preco}} <span class="ml-1">R$</span></p>
+                  <div class="bg-gray-100 py-1 px-3 duration-100">{{prato.quantidade}}</div>
+                  <button @click="increaseAmount(prato)" class="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"> + </button>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 cursor-pointer duration-150 hover:text-red-500 " @click="deleteItem(prato)">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
+                </div>
+                <div class="mt-4 flex items-center space-x-2">
+                  <p class="text-white flex items-center">{{(parseFloat(prato.preco.replace(',','.'))*prato.quantidade).toFixed(2).replace('.',',')}} <span class="ml-1">R$</span></p>
+                  
                 </div>
               </div>
             </div>
@@ -46,7 +39,7 @@
       <div class="mt-6 h-full rounded-lg border bg-[#A62C21] p-6 shadow-md md:mt-0 md:w-2/4">
         <div class="mb-2 flex justify-between">
           <p class="text-white font-bold">Subtotal:</p>
-          <p class="text-white">{{precoTotal.toFixed(2)}} <span class="ml-1">R$</span></p>
+          <p class="text-white">{{precoTotal}} <span class="ml-1">R$</span></p>
         </div>
         <div class="flex justify-between">
           <!-- <p class="text-white">Shipping</p> -->
@@ -81,22 +74,6 @@
                                     Voltar
                                   </button>
                                 </div>
-                                
-                                <!-- <div class="text-center">
-                                    <p class="mt-5">Deseja acompanhá-lo?</p>
-                                </div>
-                                <div class="grid grid-cols-2 mt-2">
-                                    <div class="col-span-1">
-                                        <button @click="OrderConfirmation" type="button" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5">
-                                            Voltar
-                                        </button>
-                                    </div>
-                                    <div class="col-start-3">
-                                        <button @click="toTracking" type="button" class="bg-[#9DBF69] hover:bg-green-500 rounded-lg text-sm px-4 py-2.5">
-                                            <p class="text-black font-bold">Acompanhar</p>
-                                        </button>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -119,7 +96,7 @@ export default {
   data() {
    return {
     pratos: [],
-    precoTotal: 0,
+    precoTotal: '0',
     vazio: false,
     itens: 0
    }
@@ -141,10 +118,13 @@ export default {
       // console.log("Passou pelo axios")
       // console.log(this.pratos)
     
+      let precoTotal = 0;
       this.pratos.forEach((doc) => {
-        this.precoTotal+= parseFloat(doc.preco);
-        console.log(parseFloat(doc.preco)) 
+        precoTotal+= parseFloat(doc.preco.replace(',','.'))*doc.quantidade;
+        this.precoTotal = precoTotal.toFixed(2).replace('.',',')
+        console.log(this.precoTotal) 
       });
+      
 
     //   for(let objeto in this.pratos){
     //   console.log('Mensagem');
@@ -173,8 +153,6 @@ export default {
     },
     deleteItem(prato) {
       const nomePrato = prato.nome
-      console.log(prato.nome);
-      console.log(prato.nome);
       axios.delete('http://localhost:3000/shoppingcart', {
         data: {
           nome: nomePrato
@@ -187,8 +165,51 @@ export default {
       .catch(error => {
         console.error(error)
       })
+    },
+    increaseAmount(prato) {
+      console.log('mais')
+      let i = 0;
+      let index = 0;
+      this.pratos.forEach((doc) => {
+          if(doc.nome == prato.nome){
+            index = i;
+            this.found = true; 
+          }
+          i = i + 1;
+        });
+      axios.put('http://localhost:3000/shoppingcart1',  {nome: prato.nome, index: index}  )
+          .then(response => {
+            console.log(response.data.message);
+            location.reload();
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    },
+    reduceAmount(prato) {
+      if (prato.quantidade  == 1){
+        this.deleteItem(prato);
+      } else {
+      console.log('menos')
+      let i = 0;
+      let index = 0;
+      this.pratos.forEach((doc) => {
+          if(doc.nome == prato.nome){
+            index = i;
+            this.found = true; 
+          }
+          i = i + 1;
+        });
+      axios.put('http://localhost:3000/shoppingcart2',  {nome: prato.nome, index: index}  )
+          .then(response => {
+            console.log(response.data.message);
+            location.reload();
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     }
-
   }
 }
 </script>

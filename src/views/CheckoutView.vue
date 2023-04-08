@@ -21,8 +21,18 @@
                                 R${{ object.preco }} 
                             </div>
                         </div>
+
+                        <div class="py-3">
+                        <form @submit.prevent="getDiscount($event)">   
+                            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only  p-3">Search</label>
+                            <div class="relative">
+                                <input id= "cupom_desconto" type="cupom" name="cupom" v-model="cupom" class="block w-100 p-10 pl-10 text-sm py-4 h-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 " placeholder="Cupom de desconto..." required>
+                                <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 ">Aplicar</button>
+                            </div>
+                        </form>
+                        </div>
                     </div>
-                    <div class="px-3">
+                    <div class="px-3 py-3">
                         <hr><hr/>
                     </div>
                     <div class="grid grid-cols-13 mt-[7px] ml-[30px] text-white">
@@ -36,8 +46,9 @@
                             <p>Taxa de entrega</p>
                         </div>
                         <div class="col-start-7">
-                            R$xx,xx
+                            <!-- {{ this.fee }} -->
                         </div>
+                        
                     </div>
                 </div>
                 <div class="col-start-5 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
@@ -182,9 +193,14 @@ import qs from 'qs';
                 ordersAm: 0,
                 clientName: '',
                 orderPrice: null, 
+                estTime: '',
+                fee: '',
+                todayDate: '', 
+                currTime: '', 
             }
         },
         methods: {
+            // Dar um merge nos métodos getAddress() e getName()!!!!!!!
             async getAddress() {
                 await axios.get('http://localhost:3000/address')
                 .then(response => {
@@ -218,6 +234,8 @@ import qs from 'qs';
                     const response = await axios.post('http://localhost:3000/storeclientorder', {
                         orderData: this.clientDict,
                         orderID: this.ordersAm,
+                        orderDate: this.todayDate,
+                        orderTime: this.currTime, 
                     });
 
                     console.log(response.data.message);
@@ -230,6 +248,8 @@ import qs from 'qs';
                     const response = await axios.post('http://localhost:3000/reststore', {
                         orderData: this.clientDict,
                         orderID: this.ordersAm,
+                        orderDate: this.todayDate,
+                        orderTime: this.currTime, 
                     });
 
                     console.log(response.data.message);
@@ -246,6 +266,19 @@ import qs from 'qs';
                     console.log(error);
                 }
             },
+            // async getEstimatedTime() {
+            //     await axios.get('http://localhost:3000/estimatedtime')
+            //     .then(response => {
+            //         const auxFee = response.data.taxa;
+            //         this.fee = auxFee.replace(',', '.');
+            //         this.fee = parseFloat(this.fee);
+
+            //         this.estTime = response.data.tempo_estimado;
+            //     })
+            //     .catch(error => {
+            //         console.error(error);
+            //     });
+            // }, 
             OrderConfirmation(){
                 if (this.modalCard){
                     this.modalCard = false;
@@ -262,6 +295,9 @@ import qs from 'qs';
                 this.clientDict['orderID'] = this.ordersAm;
                 this.clientDict['address'] = this.addressDict;
                 this.clientDict['totalprice'] = this.orderPrice;
+                this.clientDict['name'] = this.clientName;
+                this.clientDict['date'] = this.todayDate;
+                this.clientDict['hour'] = this.currTime;
                 
                 this.$router.push ({
                     name: 'order-tracking',
@@ -272,12 +308,24 @@ import qs from 'qs';
                 this.$router.push({
                     path: '/shoppingcart'
                 })
+            },
+            // aquii
+            async getDiscount() {
+                console.log("aqui");
+                const cupom  = this;
+                console.log(cupom.cupom);
+                if (cupom.cupom == 'cupom10'){
+                    console.log(cupom);
+                    this.orderPrice = this.orderPrice - 10;
+                }
             }
         },
+
         mounted() {
             this.getAddress();
             this.OrdersAmount();
             this.getName();
+            // this.getEstimatedTime();
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);
@@ -290,7 +338,16 @@ import qs from 'qs';
                 let floatPrice = parseFloat(this.clientDict[i].preco);
                 this.orderPrice += floatPrice;
             }
+            // this.orderPrice += this.fee;
             this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
+
+            const aDate = new Date();
+            const options = { timeZone: 'America/Sao_Paulo', hour12: false };
+            const localTime = aDate.toLocaleString('pt-BR', options);
+            const aux = localTime.split(" ");
+
+            this.todayDate = aux[0];
+            this.currTime = aux[1];
         },
     }
 </script>
