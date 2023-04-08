@@ -13,7 +13,7 @@
                 <div class="col-start-2 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
                     <div class="mt-[20px] ml-[20px]">
                         <h1 class="text-3xl text-white">Meu carrinho</h1>
-                        <div v-for="(object, index) in this.clientDict" :key="index" class="grid grid-cols-9 p-1 text-white">
+                        <div v-for=" (object, index) in this.clientDict" :key="index" class="grid grid-cols-9 p-1 text-white">
                             <div class="col-start-1 col-span-5">
                                 {{ object.nome }}
                             </div>
