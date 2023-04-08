@@ -209,10 +209,18 @@ app.post("/restaurant-login", async (req, res) => {
                                .doc(userRecord.uid)
                                .get();
     
-    restaurant_id = userRecord.uid;
+    userId = userRecord.uid;
 
     if (userDoc.data().password == password) {
       const token = await admin.auth().createCustomToken(userRecord.uid);
+
+      const restDoc = await admin.firestore()
+                                 .collection('usuarios')
+                                 .doc(userId)
+                                 .get()
+                                       
+      restaurantId = restDoc.data().restauranteId;
+      
       res.status(200).json({ token });
     } else {
       res.status(401).send("Senha incorreta");
@@ -294,6 +302,11 @@ app.put('/update-register/:index', (req, res) => {
               restauranteData.endereco = data.endereco;
               restauranteData.numero = data.numero;
               restauranteData.complemento = data.complemento;
+              break;
+            case '3':
+              restauranteData.taxa = data.taxa;
+              restauranteData.tempo_entrega = data.tempo_entrega;
+              restauranteData.horario = data.horario;
               break;
             default:
               console.error('Índice inválido');
@@ -454,10 +467,81 @@ app.get('/client-login', async (_req, _res) => {
   });
 
 });
-
+//  ROTA GET QUE RETORNA TODOS OS PEDIDOS
 app.get('/get-orders', async (_req, _res) => {
   
   await admin.firestore().collection('cliente').doc(client_id)
+  .get()
+  .then( async (doc) => {
+    _res.send(doc.data().pedidos);
+  }).catch(() => {
+    _res.status(500).send("Não foi possível acessar os pedidos no momento")
+  });
+});
+
+
+app.post('/cancel-customer-order', async (_req, _res) => {
+  const id = _req.body.id;
+
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[id]['status'] = 'Cancelado';
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Cancelamento foi feito com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.post('/cancel-restaurant-order', async (_req, _res) => {
+  const id = _req.body.id;
+  const name = _req.body.name;
+  const justification = _req.body.justification;
+
+  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[name][id]['status'] = 'Cancelado';
+      pedidos[name][id]['justification'] = justification;
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Cancelamento foi feito com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.get('/restaurant-orders', async (_req, _res) => {
+  
+  await admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
   .get()
   .then( async (doc) => {
     _res.send(doc.data().pedidos);
@@ -1064,6 +1148,71 @@ app.post("/storeorderfield", async (req, res) =>{
   });
 });
 
+//Get para pegar os cupons
+app.get('/getdiscount', (req, res) => {
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(doc => {
+      const clientData = doc.data();
+      const cupons = clientData.cupons;
+      res.json(cupons);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do cliente');
+    });
+});
+
+//Rota DELETE para remover cupom do array de cupons do cliente
+app.delete('/getdiscount', (req, res) => {
+  const nomeCupom = req.body.nome;
+  //console.log(nomePrato);
+  console.log("delete");
+  console.log(nomeCupom);
+
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(clienteDoc => {
+      if (!clienteDoc.exists) {
+        res.status(404).send('Cliente não encontrado');
+      } else {
+
+        // Remover o item do array de cupons
+        const cupons = clienteDoc.data().cupons || [];
+        let index = -1;
+        for (let i = 0; i < cupons.length; i++) {
+          console.log(cupons[i].nome);
+          console.log(nomeCupom);
+          if (cupons[i].nome === nomeCupom) {
+            index = i;
+            break;
+          }
+        }
+        if (index !== -1) {
+          cupons.splice(index, 1);
+        }
+
+        // Atualizar o cliente com o novo array de cupons
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({ cupons })
+          .then(() => {
+            res.json({ message: 'Item removido do array de cupons com sucesso' });
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Erro ao atualizar array de cupons do cliente');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao obter cliente');
+    });
+});
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')

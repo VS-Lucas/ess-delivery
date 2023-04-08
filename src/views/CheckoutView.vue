@@ -18,7 +18,7 @@
                                 {{ object.nome }}
                             </div>
                             <div class="col-start-8">
-                                R${{ object.preco }} 
+                                {{ object.quantidade }}x R${{ object.preco }} 
                             </div>
                         </div>
                     </div>
@@ -187,6 +187,7 @@ import qs from 'qs';
                 fee: '',
                 todayDate: '', 
                 currTime: '', 
+                cupons : []
             }
         },
         methods: {
@@ -338,7 +339,7 @@ import qs from 'qs';
             for (var i = 0; i < objectLength; i++) {
                 this.clientDict[i].preco = this.clientDict[i].preco.replace(',', '.');
                 let floatPrice = parseFloat(this.clientDict[i].preco);
-                this.orderPrice += floatPrice;
+                this.orderPrice += floatPrice*this.clientDict[i].quantidade;
             }
             // this.orderPrice += this.fee;
             this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
