@@ -153,8 +153,6 @@ export default {
     },
     deleteItem(prato) {
       const nomePrato = prato.nome
-      console.log(prato.nome);
-      console.log(prato.nome);
       axios.delete('http://localhost:3000/shoppingcart', {
         data: {
           nome: nomePrato

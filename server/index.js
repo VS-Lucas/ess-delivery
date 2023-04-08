@@ -554,7 +554,7 @@ app.get('/shoppingcart', async (req, res) => {
 //Rota DELETE para remover item do carrinho de um cliente
 app.delete('/shoppingcart', (req, res) => {
   const nomePrato = req.body.nome;
-  console.log(nomePrato);
+  //console.log(nomePrato);
 
   admin.firestore()
     .collection('cliente')
@@ -564,11 +564,9 @@ app.delete('/shoppingcart', (req, res) => {
       if (!clienteDoc.exists) {
         res.status(404).send('Cliente não encontrado');
       } else {
-        console.log("AQUIIIIII");
 
         // Remover o item do array de carrinho
         const carrinho = clienteDoc.data().carrinho || [];
-        console.log("AQUIIIIII2");
         let index = -1;
         for (let i = 0; i < carrinho.length; i++) {
           console.log(carrinho[i].nome);
@@ -581,14 +579,12 @@ app.delete('/shoppingcart', (req, res) => {
         if (index !== -1) {
           carrinho.splice(index, 1);
         }
-        console.log("AQUIIIIII3");
 
         // Atualizar o cliente com o novo array de carrinho
         admin.firestore().collection('cliente').doc(client_id)
           .update({ carrinho })
           .then(() => {
             res.json({ message: 'Item removido do carrinho com sucesso' });
-            console.log("AQUIIIIII4");
           })
           .catch(err => {
             console.error(err);
