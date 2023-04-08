@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 
 let client_id = '';
-let restaurant_id = '';
+let client_name = '';
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -466,6 +466,17 @@ app.get('/get-orders', async (_req, _res) => {
   });
 });
 
+app.get('/restaurant-orders', async (_req, _res) => {
+  
+  await admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+  .get()
+  .then( async (doc) => {
+    _res.send(doc.data().pedidos);
+  }).catch(() => {
+    _res.status(500).send("Não foi possível acessar os pedidos no momento")
+  });
+});
+
 // Rota GET para mostrar os pratos no carrinho
 app.get('/shoppingcart', async (req, res) => {
   await admin.firestore()
@@ -884,6 +895,7 @@ app.put('/clienthome2', async (req, res) => {
 app.get('/orders', async(req, res) =>{
   try{
     const doc = await admin.firestore().collection('cliente').doc(client_id).get();
+    client_name = doc.data().nome;
     
     const data = doc.data();
     const orders = Object.keys(data.pedidos);
@@ -925,7 +937,7 @@ app.post("/storeclientorder", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime}
 
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
@@ -961,8 +973,13 @@ app.post("/reststore", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
-
+      if (!(client_name in pedidos)) {
+        pedidos[client_name] = {};
+      }
+      if (!(orderID in pedidos[client_name])) {
+        pedidos[client_name][orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime};
+      }
+      
       admin.firestore().collection('restaurantes').doc(res_id)
         .update({ pedidos })
         .then(() => {
