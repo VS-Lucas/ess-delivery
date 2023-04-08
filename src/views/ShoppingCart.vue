@@ -27,7 +27,7 @@
                   </svg>
                 </div>
                 <div class="mt-4 flex items-center space-x-2">
-                  <p class="text-white flex items-center">{{prato.preco}} <span class="ml-1">R$</span></p>
+                  <p class="text-white flex items-center">{{(parseFloat(prato.preco.replace(',','.'))*prato.quantidade).toFixed(2).replace('.',',')}} <span class="ml-1">R$</span></p>
                   
                 </div>
               </div>
@@ -39,7 +39,7 @@
       <div class="mt-6 h-full rounded-lg border bg-[#A62C21] p-6 shadow-md md:mt-0 md:w-2/4">
         <div class="mb-2 flex justify-between">
           <p class="text-white font-bold">Subtotal:</p>
-          <p class="text-white">{{precoTotal.toFixed(2)}} <span class="ml-1">R$</span></p>
+          <p class="text-white">{{precoTotal}} <span class="ml-1">R$</span></p>
         </div>
         <div class="flex justify-between">
           <!-- <p class="text-white">Shipping</p> -->
@@ -96,7 +96,7 @@ export default {
   data() {
    return {
     pratos: [],
-    precoTotal: 0,
+    precoTotal: '0',
     vazio: false,
     itens: 0
    }
@@ -118,10 +118,13 @@ export default {
       // console.log("Passou pelo axios")
       // console.log(this.pratos)
     
+      let precoTotal = 0;
       this.pratos.forEach((doc) => {
-        this.precoTotal+= parseFloat(doc.preco)*doc.quantidade;
-        console.log(parseFloat(doc.preco)) 
+        precoTotal+= parseFloat(doc.preco.replace(',','.'))*doc.quantidade;
+        this.precoTotal = precoTotal.toFixed(2).replace('.',',')
+        console.log(this.precoTotal) 
       });
+      
 
     //   for(let objeto in this.pratos){
     //   console.log('Mensagem');
@@ -134,9 +137,9 @@ export default {
                     this.$router.push('/clienthome');
                 },
     goToCheckout() {
-      // this.pratos.forEach(() => {
-      //   this.itens+= 1; 
-      // });
+      this.pratos.forEach(() => {
+        this.itens+= 1; 
+      });
       if(this.itens==0){this.vazio = true}
       if(!this.vazio){
         this.$router.push ({
