@@ -485,7 +485,7 @@ app.post('/cancel-customer-order', async (_req, _res) => {
         })
         .catch(err => {
           console.error(err);
-          res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
         });
   })
   .catch(err => {
@@ -494,18 +494,22 @@ app.post('/cancel-customer-order', async (_req, _res) => {
   });
 });
 
-app.post('/cancel-order', async (_req, _res) => {
-  const id = _req.body.id;
 
-  admin.firestore().collection('cliente').doc(client_id).get()
+app.post('/cancel-restaurant-order', async (_req, _res) => {
+  const id = _req.body.id;
+  const name = _req.body.name;
+  const justification = _req.body.justification;
+
+  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
   .then(clienteDoc => {
       // Adicionar o prato ao array de carrinho
       const pedidos = clienteDoc.data().pedidos;
       
-      pedidos[id]['status'] = 'Cancelado';
+      pedidos[name][id]['status'] = 'Cancelado';
+      pedidos[name][id]['justification'] = justification;
 
       // Atualizar o cliente com o novo array de carrinho
-      admin.firestore().collection('cliente').doc(client_id)
+      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
         .update({ pedidos })
         .then(() => {
           _res.json({ message: 'Cancelamento foi feito com sucesso!' });
@@ -514,7 +518,8 @@ app.post('/cancel-order', async (_req, _res) => {
           console.error(err);
           _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
         });
-  }).catch(err => {
+  })
+  .catch(err => {
     console.error(err);
     _res.status(500).send('Erro ao obter cliente');
   });

@@ -169,7 +169,7 @@
                         <div class="modal-body mt-2">
                             <!-- Conteúdo do modal aqui -->
                             <label for="input">Porque você deseja cancelar:</label>
-                            <input name="input" class="w-full rounded-[20px]" type="text">
+                            <input v-model="justification" name="input" class="w-full rounded-[20px]" type="text">
 
                             <div class="grid grid-cols-2 mt-10">
                                 <div class="col-span-1">
@@ -210,9 +210,31 @@
                 </div>
             </div>
         </div>
+
+        <div v-if="this.error">
+        <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+            <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+                <div class="modal-container bg-white w-[400px] mx-auto h-[200px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
+                    <div class="modal-content py-4 text-left px-6">
+                        <div class="modal-body mt-2">
+                            <!-- Conteúdo do modal aqui -->
+                            <h1 class="text-bold text-center">Falha ao cancelar! Entrega em andamento</h1>
+
+                            <div class="flex items-center justify-center mt-10">
+                                <div>
+                                    <button @click="toBack" type="button" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5">
+                                        Voltar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
        
 
-    <div v-if="!this.steps.underway" class="mx-auto mt-10 flex items-center justify-center">
+    <div class="mx-auto mt-10 flex items-center justify-center">
         <div>
             <button @click="cancelOrder" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Cancelar pedido</button>
         </div>       
@@ -229,6 +251,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            justification: '',
             name: '',
             show: false,
             show2: false,
@@ -243,7 +266,8 @@ export default {
                 order_in_preparation: false,
                 underway: false,
                 delivered: false,
-            }
+            },
+            error: false,
         }
     }, 
     mounted() {
@@ -255,8 +279,6 @@ export default {
                 const orders = response.data;
                 this.status = orders[this.id].status;
     
-                // if (this.status === 'Pagamento') {
-                //     this.steps.payment = true;
                 if (this.status === 'Pedido confirmado') {
                     this.steps.confirmed_order = true;
                 } else if (this.status === 'Pedido em preparação') {
@@ -276,7 +298,12 @@ export default {
     },
     methods: {
         cancelOrder() {
-            this.show = true;
+            if (this.steps.underway) {
+                this.error = true;
+            } else {
+                this.show = true;
+            }
+
         },
         checkFrequency() {
             const objectString = this.$route.params.clientOrder;
@@ -316,7 +343,7 @@ export default {
                 console.log(err.message);
             });
             // Cancelamento do pedido do restaurante
-            axios.post('http://localhost:3000/cancel-restaurant-order', {id: this.id})
+            axios.post('http://localhost:3000/cancel-restaurant-order', {name: this.name, id: this.id, justification: this.justification})
             .then(() => {
                 this.show = false;
                 this.show2 = true;
@@ -327,6 +354,9 @@ export default {
         backToHome() {
             this.show2 = false;
             this.$router.push('/clienthome');
+        },
+        toBack() {
+            this.error = false;
         }
 
     }
