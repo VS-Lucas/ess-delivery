@@ -21,8 +21,18 @@
                                 R${{ object.preco }} 
                             </div>
                         </div>
+
+                        <div class="py-3">
+                        <form @submit.prevent="getDiscount($event)">   
+                            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only  p-3">Search</label>
+                            <div class="relative">
+                                <input id= "cupom_desconto" type="cupom" name="cupom" v-model="cupom" class="block w-100 p-10 pl-10 text-sm py-4 h-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 " placeholder="Cupom de desconto..." required>
+                                <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 ">Aplicar</button>
+                            </div>
+                        </form>
+                        </div>
                     </div>
-                    <div class="px-3">
+                    <div class="px-3 py-3">
                         <hr><hr/>
                     </div>
                     <div class="grid grid-cols-13 mt-[7px] ml-[30px] text-white">
@@ -298,8 +308,19 @@ import qs from 'qs';
                 this.$router.push({
                     path: '/shoppingcart'
                 })
+            },
+            // aquii
+            async getDiscount() {
+                console.log("aqui");
+                const cupom  = this;
+                console.log(cupom.cupom);
+                if (cupom.cupom == 'cupom10'){
+                    console.log(cupom);
+                    this.orderPrice = this.orderPrice - 10;
+                }
             }
         },
+
         mounted() {
             this.getAddress();
             this.OrdersAmount();
