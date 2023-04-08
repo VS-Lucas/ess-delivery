@@ -97,10 +97,19 @@
     },
     data() {
     return {
-      pratos: []
+      pratos: [],
+      carrinho: [],
+      found: false
     }
   },
   mounted() {
+    axios.get('http://localhost:3000/clienthome1')
+      .then(response => {
+        this.carrinho = [...response.data];
+      })
+      .catch(error=> {
+        console.error(error);
+      });
     axios.get('http://localhost:3000/clienthome')
       .then(response => {
         this.pratos = response.data;
@@ -113,22 +122,67 @@
       goToShoppingCart() {
       this.$router.push('/shoppingcart');
       },
+      update(){
+        console.log('updated')
+        axios.get('http://localhost:3000/clienthome1')
+        .then(response => {
+          this.carrinho = [...response.data];
+        })
+        .catch(error=> {
+          console.error(error);
+        });
+      },
 
       addToCart(prato) {
-        // const novoPrato = {
-        //    nome: prato.nome,
-        //    descricao: prato.descricao,
-        //    preco: prato.preco,
-        //    url: prato.url
-        //  }
-
-        axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url}  )
+        this.update();
+        console.log('addToCart')
+        console.log(this.carrinho)
+        if (this.carrinho.length == 0){
+          console.log('length == 0')
+          axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1}  )
           .then(response => {
             console.log(response.data.message);
           })
           .catch(error => {
             console.error(error);
           });
+      } else {
+        console.log("length !== 0")
+        let i = 0;
+        let index = 0;
+        this.carrinho.forEach((doc) => {
+          console.log(doc.nome)
+          if(doc.nome == prato.nome){
+            console.log('Está no carrinho')
+            index = i;
+            this.found = true; 
+          }
+          i = i + 1;
+        });
+        if(!this.found){
+          console.log('not found');
+          axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1}  )
+          .then(response => {
+            console.log(response.data.message);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+        }
+        if(this.found){
+          console.log('found');
+          console.log(index)
+          axios.put('http://localhost:3000/clienthome2',  {nome: prato.nome, index: index}  )
+          .then(response => {
+            console.log(response.data.message);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+        }
+      }
+      this.found = false;
+      location.reload();
       }
     }
   }
