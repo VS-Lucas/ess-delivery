@@ -223,22 +223,40 @@
 
 <script>
 import RestaurantNavBar from '@/components/RestaurantNavBar.vue'
-// import axios from 'axios';
+import axios from 'axios';
 
 export default ({
    name: 'HomeRestaurant',
    data() {
       return {
-         orders: {
-            order_id: '12451',
-            items: ['parmegiana', 'coca', 'batata'],
-            delivery_place: 'Rua da Harmonia',
-            price: '93,00',
-            form_of_payment: 'pix',
-            client_name: 'Bonna Gil'
-         },
+         orders: [],
+         key: [],
+         address: '',
+         form_of_payment: 'Cartão de Crédito',
+         client_name: '',
          modalCard: false
       }
+   },
+   mounted() {
+      axios.get('http://localhost:3000/get-orders')
+      .then((res) => {
+         const base_orders = res.data;
+         let aux = []
+         this.keys = Object.keys(base_orders);
+
+         this.keys.forEach(key => {
+            aux.push({
+               order_id: key,
+               items: this.get_items(key, base_orders),
+               price: this.get_total_price(key, base_orders),
+               status: this.get_status(key, base_orders),
+            });
+         });
+
+         this.orders = [...aux];
+      }).catch((error) => {
+         console.log(error.message)
+      });
    },
    components: {
       RestaurantNavBar
@@ -248,6 +266,45 @@ export default ({
          console.log(this.modalCard)
          this.modalCard = !this.modalCard
          console.log(this.modalCard)
+      },
+      async getAddres(){
+         await axios.get('http://localhost:3000/address')
+         .then(response => {
+            this.address = response.data.address;
+         })
+         .catch(error => {
+            console.error(error);
+         });
+      },
+      async getName() {
+         await axios.get('http://localhost:3000/clientname')
+         .then(response => {
+            this.clientName = response.data.name;
+         })
+         .catch(error => {
+            console.error(error);
+         });
+      },
+      get_items(key, orders) {
+         var keys = Object.keys(orders[key]['pratos']);
+         const items = [];
+         keys.forEach(ky =>{
+            items.push(orders[key]['pratos'][ky].nome);
+         });
+
+         return items;
+      },
+      get_total_price(key, orders) {
+         var keys = Object.keys(orders[key]['pratos']);
+         var price = 0;
+         keys.forEach(ky =>{
+            var n = orders[key]['pratos'][ky].preco.replace(',', '.');
+            price += parseFloat(n);
+         });
+         return `${price.toFixed(2)}`;
+      },
+      get_status(key, orders) {
+         return orders[key]['status'];
       }
    }
 })
