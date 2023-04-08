@@ -141,9 +141,9 @@ export default {
                     this.$router.push('/clienthome');
                 },
     goToCheckout() {
-      // this.pratos.forEach(() => {
-      //   this.itens+= 1; 
-      // });
+      this.pratos.forEach(() => {
+        this.itens+= 1; 
+      });
       if(this.itens==0){this.vazio = true}
       if(!this.vazio){
         this.$router.push ({
