@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import axios from 'axios'
     export default({
         data() {
             return {
@@ -94,6 +95,14 @@
                 this.modalCard = !this.modalCard
                 console.log(this.modalCard)
             },
+            finishButton(){
+                axios.post('http://localhost:3000/finish-order', {name: this.name, id: this.id})
+                .then(() => {
+                    this.modalCard = !this.modalCard
+                }).catch(err => {
+                    console.log(err.message);
+                });
+            }
         }
 })
 </script>

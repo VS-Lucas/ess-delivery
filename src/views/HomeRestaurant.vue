@@ -66,20 +66,20 @@
                            </thead>
                            
                            <tbody>
-                                 <tr v-for="(object, index) in this.orders" :key="index" class="bg-[#DDDDDD] border-b font-medium dark:bg-gray-800 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-600">
+                                 <tr v-for="(order, index) in this.orders" :key="index" class="bg-[#DDDDDD] border-b font-medium dark:bg-gray-800 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-600">
                                     <th scope="row" class="px-6 py-4 text-left font-medium text-gray-900 whitespace-normal dark:text-gray-900">
                                        {{index}}
                                     </th>
+   
                                     <DashboardCard
-                                    :id="object.order_id"
-                                    :name="object.client_name"
-                                    :order="object.items"
-                                    :address="object.address"
-                                    :price="object.price"
-                                    :status="object.status"
+                                    :id="order.order_id"
+                                    :name="order.nome"
+                                    :order="order.items"
+                                    :address="order.address"
+                                    :price="order.price"
+                                    :status="order.status"
                                     :payment="this.form_of_payment"
                                     />
-                                    
                                  </tr>
                            </tbody>
                         </table>
@@ -140,19 +140,23 @@ export default ({
       .then((res) => {
          const base_orders = res.data;
          let aux = []
-         this.keys = Object.keys(base_orders);
-
-         this.keys.forEach(key => {
-            aux.push({
-               order_id: key,
-               items: this.get_items(key, base_orders),
-               price: this.get_total_price(key, base_orders),
-               status: this.get_status(key, base_orders),
-               nome: this.keys,
-               address: this.getAddres(key, base_orders)
+         var keys = Object.keys(base_orders);
+         console.log(keys)
+         keys.forEach(key => {
+            var ids = Object.keys(base_orders[key]);
+            console.log('ids:' + ids);
+            ids.forEach(id => {
+               aux.push({
+                  order_id: id,
+                  items: this.get_items(key, id, base_orders),
+                  price: this.get_total_price(key, id, base_orders),
+                  status: this.get_status(key, id, base_orders),
+                  nome: key,
+                  address: this.getAddres(key, id, base_orders),
+               });
             });
          });
-
+         console.log('AUX:   ' + aux);
          this.orders = [...aux];
       }).catch((error) => {
          console.log(error.message)
@@ -168,52 +172,31 @@ export default ({
          this.modalCard = !this.modalCard
          console.log(this.modalCard)
       },
-      async getAddres(key, orders){
-         var keys = Object.keys(orders[key]);
-         var address = {};
-         keys.forEach(ky =>{
-            address = (orders[key][ky]['endereço']);
-         });
-
-         console.log(address)
-         return address;
+      getAddres(key, id, orders){
+         return orders[key][id]['endereço'];
       },
-      async getName() {
-         await axios.get('http://localhost:3000/clientname')
-         .then(response => {
-            this.clientName = response.data.name;
-         })
-         .catch(error => {
-            console.error(error);
-         });
-      },
-      get_items(key, orders) {
-         var keys = Object.keys(orders[key]);
-         const items = [];
+      get_items(key, id, orders) {
+         // id
+         console.log('to aq')
+         var keys = Object.keys(orders[key][id]['pratos']);
+         console.log(keys);
+         var items = [];
          keys.forEach(ky =>{
-            var auxK = Object.keys(orders[key][ky]['pratos']);
-
-            auxK.forEach(k =>{
-               items.push(orders[key][ky]['pratos'][k].nome)
-            })
+            items.push(orders[key][id]['pratos'][ky].nome);
          });
-
+         console.log('to aq em items' + items)
          return items;
       },
-      get_total_price(key, orders) {
-         var keys = Object.keys(orders[key]);
+      get_total_price(key, id, orders) {
+         var keys = Object.keys(orders[key][id]['pratos']);
          var price = 0;
          keys.forEach(ky =>{
-            var auxK = Object.keys(orders[key][ky]['pratos']);
-
-            auxK.forEach(k =>{
-               price += parseFloat(orders[key][ky]['pratos'][k].preco.replace(',', '.'))
-            })
+            price += parseFloat(orders[key][id]['pratos'][ky].preco.replace(',', '.'));
          });
          return `${price.toFixed(2)}`;
       },
-      get_status(key, orders) {
-         return orders[key]['status'];
+      get_status(key, id, orders) {
+         return orders[key][id]['status'];
       }
    }
 })
