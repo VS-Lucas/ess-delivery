@@ -668,7 +668,35 @@ app.get('/clienthome', (req, res) => {
 //     });
 
 // });
+app.post('/add-to-cart', (_req, _res) => {
+  const new_dishes = _req.body;
 
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const cart = clienteDoc.data().carrinho || [];
+      
+      new_dishes.forEach(obj => {
+        cart.push(obj);
+      });
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ carrinho: cart })
+        .then(() => {
+          _res.json({ message: 'Prato adicionado ao carrinho com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao atualizar carrinho do cliente');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+
+});
 // Rota POST para adicionar itens no carrinho do usuário
 app.post('/clienthome', (req, res) => {
   console.log("cliente on");
