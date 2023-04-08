@@ -215,6 +215,66 @@
                   <button @click="verifyInput(2)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
                 </div>
               </div>
+
+<!--///////////////////////////////////////////////////-->              
+
+              <br>
+              <div class="shadow sm:overflow-hidden sm:rounded-md w-full">
+                <div class="space-y-6 bg-gray-50 px-4 py-5 sm:p-6">
+                  <br>
+                  <div class="grid grid-cols-11 gap-6">
+                    <div class="col-span-11 sm:col-start-2 sm:col-span-4">
+                      <h2 class="text-4xl font-bold leading-10 text-gray-800">Dados de serviços</h2>
+                    </div>
+                    <div class="col-span-11 sm:col-start-7 sm:col-span-4">
+                      <p class="mt-1 text-sm text-gray-700">Preencha com as informações de funcionamento da sua loja.</p>
+                    </div>
+                  </div>
+                  <br>
+                  <br>
+                  <div class="grid grid-cols-11 gap-6">                     
+                    <div class="col-span-11 sm:col-start-2 sm:col-span-4">
+                      <div class="relative">
+                        <input type="text" id="taxa" v-model="restaurant.taxa" v-mask="['R$ ##']" :disabled="!editing[3]" required pattern="R\$ [1-9][0-9]*" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <label for="taxa" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Taxa de entrega</label>
+                      </div>
+                    </div>
+
+                    <div class="col-span-11 sm:col-start-7 sm:col-span-4">
+                      <div class="relative">
+                        <select id="tempo_entrega" v-model="restaurant.tempo_entrega" :disabled="!editing[3]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
+                          <option disabled>---</option>
+                          <option value="10min-20min">De 10min a 20 min</option>
+                          <option value="15min-30min">De 15min a 30min</option>
+                          <option value="30min-45min">De 30min a 45min</option>
+                          <option value="45min-1h">De 45min a 1h</option>
+                        </select>
+                        <label for="tempo_entrega" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Tempo de entrega</label>
+                      </div>
+                    </div>
+
+                    <div class="col-span-11 sm:col-start-4 sm:col-span-5">
+                      <div class="relative">
+                        <select id="horario" v-model="restaurant.horario" :disabled="!editing[3]" required class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
+                          <option disabled>---</option>
+                          <option value="08h-17h">Das 08h às 17h</option>
+                          <option value="08h-12h">Das 08h às 12h</option>
+                          <option value="12h-18h">Das 12h às 18h</option>
+                          <option value="14h-00h">Das 14h às 00h</option>
+                          <option value="17h-22h">Das 17h às 22h</option>
+                        </select>
+                        <label for="horario" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Horário de funcionamento</label>
+                      </div>
+                    </div>
+                  
+                  </div>
+                </div>
+                <div class="bg-gray-200 flex justify-between px-4 py-3 text-right sm:px-6">
+                  <button @click="toggleEditing(3)" type="button" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">{{ editing3 ? 'Cancelar' : 'Editar' }}</button>
+                  <button @click="verifyInput(3)" type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Salvar</button>                
+                </div>
+              </div>
+
             </div>
             <br>
           </form>
@@ -251,12 +311,16 @@ export default {
         endereco: '',
         numero: '',
         complemento: '',
+        taxa: '',
+        tempo_entrega: '',
+        horario: '',
         original: {},
       },
-      editing: [false, false, false],
+      editing: [false, false, false, false],
       editing0: false,
       editing1: false,
       editing2: false,
+      editing3: false,
       razao_social_failure: false,
       telefone_failure: false,
       nome_loja_failure: false,
@@ -266,6 +330,7 @@ export default {
     axios.get('http://localhost:3000/update-register')
       .then(response => {
         this.restaurant = {...response.data, original: {...response.data}};
+        
       })
       .catch(error => {
         console.error(error);
@@ -278,7 +343,7 @@ export default {
     },
     toggleEditing(index) {
       this.editing = this.editing.map((value, i) => i === index ? !value : value);
-    
+      
       if (index === 0) {
         this.editing0 = !this.editing0;
         if (!this.editing[index]) {
@@ -304,6 +369,13 @@ export default {
           this.restaurant.endereco = this.restaurant['original']['endereco'];
           this.restaurant.numero = this.restaurant['original']['numero'];
           this.restaurant.complemento = this.restaurant['original']['complemento'];
+        }
+      } else if (index === 3) {
+        this.editing3 = !this.editing3;
+        if (!this.editing[index]) {
+          this.restaurant.taxa = this.restaurant['original']['taxa'];
+          this.restaurant.tempo_entrega = this.restaurant['original']['tempo_entrega'];
+          this.restaurant.horario = this.restaurant['original']['horario'];
         }
       }
     },
@@ -375,6 +447,24 @@ export default {
           this.editing[index] = !this.editing[index];
           this.editing2 = !this.editing2;
         }
+      } else if (index == 3) {
+        if (this.restaurant['original']['taxa'] != this.restaurant.taxa ||
+            this.restaurant['original']['tempo_entrega'] != this.restaurant.tempo_entrega ||
+            this.restaurant['original']['horario'] != this.restaurant.horario) {
+            
+          axios.put('http://localhost:3000/update-register/3', {
+            taxa: this.restaurant.taxa,
+            tempo_entrega: this.restaurant.tempo_entrega,
+            horario: this.restaurant.horario
+          });
+
+          this.restaurant['original']['taxa'] = this.restaurant.taxa;
+          this.restaurant['original']['tempo_entrega'] = this.restaurant.tempo_entrega;
+          this.restaurant['original']['horario'] = this.restaurant.horario;
+                
+          this.editing[index] = !this.editing[index];
+          this.editing3 = !this.editing3;
+        }
       }
     },
     async verifyData(index) {
@@ -428,6 +518,8 @@ export default {
           }
         } else if (index == 2) {
           this.submit(index);
+        } else if (index == 3) {
+          this.submit(index);
         }
       } catch (error) {
         console.error(error);
@@ -438,12 +530,14 @@ export default {
       const rgRegex = /^\d{1}.\d{3}.\d{3}$/
       const telRegex = /^\(\d{2}\) \d{5}-\d{4}$/
       const cepRegex = /^\d{5}-\d{3}$/
-
+      
       if (index == 0 && (!this.restaurant.nome || !this.restaurant.cpf || !this.restaurant.rg)) {
         return;
       } else if (index == 1 && (!this.restaurant.razao_social || !this.restaurant.nome_loja || !this.restaurant.telefone || !this.restaurant.especialidade)) {
         return;
       } else if (index == 2 && (!this.restaurant.cep || !this.restaurant.estado_uf || !this.restaurant.cidade || !this.restaurant.bairro || !this.restaurant.endereco || !this.restaurant.numero)) {
+        return;
+      } else if (index == 3 && (!this.restaurant.taxa || !this.restaurant.tempo_entrega || !this.restaurant.horario)) {
         return;
       }
 

@@ -31,7 +31,7 @@
         <div class="flex col-span-1 text-white font-medium">
             <div class="flex flex-col items-center justify-center">
                 <p class="text-[#261918] font-bold sm:text-[17px] text-[12px] sm:mr-0 mr-3">ID: #{{ id }}</p>
-                <p class="text-[#261918] font-bold sm:text-[17px] text-[12px] sm:mr-0 mr-3">{{ date }}</p>
+                <p class="text-[#261918] sm:text-[17px] text-[12px] sm:mr-0 mr-3">{{ date }}, {{ this.hour }}</p>
             </div>
         </div>
 
@@ -57,12 +57,13 @@
             imgSrc: String,
             name: String,
             items: Array,
-            date: String,
             total_price: String,
             form_pay: String,
             status: String,
             prices: Array,
-            dishes: Array
+            dishes: Array,
+            date: String,
+            hour: String
         },
         methods: {
             goToDetails() {
@@ -79,7 +80,8 @@
                         form_pay: this.form_pay,
                         status: this.status,
                         prices: this.prices,
-                        dishes: JSON.stringify(this.dishes)
+                        dishes: JSON.stringify(this.dishes),
+                        hour: this.hour
                     }
                 })
             },

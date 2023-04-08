@@ -41,6 +41,7 @@
                 :status="object.status"
                 :prices="object.prices"
                 :dishes="object.dishes"
+                :hour="object.hour"
                 />
             </div>
         </div>
@@ -82,12 +83,13 @@
                         img_src: 'https://www.pizzariaatlantico.com.br/mobile/img/logo.png',
                         restaurant_name: 'Anonymous',
                         items: this.get_items(key, base_orders),
-                        date: 'xx/xx/xx',
                         price: this.get_total_price(key, base_orders),
                         form_of_payment: 'Cartão de crédito',
                         status: this.get_status(key, base_orders),
                         prices: this.get_prices(key, base_orders),
-                        dishes: this.get_dishes(key, base_orders)
+                        dishes: this.get_dishes(key, base_orders),
+                        date: this.get_date(key, base_orders),
+                        hour: this.get_hour(key, base_orders)
                     });
                 });
 
@@ -136,6 +138,12 @@
                 });
 
                 return dishes;
+            },
+            get_date(key, orders) {
+                return orders[key]['data'];
+            },
+            get_hour(key, orders) {
+                return orders[key]['hora'];
             }
         }
     }

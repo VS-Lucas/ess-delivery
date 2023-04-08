@@ -209,10 +209,18 @@ app.post("/restaurant-login", async (req, res) => {
                                .doc(userRecord.uid)
                                .get();
     
-    restaurant_id = userRecord.uid;
+    userId = userRecord.uid;
 
     if (userDoc.data().password == password) {
       const token = await admin.auth().createCustomToken(userRecord.uid);
+
+      const restDoc = await admin.firestore()
+                                 .collection('usuarios')
+                                 .doc(userId)
+                                 .get()
+                                       
+      restaurantId = restDoc.data().restauranteId;
+      
       res.status(200).json({ token });
     } else {
       res.status(401).send("Senha incorreta");
@@ -294,6 +302,11 @@ app.put('/update-register/:index', (req, res) => {
               restauranteData.endereco = data.endereco;
               restauranteData.numero = data.numero;
               restauranteData.complemento = data.complemento;
+              break;
+            case '3':
+              restauranteData.taxa = data.taxa;
+              restauranteData.tempo_entrega = data.tempo_entrega;
+              restauranteData.horario = data.horario;
               break;
             default:
               console.error('Índice inválido');
@@ -454,7 +467,7 @@ app.get('/client-login', async (_req, _res) => {
   });
 
 });
-
+//  ROTA GET QUE RETORNA TODOS OS PEDIDOS
 app.get('/get-orders', async (_req, _res) => {
   
   await admin.firestore().collection('cliente').doc(client_id)
@@ -465,6 +478,66 @@ app.get('/get-orders', async (_req, _res) => {
     _res.status(500).send("Não foi possível acessar os pedidos no momento")
   });
 });
+
+
+app.post('/cancel-customer-order', async (_req, _res) => {
+  const id = _req.body.id;
+
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[id]['status'] = 'Cancelado';
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Cancelamento foi feito com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.post('/cancel-restaurant-order', async (_req, _res) => {
+  const id = _req.body.id;
+  const name = _req.body.name;
+  const justification = _req.body.justification;
+
+  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[name][id]['status'] = 'Cancelado';
+      pedidos[name][id]['justification'] = justification;
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Cancelamento foi feito com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
 
 app.get('/restaurant-orders', async (_req, _res) => {
   
@@ -929,6 +1002,8 @@ app.post("/storeclientorder", async (req, res) =>{
   const auxOrderDate = req.body.orderDate;
   const orderDate = auxOrderDate.replace(',', '');
   const orderTime = req.body.orderTime;
+  const orderFee = req.body.orderFee;
+  const eTime = req.body.eTime;
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
@@ -937,7 +1012,8 @@ app.post("/storeclientorder", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime}
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
+                          'taxa': orderFee, 'tempo_estimado': eTime}
 
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
@@ -965,6 +1041,7 @@ app.post("/reststore", async (req, res) =>{
   const auxOrderDate = req.body.orderDate;
   const orderDate = auxOrderDate.replace(',', '');
   const orderTime = req.body.orderTime;
+  const orderAddress = req.body.orderAddress;
 
   admin.firestore().collection('restaurantes').doc(res_id).get()
   .then(clienteDoc => {
@@ -977,7 +1054,7 @@ app.post("/reststore", async (req, res) =>{
         pedidos[client_name] = {};
       }
       if (!(orderID in pedidos[client_name])) {
-        pedidos[client_name][orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime};
+        pedidos[client_name][orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime, 'endereço': orderAddress};
       }
       
       admin.firestore().collection('restaurantes').doc(res_id)
@@ -1013,19 +1090,63 @@ app.put("/clearcart", async (req, res) =>{
   }); 
 });
 
-// // Rota GET do tempo estimado de entrega
-// app.get('/estimatedtime', async(req, res) =>{
-//   try{
-//     const doc = await admin.firestore().collection('restaurantes').doc(id_restaurant).get();
-//     const est_time = doc.data().tempo_entrega;
-//     const fee = doc.data().taxa;
+// Rota GET do tempo estimado de entrega
+app.get('/estimatedtime', async(req, res) =>{
+  const res_id = 'hm0n3mzMyFMh2JAb9YQb';
 
-//     res.json({tempo_estimado: est_time, taxa: fee})
-//   }
-//   catch(error){
-//     console.log(error)
-//   }
-// });
+  try{
+    const doc = await admin.firestore().collection('restaurantes').doc(res_id).get();
+    const est_time = doc.data().tempo_entrega;
+    const fee = doc.data().taxa;
+
+    res.json({tempo_estimado: est_time, taxa: fee})
+  }
+  catch(error){
+    console.log(error)
+  }
+});
+
+// Rota POST para salvar no campo acompanhamento
+app.post("/storeorderfield", async (req, res) =>{
+
+  const orderData = req.body.orderData;
+  const orderID = req.body.orderID;
+  const auxOrderDate = req.body.orderDate;
+  const orderDate = auxOrderDate.replace(',', '');
+  const orderTime = req.body.orderTime;
+  const orderAddress = req.body.orderAddress;
+  const orderPrice = req.body.orderPrice;
+  const clientName = req.body.clientName;
+  const orderFee = req.body.orderFee;
+  const eTime = req.body.eTime;
+
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+    if (!clienteDoc.exists) {
+      res.status(404).send('Cliente não encontrado');
+    } else {
+
+      const acompanhamento = clienteDoc.data().acompanhamento || {};
+      acompanhamento[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
+                                  'preco': orderPrice, 'endereco': orderAddress, 'nome': clientName, 'taxa': orderFee, 
+                                  'tempo_estimado': eTime}
+
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ acompanhamento })
+        .then(() => {
+          res.json({ message: 'Acompanhamento adicionado com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao adicionar acompanhamento');
+        });
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao obter cliente');
+  });
+});
 
 //Get para pegar os cupons disponíveis
 app.get('/getcoupons_available', (req, res) => {
