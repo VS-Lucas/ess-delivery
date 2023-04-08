@@ -327,7 +327,6 @@ import qs from 'qs';
 
             this.todayDate = aux[0];
             this.currTime = aux[1];
-            console.log(this.todayDate, this.currTime);
         },
     }
 </script>
