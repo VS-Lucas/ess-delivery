@@ -1027,11 +1027,6 @@ app.put("/clearcart", async (req, res) =>{
 //   }
 // });
 
-
-app.listen(3000, () => {
-  console.log('Servidor ON em http://localhost:3000')
-});
-
 //Get para pegar os cupons
 app.get('/getdiscount', (req, res) => {
   admin.firestore()
@@ -1096,4 +1091,8 @@ app.delete('/getdiscount', (req, res) => {
       console.error(err);
       res.status(500).send('Erro ao obter cliente');
     });
+});
+
+app.listen(3000, () => {
+  console.log('Servidor ON em http://localhost:3000')
 });
