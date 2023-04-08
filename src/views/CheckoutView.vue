@@ -18,7 +18,7 @@
                                 {{ object.nome }}
                             </div>
                             <div class="col-start-8">
-                                R${{ object.preco }} 
+                                {{ object.quantidade }}x R${{ object.preco }} 
                             </div>
                         </div>
 
@@ -197,6 +197,7 @@ import qs from 'qs';
                 fee: '',
                 todayDate: '', 
                 currTime: '', 
+                cupons : []
             }
         },
         methods: {
@@ -313,11 +314,43 @@ import qs from 'qs';
             async getDiscount() {
                 console.log("aqui");
                 const cupom  = this;
-                console.log(cupom.cupom);
-                if (cupom.cupom == 'cupom10'){
-                    console.log(cupom);
-                    this.orderPrice = this.orderPrice - 10;
+                //console.log(cupom.cupom);
+                
+                axios.get('http://localhost:3000/getdiscount')
+                    .then(response => {
+                        this.cupons = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+               
+                for (let i = 0; i < this.cupons.length; i++) {
+                //console.log(cupons[i].nome);
+                //console.log(cupom.cupom);
+                //console.log(this.cupons[i])
+                    if (this.cupons[i].nome === cupom.cupom) {
+                        this.orderPrice = this.orderPrice - this.cupons[i].valor;
+                    }
+                    
+                    axios.delete('http://localhost:3000/getdiscount', {
+                        data: {
+                        nome: cupom.cupom
+                        }
+                        })
+                        .then(response => {
+                            console.log(response.data)
+                        })
+                        .catch(error => {
+                            console.error(error)
+                        })
                 }
+                
+
+                // if (cupom.cupom == 'cupom10'){
+                //     console.log(cupom);
+                //     this.orderPrice = this.orderPrice - 10;
+                // }
             }
         },
 
@@ -336,7 +369,7 @@ import qs from 'qs';
             for (var i = 0; i < objectLength; i++) {
                 this.clientDict[i].preco = this.clientDict[i].preco.replace(',', '.');
                 let floatPrice = parseFloat(this.clientDict[i].preco);
-                this.orderPrice += floatPrice;
+                this.orderPrice += floatPrice*this.clientDict[i].quantidade;
             }
             // this.orderPrice += this.fee;
             this.orderPrice = parseFloat(this.orderPrice.toFixed(2));

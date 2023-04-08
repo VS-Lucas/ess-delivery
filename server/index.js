@@ -1014,3 +1014,69 @@ app.put("/clearcart", async (req, res) =>{
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
+
+//Get para pegar os cupons
+app.get('/getdiscount', (req, res) => {
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(doc => {
+      const clientData = doc.data();
+      const cupons = clientData.cupons;
+      res.json(cupons);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do cliente');
+    });
+});
+
+//Rota DELETE para remover cupom do array de cupons do cliente
+app.delete('/getdiscount', (req, res) => {
+  const nomeCupom = req.body.nome;
+  //console.log(nomePrato);
+  console.log("delete");
+  console.log(nomeCupom);
+
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(clienteDoc => {
+      if (!clienteDoc.exists) {
+        res.status(404).send('Cliente não encontrado');
+      } else {
+
+        // Remover o item do array de cupons
+        const cupons = clienteDoc.data().cupons || [];
+        let index = -1;
+        for (let i = 0; i < cupons.length; i++) {
+          console.log(cupons[i].nome);
+          console.log(nomeCupom);
+          if (cupons[i].nome === nomeCupom) {
+            index = i;
+            break;
+          }
+        }
+        if (index !== -1) {
+          cupons.splice(index, 1);
+        }
+
+        // Atualizar o cliente com o novo array de cupons
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({ cupons })
+          .then(() => {
+            res.json({ message: 'Item removido do array de cupons com sucesso' });
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Erro ao atualizar array de cupons do cliente');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao obter cliente');
+    });
+});
