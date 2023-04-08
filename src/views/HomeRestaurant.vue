@@ -67,6 +67,9 @@
                            
                            <tbody>
                                  <tr v-for="(object, index) in this.orders" :key="index" class="bg-[#DDDDDD] border-b font-medium dark:bg-gray-800 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-600">
+                                    <th scope="row" class="px-6 py-4 text-left font-medium text-gray-900 whitespace-normal dark:text-gray-900">
+                                       {{index}}
+                                    </th>
                                     <DashboardCard
                                     :id="object.order_id"
                                     :name="object.client_name"
@@ -74,8 +77,9 @@
                                     :address="object.address"
                                     :price="object.price"
                                     :status="object.status"
-                                    :payment="object.payment"
+                                    :payment="this.form_of_payment"
                                     />
+                                    
                                  </tr>
                            </tbody>
                         </table>
@@ -132,7 +136,7 @@ export default ({
       }
    },
    mounted() {
-      axios.get('http://localhost:3000/get-orders')
+      axios.get('http://localhost:3000/restaurant-orders')
       .then((res) => {
          const base_orders = res.data;
          let aux = []
@@ -144,6 +148,8 @@ export default ({
                items: this.get_items(key, base_orders),
                price: this.get_total_price(key, base_orders),
                status: this.get_status(key, base_orders),
+               nome: this.keys,
+               address: this.getAddres(key, base_orders)
             });
          });
 
@@ -162,15 +168,15 @@ export default ({
          this.modalCard = !this.modalCard
          console.log(this.modalCard)
       },
-      async getAddres(){
-         await axios.get('http://localhost:3000/address')
-         .then(response => {
-            this.address = response.data.address;
-            this.orders.push
-         })
-         .catch(error => {
-            console.error(error);
+      async getAddres(key, orders){
+         var keys = Object.keys(orders[key]);
+         var address = {};
+         keys.forEach(ky =>{
+            address = (orders[key][ky]['endereço']);
          });
+
+         console.log(address)
+         return address;
       },
       async getName() {
          await axios.get('http://localhost:3000/clientname')
@@ -182,20 +188,27 @@ export default ({
          });
       },
       get_items(key, orders) {
-         var keys = Object.keys(orders[key]['pratos']);
+         var keys = Object.keys(orders[key]);
          const items = [];
          keys.forEach(ky =>{
-            items.push(orders[key]['pratos'][ky].nome);
+            var auxK = Object.keys(orders[key][ky]['pratos']);
+
+            auxK.forEach(k =>{
+               items.push(orders[key][ky]['pratos'][k].nome)
+            })
          });
 
          return items;
       },
       get_total_price(key, orders) {
-         var keys = Object.keys(orders[key]['pratos']);
+         var keys = Object.keys(orders[key]);
          var price = 0;
          keys.forEach(ky =>{
-            var n = orders[key]['pratos'][ky].preco.replace(',', '.');
-            price += parseFloat(n);
+            var auxK = Object.keys(orders[key][ky]['pratos']);
+
+            auxK.forEach(k =>{
+               price += parseFloat(orders[key][ky]['pratos'][k].preco.replace(',', '.'))
+            })
          });
          return `${price.toFixed(2)}`;
       },
