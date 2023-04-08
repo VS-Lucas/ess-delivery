@@ -620,6 +620,20 @@ app.get('/clienthome', (req, res) => {
     });
 });
 
+app.get('/clienthome1', async (req, res) => {
+  await admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(doc => {
+      const carrinhoData = doc.data().carrinho;
+      res.json(carrinhoData);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+});
 // Não apagar por enquanto!!!
 //Get para pegar as informações dos pratos
 // app.get('/clienthome', (req, res) => {
@@ -668,7 +682,35 @@ app.get('/clienthome', (req, res) => {
 //     });
 
 // });
+app.post('/add-to-cart', (_req, _res) => {
+  const new_dishes = _req.body;
 
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const cart = clienteDoc.data().carrinho || [];
+      
+      new_dishes.forEach(obj => {
+        cart.push(obj);
+      });
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ carrinho: cart })
+        .then(() => {
+          _res.json({ message: 'Prato adicionado ao carrinho com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao atualizar carrinho do cliente');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+
+});
 // Rota POST para adicionar itens no carrinho do usuário
 app.post('/clienthome', (req, res) => {
   console.log("cliente on");
@@ -700,6 +742,82 @@ app.post('/clienthome', (req, res) => {
       console.error(err);
       res.status(500).send('Erro ao obter cliente');
     });
+});
+
+// app.put("/clienthome2", async (req, res) =>{
+//   const data = req.body;
+//   const placement = req.params.placement;
+//   admin.firestore()
+//        .collection('cliente')
+//        .doc(client_id)
+//        .update({ carrinho[placement].: })
+//   .then(() => {
+//     res.json({ message: 'Carrinho limpo com sucesso' });
+//   })
+//   .catch(err => {
+//     console.error(err);
+//     res.status(500).send('Erro ao adicionar ao limpar carrinho');
+//   }); 
+// });
+app.put('/clienthome2', async (req, res) => {
+  console.log('PUT update');
+  const data = req.body;
+  const index = data.index;
+  console.log(index);
+  //if(index == 0)
+
+  admin.firestore()
+  .collection('cliente')
+  .doc(client_id)
+  .get()
+  .then(doc => {
+    const carrinhoData = doc.data().carrinho;
+    const amount = carrinhoData[index].quantidade;
+    console.log(carrinhoData[index].quantidade);
+    const new_amount = amount + 1;
+    carrinhoData[index].quantidade = new_amount;
+
+    admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .update({carrinho: carrinhoData})
+    .then(() => {
+      res.json(carrinhoData);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao atualizar dados do carrinho');
+    });
+
+  })
+
+  
+  
+  // admin.firestore()
+  //   .collection('cliente')
+  //   .doc(client_id)
+  //   .get()
+  //   .then(doc => {
+  //     const carrinhoData = doc.data().carrinho;
+  //     carrinhoData[index].quantidade = quantidade + 1;
+
+  //         // Salva os dados atualizados no Firebase
+  //         admin.firestore()
+  //           .collection('cliente')
+  //           .doc(client_id)
+  //           .update(carrinhoData)
+  //           .then(() => {
+  //             res.json(carrinhoData);
+  //           })
+  //           .catch(err => {
+  //             console.error(err);
+  //             res.status(500).send('Erro ao atualizar dados do carrinho');
+  //           });
+  //   })
+  //   .catch(err => {
+  //     console.error(err);
+  //     res.status(500).send('Erro ao buscar ID do restaurante');
+  //   });
 });
 
 // Rota GET da quantidade de pedidos

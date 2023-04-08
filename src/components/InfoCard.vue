@@ -3,17 +3,21 @@
     
         <div class="flex col-span-1 text-white font-medium items-center">
             <div class="flex flex-col items-center justify-center ml-7 sm:mr-0 mr-4">
-                <img class="rounded-[10px] sm:w-28 sm:h-20 w-10 h-10 mb-1" :src="imgSrc">
-                <p class="text-white  font-bold sm:text-[15px] text-[12px]">{{ name }}</p>
+                <img class="rounded-[10px] sm:w-28 sm:h-20 w-10 h-10 mb-1" src="https://bodedono.com.br/wp-content/uploads/2020/06/LOGO-1.png">
+                <p class="text-white  font-bold sm:text-[15px] text-[12px]">Bode nô</p>
             </div>
             <div class="border-l border-white h-28 mx-auto"></div>
         </div>
         
         <div class="flex col-span-1 text-white">
             <div class="flex flex-col items-center justify-center ml-6">
-                <div v-for="(dish, index) in items" :key="index">
-                    <p class="text-white sm:text-[17px] text-[12px]">{{ dish }}</p>
+                <div class="max-h-32 overflow-hidden truncate">
+                    <div v-for="(dish, index) in items" :key="index">
+                        <p class="text-white sm:text-[17px] text-[12px]">{{ dish }}</p>
+                    </div>
+                   
                 </div>
+               <p v-if="overflow" class="text-white sm:text-[17px] text-[12px] text-center mr-16">...</p>
             </div>
         </div>
         
@@ -26,8 +30,8 @@
 
         <div class="flex col-span-1 text-white font-medium">
             <div class="flex flex-col items-center justify-center">
-                <p class="text-black font-bold sm:text-[17px] text-[12px] sm:mr-0 mr-3">ID: #{{ id }}</p>
-                <p class="text-white font-bold sm:text-[17px] text-[12px] sm:mr-0 mr-3">{{ date }}</p>
+                <p class="text-[#261918] font-bold sm:text-[17px] text-[12px] sm:mr-0 mr-3">ID: #{{ id }}</p>
+                <p class="text-[#261918] font-bold sm:text-[17px] text-[12px] sm:mr-0 mr-3">{{ date }}</p>
             </div>
         </div>
 
@@ -43,6 +47,11 @@
 
 <script>
     export default {
+        data() {
+            return {
+                overflow: false,
+            }
+        },
         props: {
             id: String,
             imgSrc: String,
@@ -52,11 +61,11 @@
             total_price: String,
             form_pay: String,
             status: String,
-            prices: Array
+            prices: Array,
+            dishes: Array
         },
         methods: {
             goToDetails() {
-                console.log(this.prices);
                 this.$router.push({
                     name: 'history-details',
                     params: 
@@ -69,10 +78,14 @@
                         total_price: this.total_price,
                         form_pay: this.form_pay,
                         status: this.status,
-                        prices: this.prices
+                        prices: this.prices,
+                        dishes: JSON.stringify(this.dishes)
                     }
                 })
-            }
+            },
+        },
+        mounted() {
+            this.overflow = this.items.length > 5;
         }
     }
 </script>
