@@ -35,14 +35,14 @@
             <div class="flex col-span-1 text-white">
                 <div class="flex flex-col ml-7 sm:mr-0 mr-4 justify-center">
                     <h2 class="text-[#261918] font-bold">ID: #{{ this.$route.params.id }}</h2>
-                    <h4 class="text-[#261918] mb-3">{{ this.$route.params.date }}</h4>
+                    <h4 class="text-[#261918] mb-3">{{ this.$route.params.date }}, {{ this.$route.params.hour }}</h4>
   
                     <span class="text-white sm:text-[17px] text-[12px] mb-12">
                         {{ this.$route.params.items.join(', ') }}
                     </span>
 
                     <h2 class="text-gray-400">Entregue em:</h2>
-                    <h3> {{this.address.rua}}, Nº {{this.address.numero}}, {{this.address.bairro}}</h3> <!--PEgar esses dados depois-->
+                    <h3> {{this.address.rua}}, Nº {{this.address.numero}}, {{this.address.bairro}} - {{ this.address.complemento }}</h3> <!--PEgar esses dados depois-->
                 </div>
             </div>
 
@@ -98,15 +98,13 @@ import axios from 'axios';
         },
         mounted() {
             if (this.$route.params.items.length > 10) this.height = 600;
-
+            
             axios.get('http://localhost:3000/address')
             .then(res => {
                 this.address = res.data;
-                console.log(this.address);
             }).catch(error => {
                 console.log(error.message);
             });
-            
         }
     }
 </script>
