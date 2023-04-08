@@ -511,7 +511,7 @@ app.post('/cancel-order', async (_req, _res) => {
         })
         .catch(err => {
           console.error(err);
-          res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
         });
   })
   .catch(err => {
