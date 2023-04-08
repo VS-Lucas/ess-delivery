@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 
 let client_id = '';
-let restaurant_id = '';
+let client_name = '';
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -466,6 +466,7 @@ app.get('/get-orders', async (_req, _res) => {
   });
 });
 
+
 app.post('/cancel-customer-order', async (_req, _res) => {
   const id = _req.body.id;
 
@@ -513,10 +514,21 @@ app.post('/cancel-order', async (_req, _res) => {
           console.error(err);
           _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
         });
-  })
-  .catch(err => {
+  }).catch(err => {
     console.error(err);
     _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.get('/restaurant-orders', async (_req, _res) => {
+  
+  await admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+  .get()
+  .then( async (doc) => {
+    _res.send(doc.data().pedidos);
+  }).catch(() => {
+    _res.status(500).send("Não foi possível acessar os pedidos no momento")
   });
 });
 
@@ -608,7 +620,7 @@ app.get('/shoppingcart', async (req, res) => {
 //Rota DELETE para remover item do carrinho de um cliente
 app.delete('/shoppingcart', (req, res) => {
   const nomePrato = req.body.nome;
-  console.log(nomePrato);
+  //console.log(nomePrato);
 
   admin.firestore()
     .collection('cliente')
@@ -618,11 +630,9 @@ app.delete('/shoppingcart', (req, res) => {
       if (!clienteDoc.exists) {
         res.status(404).send('Cliente não encontrado');
       } else {
-        console.log("AQUIIIIII");
 
         // Remover o item do array de carrinho
         const carrinho = clienteDoc.data().carrinho || [];
-        console.log("AQUIIIIII2");
         let index = -1;
         for (let i = 0; i < carrinho.length; i++) {
           console.log(carrinho[i].nome);
@@ -635,14 +645,12 @@ app.delete('/shoppingcart', (req, res) => {
         if (index !== -1) {
           carrinho.splice(index, 1);
         }
-        console.log("AQUIIIIII3");
 
         // Atualizar o cliente com o novo array de carrinho
         admin.firestore().collection('cliente').doc(client_id)
           .update({ carrinho })
           .then(() => {
             res.json({ message: 'Item removido do carrinho com sucesso' });
-            console.log("AQUIIIIII4");
           })
           .catch(err => {
             console.error(err);
@@ -654,6 +662,70 @@ app.delete('/shoppingcart', (req, res) => {
       console.error(err);
       res.status(500).send('Erro ao obter cliente');
     });
+});
+
+app.put('/shoppingcart1', async (req, res) => {
+  console.log('PUT update');
+  const data = req.body;
+  const index = data.index;
+  console.log(index);
+  //if(index == 0)
+
+  admin.firestore()
+  .collection('cliente')
+  .doc(client_id)
+  .get()
+  .then(doc => {
+    const carrinhoData = doc.data().carrinho;
+    const amount = carrinhoData[index].quantidade;
+    console.log(carrinhoData[index].quantidade);
+    const new_amount = amount + 1;
+    carrinhoData[index].quantidade = new_amount;
+
+    admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .update({carrinho: carrinhoData})
+    .then(() => {
+      res.json(carrinhoData);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao atualizar dados do carrinho');
+    });
+  })
+});
+
+app.put('/shoppingcart2', async (req, res) => {
+  console.log('PUT update');
+  const data = req.body;
+  const index = data.index;
+  console.log(index);
+  //if(index == 0)
+
+  admin.firestore()
+  .collection('cliente')
+  .doc(client_id)
+  .get()
+  .then(doc => {
+    const carrinhoData = doc.data().carrinho;
+    const amount = carrinhoData[index].quantidade;
+    console.log(carrinhoData[index].quantidade);
+    const new_amount = amount - 1;
+    carrinhoData[index].quantidade = new_amount;
+
+    admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .update({carrinho: carrinhoData})
+    .then(() => {
+      res.json(carrinhoData);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao atualizar dados do carrinho');
+    });
+  })
 });
 
 //Get para pegar as informações dos pratos 
@@ -878,6 +950,7 @@ app.put('/clienthome2', async (req, res) => {
 app.get('/orders', async(req, res) =>{
   try{
     const doc = await admin.firestore().collection('cliente').doc(client_id).get();
+    client_name = doc.data().nome;
     
     const data = doc.data();
     const orders = Object.keys(data.pedidos);
@@ -919,7 +992,7 @@ app.post("/storeclientorder", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime}
 
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
@@ -955,8 +1028,13 @@ app.post("/reststore", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
-
+      if (!(client_name in pedidos)) {
+        pedidos[client_name] = {};
+      }
+      if (!(orderID in pedidos[client_name])) {
+        pedidos[client_name][orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime};
+      }
+      
       admin.firestore().collection('restaurantes').doc(res_id)
         .update({ pedidos })
         .then(() => {
