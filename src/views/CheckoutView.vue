@@ -13,7 +13,7 @@
                 <div class="col-start-2 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
                     <div class="mt-[20px] ml-[20px]">
                         <h1 class="text-3xl text-white">Meu carrinho</h1>
-                        <div v-for="(object, index) in this.clientDict" :key="index" class="grid grid-cols-9 p-1 text-white">
+                        <div v-for=" (object, index) in this.clientDict" :key="index" class="grid grid-cols-9 p-1 text-white">
                             <div class="col-start-1 col-span-5">
                                 {{ object.nome }}
                             </div>
@@ -22,7 +22,7 @@
                             </div>
                         </div>
 
-                        <div class="py-3">
+                        <!-- <div class="py-3">
                         <form @submit.prevent="getDiscount($event)">   
                             <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only  p-3">Search</label>
                             <div class="relative">
@@ -30,7 +30,7 @@
                                 <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 ">Aplicar</button>
                             </div>
                         </form>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="px-3 py-3">
                         <hr><hr/>
@@ -311,47 +311,47 @@ import qs from 'qs';
                 })
             },
             // aquii
-            async getDiscount() {
-                console.log("aqui");
-                const cupom  = this;
-                //console.log(cupom.cupom);
+            // async getDiscount() {
+            //     console.log("aqui");
+            //     const cupom  = this;
+            //     //console.log(cupom.cupom);
                 
-                axios.get('http://localhost:3000/getdiscount')
-                    .then(response => {
-                        this.cupons = response.data;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
+            //     axios.get('http://localhost:3000/getdiscount')
+            //         .then(response => {
+            //             this.cupons = response.data;
+            //         })
+            //         .catch(error => {
+            //             console.error(error);
+            //         });
 
                
-                for (let i = 0; i < this.cupons.length; i++) {
-                //console.log(cupons[i].nome);
-                //console.log(cupom.cupom);
-                //console.log(this.cupons[i])
-                    if (this.cupons[i].nome === cupom.cupom) {
-                        this.orderPrice = this.orderPrice - this.cupons[i].valor;
-                    }
+            //     for (let i = 0; i < this.cupons.length; i++) {
+            //     //console.log(cupons[i].nome);
+            //     //console.log(cupom.cupom);
+            //     //console.log(this.cupons[i])
+            //         if (this.cupons[i].nome === cupom.cupom) {
+            //             this.orderPrice = this.orderPrice - this.cupons[i].valor;
+            //         }
                     
-                    axios.delete('http://localhost:3000/getdiscount', {
-                        data: {
-                        nome: cupom.cupom
-                        }
-                        })
-                        .then(response => {
-                            console.log(response.data)
-                        })
-                        .catch(error => {
-                            console.error(error)
-                        })
-                }
+            //         axios.delete('http://localhost:3000/getdiscount', {
+            //             data: {
+            //             nome: cupom.cupom
+            //             }
+            //             })
+            //             .then(response => {
+            //                 console.log(response.data)
+            //             })
+            //             .catch(error => {
+            //                 console.error(error)
+            //             })
+            //     }
                 
 
-                // if (cupom.cupom == 'cupom10'){
-                //     console.log(cupom);
-                //     this.orderPrice = this.orderPrice - 10;
-                // }
-            }
+            //     // if (cupom.cupom == 'cupom10'){
+            //     //     console.log(cupom);
+            //     //     this.orderPrice = this.orderPrice - 10;
+            //     // }
+            // }
         },
 
         mounted() {

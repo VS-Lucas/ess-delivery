@@ -1027,8 +1027,8 @@ app.put("/clearcart", async (req, res) =>{
 //   }
 // });
 
-//Get para pegar os cupons
-app.get('/getdiscount', (req, res) => {
+//Get para pegar os cupons disponíveis
+app.get('/getcoupons_available', (req, res) => {
   admin.firestore()
     .collection('cliente')
     .doc(client_id)
@@ -1044,8 +1044,59 @@ app.get('/getdiscount', (req, res) => {
     });
 });
 
+//Get para pegar os cupons efetivados
+app.get('/getcoupons_used', (req, res) => {
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(doc => {
+      const clientData = doc.data();
+      const cuponsEfetivados = clientData.cupons_efetivados;
+      res.json(cuponsEfetivados);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do cliente');
+    });
+});
+
+// Rota POST para adicionar itens no array de cupons efetivados
+app.post('/getcoupons_used', (req, res) => {
+  const cupom = req.body; // Dados do novo prato a ser adicionado
+  
+  admin.firestore().collection('cliente').doc(client_id).get()
+    .then(clienteDoc => {
+      if (!clienteDoc.exists) {
+        res.status(404).send('Cliente não encontrado');
+      } else {
+        // Adicionar o cupom ao array de cupons efetivados
+        const cupons_efetivados = clienteDoc.data().cupons_efetivados || [];
+        cupons_efetivados.push(cupom);
+
+        // Atualizar o cliente com o novo array de carrinho
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({ cupons_efetivados })
+          .then(() => {
+            res.json({ message: 'Cupom efetivado' });
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Erro ao efetivar cupom');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao obter cliente');
+    });
+});
+
+
+
+
 //Rota DELETE para remover cupom do array de cupons do cliente
-app.delete('/getdiscount', (req, res) => {
+app.delete('/getcoupons_available', (req, res) => {
   const nomeCupom = req.body.nome;
   //console.log(nomePrato);
   console.log("delete");
@@ -1092,6 +1143,24 @@ app.delete('/getdiscount', (req, res) => {
       res.status(500).send('Erro ao obter cliente');
     });
 });
+
+// Rota GET para mostrar os pratos no checkout
+// app.get('/checkout', async (req, res) => {
+//   await admin.firestore()
+//     .collection('cliente')
+//     .doc(client_id)
+//     .get()
+//     .then(doc => {
+//       const carrinhoData = doc.data().carrinho;
+//       res.json(carrinhoData);
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send('Erro ao buscar dados dos pratos');
+//     });
+// });
+
+
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
