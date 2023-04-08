@@ -178,7 +178,6 @@
           axios.put('http://localhost:3000/clienthome2',  {nome: prato.nome, index: index}  )
           .then(response => {
             console.log(response.data.message);
-            //prato.no_carrinho = true; //aq
           })
           .catch(error => {
             console.error(error);
