@@ -736,6 +736,8 @@ app.post("/storeclientorder", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
+  const orderDate = req.body.orderDate;
+  const orderTime = req.body.orderTime;
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
@@ -744,7 +746,7 @@ app.post("/storeclientorder", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
 
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
@@ -768,17 +770,19 @@ app.post("/reststore", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
+  const orderDate = req.body.orderDate;
+  const orderTime = req.body.orderTime;
 
-  admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8').get()
+  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
   .then(clienteDoc => {
     if (!clienteDoc.exists) {
       res.status(404).send('Restaurante não encontrado');
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
 
-      admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8')
+      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
         .update({ pedidos })
         .then(() => {
           res.json({ message: 'Demanda adicionada com sucesso' });

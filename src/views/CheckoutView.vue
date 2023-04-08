@@ -185,6 +185,8 @@ import qs from 'qs';
                 orderPrice: null, 
                 estTime: '',
                 fee: '',
+                todayDate: '', 
+                currTime: '', 
             }
         },
         methods: {
@@ -222,6 +224,8 @@ import qs from 'qs';
                     const response = await axios.post('http://localhost:3000/storeclientorder', {
                         orderData: this.clientDict,
                         orderID: this.ordersAm,
+                        orderDate: this.todayDate,
+                        orderTime: this.currTime, 
                     });
 
                     console.log(response.data.message);
@@ -234,6 +238,8 @@ import qs from 'qs';
                     const response = await axios.post('http://localhost:3000/reststore', {
                         orderData: this.clientDict,
                         orderID: this.ordersAm,
+                        orderDate: this.todayDate,
+                        orderTime: this.currTime, 
                     });
 
                     console.log(response.data.message);
@@ -280,6 +286,8 @@ import qs from 'qs';
                 this.clientDict['address'] = this.addressDict;
                 this.clientDict['totalprice'] = this.orderPrice;
                 this.clientDict['name'] = this.clientName;
+                this.clientDict['date'] = this.todayDate;
+                this.clientDict['hour'] = this.currTime;
                 
                 this.$router.push ({
                     name: 'order-tracking',
@@ -311,6 +319,15 @@ import qs from 'qs';
             }
             // this.orderPrice += this.fee;
             this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
+
+            const aDate = new Date();
+            const options = { timeZone: 'America/Sao_Paulo', hour12: false };
+            const localTime = aDate.toLocaleString('pt-BR', options);
+            const aux = localTime.split(" ");
+
+            this.todayDate = aux[0];
+            this.currTime = aux[1];
+            console.log(this.todayDate, this.currTime);
         },
     }
 </script>
