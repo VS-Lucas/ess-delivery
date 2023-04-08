@@ -81,22 +81,6 @@
                                     Voltar
                                   </button>
                                 </div>
-                                
-                                <!-- <div class="text-center">
-                                    <p class="mt-5">Deseja acompanhá-lo?</p>
-                                </div>
-                                <div class="grid grid-cols-2 mt-2">
-                                    <div class="col-span-1">
-                                        <button @click="OrderConfirmation" type="button" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5">
-                                            Voltar
-                                        </button>
-                                    </div>
-                                    <div class="col-start-3">
-                                        <button @click="toTracking" type="button" class="bg-[#9DBF69] hover:bg-green-500 rounded-lg text-sm px-4 py-2.5">
-                                            <p class="text-black font-bold">Acompanhar</p>
-                                        </button>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -142,7 +126,7 @@ export default {
       // console.log(this.pratos)
     
       this.pratos.forEach((doc) => {
-        this.precoTotal+= parseFloat(doc.preco);
+        this.precoTotal+= parseFloat(doc.preco)*doc.quantidade;
         console.log(parseFloat(doc.preco)) 
       });
 
@@ -157,9 +141,9 @@ export default {
                     this.$router.push('/clienthome');
                 },
     goToCheckout() {
-      this.pratos.forEach(() => {
-        this.itens+= 1; 
-      });
+      // this.pratos.forEach(() => {
+      //   this.itens+= 1; 
+      // });
       if(this.itens==0){this.vazio = true}
       if(!this.vazio){
         this.$router.push ({
