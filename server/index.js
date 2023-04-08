@@ -209,10 +209,18 @@ app.post("/restaurant-login", async (req, res) => {
                                .doc(userRecord.uid)
                                .get();
     
-    restaurant_id = userRecord.uid;
+    userId = userRecord.uid;
 
     if (userDoc.data().password == password) {
       const token = await admin.auth().createCustomToken(userRecord.uid);
+
+      const restDoc = await admin.firestore()
+                                 .collection('usuarios')
+                                 .doc(userId)
+                                 .get()
+                                       
+      restaurantId = restDoc.data().restauranteId;
+      
       res.status(200).json({ token });
     } else {
       res.status(401).send("Senha incorreta");
@@ -294,6 +302,11 @@ app.put('/update-register/:index', (req, res) => {
               restauranteData.endereco = data.endereco;
               restauranteData.numero = data.numero;
               restauranteData.complemento = data.complemento;
+              break;
+            case '3':
+              restauranteData.taxa = data.taxa;
+              restauranteData.tempo_entrega = data.tempo_entrega;
+              restauranteData.horario = data.horario;
               break;
             default:
               console.error('Índice inválido');
