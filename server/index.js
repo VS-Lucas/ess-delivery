@@ -466,6 +466,7 @@ app.get('/get-orders', async (_req, _res) => {
   });
 });
 
+// Rota GET para mostrar os pratos no carrinho
 app.get('/shoppingcart', async (req, res) => {
   await admin.firestore()
     .collection('cliente')
@@ -481,7 +482,126 @@ app.get('/shoppingcart', async (req, res) => {
     });
 });
 
-// Não apagar por enquanto!!!
+// Rota DELETE para remover um item do carrinho do usuário
+// app.delete('/shoppingcart/:itemNome', (req, res) => {
+//   const itemNomee = req.params.itemNome; // Nome do item a ser removido
+//   console.log(itemNomee);
+//   admin.firestore()
+//     .collection('cliente')
+//     .doc(client_id)
+//     .get()
+//     .then(clienteDoc => {
+//       if (!clienteDoc.exists) {
+//         res.status(404).send('Cliente não encontrado');
+//       } else {
+//         console.log("AQUIIIIII");
+//         // Remover o item do array de carrinho
+//         const carrinho = clienteDoc.data().carrinho || [];
+//         console.log("AQUIIIIII2");
+//         let index = -1;
+//         for (let i = 0; i < carrinho.length; i++) {
+//           console.log(carrinho[i].nome);
+//           console.log(itemNomee);
+//           if (carrinho[i].nome === itemNomee) {
+            
+            
+//             index = i;
+//             break;
+//           }
+//         }
+//         if (index !== -1) {
+//           carrinho.splice(index, 1);
+//         }
+//         console.log("AQUIIIIII3");
+
+//         // Atualizar o cliente com o novo array de carrinho
+//         admin.firestore().collection('cliente').doc(client_id)
+        
+//           .update({ carrinho })
+//           .then(() => {
+//             res.json({ message: 'Item removido do carrinho com sucesso' });
+//             console.log("AQUIIIIII4");
+//           })
+//           .catch(err => {
+//             console.error(err);
+//             res.status(500).send('Erro ao atualizar carrinho do cliente');
+//           });
+//       }
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send('Erro ao obter cliente');
+//     });
+// });
+
+//Rota DELETE para remover item do carrinho de um cliente
+// app.delete('/shoppingcart/:itemId', (req, res) => {
+//   const item = req.params.itemId;
+//   console.log(item);
+//   admin.firestore().collection('cliente').doc(client_id).update({
+//     carrinho: admin.firestore.FieldValue.arrayRemove(({ descricao: item.descricao, nome: item.nome, preco: item.preco, url: item.url }))
+//   })
+//   .then(() => {
+//     console.log(`Item ${item} removido com sucesso do carrinho do cliente ${client_id}.`);
+//     res.send(`Item ${item} removido com sucesso do carrinho do cliente ${client_id}.`);
+//   })
+//   .catch((error) => {
+//     console.error(`Erro ao remover item ${item} do carrinho do cliente ${client_id}: ${error}`);
+//     res.status(500).send(`Erro ao remover item ${item} do carrinho do cliente ${client_id}.`);
+//   });
+// });
+
+//Rota DELETE para remover item do carrinho de um cliente
+app.delete('/shoppingcart', (req, res) => {
+  const nomePrato = req.body.nome;
+  console.log(nomePrato);
+
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(clienteDoc => {
+      if (!clienteDoc.exists) {
+        res.status(404).send('Cliente não encontrado');
+      } else {
+        console.log("AQUIIIIII");
+
+        // Remover o item do array de carrinho
+        const carrinho = clienteDoc.data().carrinho || [];
+        console.log("AQUIIIIII2");
+        let index = -1;
+        for (let i = 0; i < carrinho.length; i++) {
+          console.log(carrinho[i].nome);
+          console.log(nomePrato);
+          if (carrinho[i].nome === nomePrato) {
+            index = i;
+            break;
+          }
+        }
+        if (index !== -1) {
+          carrinho.splice(index, 1);
+        }
+        console.log("AQUIIIIII3");
+
+        // Atualizar o cliente com o novo array de carrinho
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({ carrinho })
+          .then(() => {
+            res.json({ message: 'Item removido do carrinho com sucesso' });
+            console.log("AQUIIIIII4");
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Erro ao atualizar carrinho do cliente');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao obter cliente');
+    });
+});
+
 //Get para pegar as informações dos pratos 
 app.get('/clienthome', (req, res) => {
   const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
@@ -514,7 +634,7 @@ app.get('/clienthome1', async (req, res) => {
       res.status(500).send('Erro ao buscar dados do restaurante');
     });
 });
-
+// Não apagar por enquanto!!!
 //Get para pegar as informações dos pratos
 // app.get('/clienthome', (req, res) => {
 //   // Lista de IDs de restaurantes
@@ -706,6 +826,8 @@ app.post("/storeclientorder", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
+  const orderDate = req.body.orderDate;
+  const orderTime = req.body.orderTime;
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
@@ -714,7 +836,7 @@ app.post("/storeclientorder", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
 
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
@@ -738,17 +860,19 @@ app.post("/reststore", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
+  const orderDate = req.body.orderDate;
+  const orderTime = req.body.orderTime;
 
-  admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8').get()
+  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
   .then(clienteDoc => {
     if (!clienteDoc.exists) {
       res.status(404).send('Restaurante não encontrado');
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido confirmado'};
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pedido realizado', 'data': orderDate, 'hora': orderTime};
 
-      admin.firestore().collection('restaurantes').doc('Cjq4SAjtFaa94WSN7UJ8')
+      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
         .update({ pedidos })
         .then(() => {
           res.json({ message: 'Demanda adicionada com sucesso' });
@@ -780,6 +904,20 @@ app.put("/clearcart", async (req, res) =>{
     res.status(500).send('Erro ao adicionar ao limpar carrinho');
   }); 
 });
+
+// // Rota GET do tempo estimado de entrega
+// app.get('/estimatedtime', async(req, res) =>{
+//   try{
+//     const doc = await admin.firestore().collection('restaurantes').doc(id_restaurant).get();
+//     const est_time = doc.data().tempo_entrega;
+//     const fee = doc.data().taxa;
+
+//     res.json({tempo_estimado: est_time, taxa: fee})
+//   }
+//   catch(error){
+//     console.log(error)
+//   }
+// });
 
 
 app.listen(3000, () => {

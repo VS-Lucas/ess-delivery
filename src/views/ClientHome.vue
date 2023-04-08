@@ -6,7 +6,7 @@
     <div class="clienthome bg-[#261918] min-h-screen relative">
        <NavBar /> <!-- NavBar dos componentes-->
         <div class="absolute left-40 top-32"> <!-- Button "Meus Pedidos"-->
-          <button type="button" class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Meus pedidos</button>
+          <button type="button" @click='goToOrderHistory()' class="focus:outline-none text-white bg-[#541F1B] hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-l px-7 py-3 mr-10 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Meus pedidos</button>
         </div>
   
         <div class= "absolute right-72 top-32"> <!-- Search Bar, onde muda o tamanho é em pl-10 na linha 15, e na linha 8 define a posição, relativa a div da linha 2-->
@@ -27,19 +27,19 @@
         <img src="@\assets\img\carrinho.png" alt="Carrinho de Compras" class=" h-10 w-11" >
     </button>
 
-    <!-- DIV A -->
-    <div class="absolute flex justify-center space-x-10  top-56 bg-cover inset-x-0"> <!-- Flexbox dos cards do restaurante e das comidas-->
+
+    <div class=" mx-auto max-w-6xl justify-center px-6 md:flex md:space-x-7 xl:px-0 pt-52 " > <!-- Cards dos restaurantes e das comidas-->
       <!-- Botão dos restaurantes -->
         <div>
           <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-            <img src="@\assets\img\restaurantes.png" alt="Descrição da imagem" style="width: 600px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
+            <img src="@\assets\img\restaurantes.png" alt="Descrição da imagem" style="width: 550px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
           </button> 
         </div>
       
       <!-- Botão das comidas-->
         <div>
           <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
-            <img src="@\assets\img\comidas.png" alt="Descrição da imagem" style="width: 600px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
+            <img src="@\assets\img\comidas.png" alt="Descrição da imagem" style="width: 550px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
           </button> 
         </div>
     </div>
@@ -58,8 +58,7 @@
           </div>
         </div> -->
 
-      <!-- DIV B -->
-      <div class=" absolute flex flex-wrap items-center space-x-12 justify-center bottom-4 bg-cover inset-x-0 " >
+      <div class=" flex flex-wrap items-center space-x-12 justify-center py-4 bg-cover inset-x-0  " > <!-- Flexbox do cardápio de pratos-->
       <div v-for="prato in pratos" :key="prato.id">
       <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 " @click="addToCart(prato)">
         <a href="#">
@@ -70,7 +69,7 @@
                 <h5 class="text-lg font-semibold tracking-tight text-white ">{{prato.nome}}</h5>
             </a>
             <div class="text-xs text-white">{{prato.descricao}} </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between p-1">
                 <div class="text-xl font-bold text-white">{{prato.preco}} </div>
                 <a href="#" class="text-white bg-blue-700   font-medium rounded-lg text-sm px-1 py-1.5 text-center ">Add to cart</a>
             </div>
@@ -121,6 +120,10 @@
     methods:{
       goToShoppingCart() {
       this.$router.push('/shoppingcart');
+      },
+      
+      goToOrderHistory() {
+      this.$router.push('/order-history');
       },
       update(){
         console.log('updated')
@@ -175,6 +178,7 @@
           axios.put('http://localhost:3000/clienthome2',  {nome: prato.nome, index: index}  )
           .then(response => {
             console.log(response.data.message);
+            //prato.no_carrinho = true; //aq
           })
           .catch(error => {
             console.error(error);
