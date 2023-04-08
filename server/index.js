@@ -466,6 +466,17 @@ app.get('/get-orders', async (_req, _res) => {
   });
 });
 
+app.get('/restaurant-orders', async (_req, _res) => {
+  
+  await admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+  .get()
+  .then( async (doc) => {
+    _res.send(doc.data().pedidos);
+  }).catch(() => {
+    _res.status(500).send("Não foi possível acessar os pedidos no momento")
+  });
+});
+
 // Rota GET para mostrar os pratos no carrinho
 app.get('/shoppingcart', async (req, res) => {
   await admin.firestore()

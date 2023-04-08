@@ -36,54 +36,15 @@
                     Notificações:
                 </div>
 
-                <div class="divide-y bg-gray-50 divide-gray-100 dark:divide-gray-700">
-
-                    <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        
-                        <div class="w-full pl-3">
-                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">New message from <span class="font-semibold text-gray-900 dark:text-white">Jese Leos</span>: "Hey, what's up? All set for the presentation?"</div>
-                            <div class="text-xs text-blue-600 dark:text-blue-500">a few moments ago</div>
-                        </div>
-
-                    </a>
-
-                    <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
-
-                        <div class="w-full pl-3">
-                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Joseph Mcfall</span> and <span class="font-medium text-gray-900 dark:text-white">5 others</span> started following you.</div>
-                            <div class="text-xs text-blue-600 dark:text-blue-500">10 minutes ago</div>
-                        </div>
-
-                    </a>
-
-                    <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
-
-                        <div class="w-full pl-3">
-                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Bonnie Green</span> and <span class="font-medium text-gray-900 dark:text-white">141 others</span> love your story. See it and view more stories.</div>
-                            <div class="text-xs text-blue-600 dark:text-blue-500">44 minutes ago</div>
-                        </div>
-
-                    </a>
-
-                    <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        
-                        <div class="w-full pl-3">
-                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Leslie Livingston</span> mentioned you in a comment: <span class="font-medium text-blue-500" href="#">@bonnie.green</span> what do you say?</div>
-                            <div class="text-xs text-blue-600 dark:text-blue-500">1 hour ago</div>
-                        </div>
-
-                    </a>
-
-                    <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
-
-                        <div class="w-full pl-3">
-                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Robert Brown</span> posted a new video: Glassmorphism - learn how to implement the new design trend.</div>
-                            <div class="text-xs text-blue-600 dark:text-blue-500">3 hours ago</div>
-                        </div>
-
-                    </a>
-
+                <div v-for="(object, index) in this.orders" :key="index">
+                    
+                    <NotificationItem
+                    :orderId="object.orderId"
+                    :status="object.status"
+                    />
+                    
                 </div>
+
 
                 <button type="button" class="block rounded-b-lg py-2 text-sm w-full font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
                     <div class="inline-flex items-center">
@@ -97,7 +58,7 @@
 
         <div v-if="this.profileMenu">
 
-            <div class="fixed z-10 inset-0 overflow-y-auto bg-opacity-60 bg-[#261918] flex items-center justify-center min-h-screen px-4 rounded-lg overflow-hidden shadow-xl"></div>
+            <div class="fixed z-10 inset-0 overflow-y-auto bg-opacity-60 bg-[#261918] flex items-center justify-center min-h-screen px-4 rounded-lg shadow-xl"></div>
 
             <div id="profile" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mr-4 mt-16 z-50 w-[300px] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
 
@@ -133,13 +94,21 @@
         
         
 <script scoped>
+
+    import NotificationItem from '@/components/NotificationItem.vue';
+    import axios from 'axios';
+
     export default {
         name: 'RestaurantNavBar',
         data() {
             return {
                 notificationsMenu: false,
-                profileMenu: false
+                profileMenu: false,
+                orders: []
             }
+        },
+        components: {
+            NotificationItem
         },
         props: {
             msg: String
@@ -169,7 +138,33 @@
             },
             logOutAccount() {
                 this.$router.push('/login')
+            },
+            getStatus(key, orders) {
+                console.log(orders[key]['status']);
+                return orders[key]['status'];
             }
+        },
+        mounted() {
+            
+            axios.get('http://localhost:3000/restaurant-orders')
+            .then(response => {
+                const order = response.data
+                console.log(order)
+                let aux = []
+                this.keys = Object.keys(order)
+
+                this.keys.forEach(key => {
+                    aux.push({
+                        orderId: key,
+                        status: this.getStatus(key, order)
+                    })
+                })
+                this.orders = [...aux];
+            })
+            .catch(error => {
+                console.error(error)
+            })
+            
         }
     }  
 </script>
