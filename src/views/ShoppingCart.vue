@@ -55,7 +55,7 @@
 
         <!-- Sub total com desconto -->
         <div v-if="(this.descontoAplicado == true)" class="mb-2 flex justify-between">
-          <p class="text-white font-bold">Subtotal após deconto:</p>
+          <p class="text-white font-bold">Subtotal após desconto:</p>
           <p class="text-white">{{precoDescontado}} <span class="ml-1">R$</span></p>
         </div>
 
