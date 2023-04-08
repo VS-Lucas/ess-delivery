@@ -21,16 +21,6 @@
                                 R${{ object.preco }} 
                             </div>
                         </div>
-
-                        <div class="py-3">
-                        <form @submit.prevent="getDiscount($event)">   
-                            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only  p-3">Search</label>
-                            <div class="relative">
-                                <input id= "cupom_desconto" type="cupom" name="cupom" v-model="cupom" class="block w-100 p-10 pl-10 text-sm py-4 h-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 " placeholder="Cupom de desconto..." required>
-                                <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 ">Aplicar</button>
-                            </div>
-                        </form>
-                        </div>
                     </div>
                     <div class="px-3 py-3">
                         <hr><hr/>
@@ -236,6 +226,8 @@ import qs from 'qs';
                         orderID: this.ordersAm,
                         orderDate: this.todayDate,
                         orderTime: this.currTime, 
+                        orderFee: this.fee,
+                        eTime: this.estTime,
                     });
 
                     console.log(response.data.message);
@@ -250,6 +242,26 @@ import qs from 'qs';
                         orderID: this.ordersAm,
                         orderDate: this.todayDate,
                         orderTime: this.currTime, 
+                        orderAddress: this.addressDict,
+                    });
+
+                    console.log(response.data.message);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async storeOrderField() {
+                try {
+                    const response = await axios.post('http://localhost:3000/storeorderfield', {
+                        orderData: this.clientDict,
+                        orderID: this.ordersAm,
+                        orderDate: this.todayDate,
+                        orderTime: this.currTime, 
+                        orderAddress: this.addressDict,
+                        orderPrice: this.orderPrice,
+                        clientName: this.clientName,
+                        orderFee: this.fee,
+                        eTime: this.estTime,
                     });
 
                     console.log(response.data.message);
@@ -266,19 +278,18 @@ import qs from 'qs';
                     console.log(error);
                 }
             },
-            // async getEstimatedTime() {
-            //     await axios.get('http://localhost:3000/estimatedtime')
-            //     .then(response => {
-            //         const auxFee = response.data.taxa;
-            //         this.fee = auxFee.replace(',', '.');
-            //         this.fee = parseFloat(this.fee);
-
-            //         this.estTime = response.data.tempo_estimado;
-            //     })
-            //     .catch(error => {
-            //         console.error(error);
-            //     });
-            // }, 
+            async getEstimatedTime() {
+                await axios.get('http://localhost:3000/estimatedtime')
+                .then(response => {
+                    const auxFee = response.data.taxa.split(" ");
+                    const iAux = auxFee[1]
+                    this.fee = parseFloat(iAux);
+                    this.estTime = response.data.tempo_estimado;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }, 
             OrderConfirmation(){
                 if (this.modalCard){
                     this.modalCard = false;
@@ -290,6 +301,7 @@ import qs from 'qs';
             toTracking(){
                 this.storeOrder();
                 this.storeResOrder();
+                this.storeOrderField();
                 this.clearCart();
 
                 this.clientDict['orderID'] = this.ordersAm;
@@ -309,23 +321,13 @@ import qs from 'qs';
                     path: '/shoppingcart'
                 })
             },
-            // aquii
-            async getDiscount() {
-                console.log("aqui");
-                const cupom  = this;
-                console.log(cupom.cupom);
-                if (cupom.cupom == 'cupom10'){
-                    console.log(cupom);
-                    this.orderPrice = this.orderPrice - 10;
-                }
-            }
         },
 
         mounted() {
             this.getAddress();
             this.OrdersAmount();
             this.getName();
-            // this.getEstimatedTime();
+            this.getEstimatedTime();
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);

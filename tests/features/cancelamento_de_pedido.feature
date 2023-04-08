@@ -8,8 +8,9 @@ Feature: cancelamento de pedido
         Given estou logado como "usuário" com o login "lucas" e senha "1234"
         And fiz um pedido
         And o status do pedido é "Sendo preparado"
-        And estou na tela "Detalhes do pedido"
+        And estou na tela "Acompanhamento do Pedido"
         When clico no botão "Cancelar pedido"
+        And vejo um modal com uma caixa de input para justificar o cancelamento
         And justifico o motivo do cancelamento
         And clico no botão "Confirmar cancelamento"
         Then vejo a mensagem "Pedido cancelado"

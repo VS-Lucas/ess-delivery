@@ -918,6 +918,8 @@ app.post("/storeclientorder", async (req, res) =>{
   const auxOrderDate = req.body.orderDate;
   const orderDate = auxOrderDate.replace(',', '');
   const orderTime = req.body.orderTime;
+  const orderFee = req.body.orderFee;
+  const eTime = req.body.eTime;
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
@@ -926,7 +928,8 @@ app.post("/storeclientorder", async (req, res) =>{
     } else {
 
       const pedidos = clienteDoc.data().pedidos || {};
-      pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime}
+      pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
+                          'taxa': orderFee, 'tempo_estimado': eTime}
 
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
@@ -954,6 +957,7 @@ app.post("/reststore", async (req, res) =>{
   const auxOrderDate = req.body.orderDate;
   const orderDate = auxOrderDate.replace(',', '');
   const orderTime = req.body.orderTime;
+  const orderAddress = req.body.orderAddress;
 
   admin.firestore().collection('restaurantes').doc(res_id).get()
   .then(clienteDoc => {
@@ -966,7 +970,7 @@ app.post("/reststore", async (req, res) =>{
         pedidos[client_name] = {};
       }
       if (!(orderID in pedidos[client_name])) {
-        pedidos[client_name][orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime};
+        pedidos[client_name][orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime, 'endereço': orderAddress};
       }
       
       admin.firestore().collection('restaurantes').doc(res_id)
@@ -1002,19 +1006,63 @@ app.put("/clearcart", async (req, res) =>{
   }); 
 });
 
-// // Rota GET do tempo estimado de entrega
-// app.get('/estimatedtime', async(req, res) =>{
-//   try{
-//     const doc = await admin.firestore().collection('restaurantes').doc(id_restaurant).get();
-//     const est_time = doc.data().tempo_entrega;
-//     const fee = doc.data().taxa;
+// Rota GET do tempo estimado de entrega
+app.get('/estimatedtime', async(req, res) =>{
+  const res_id = 'hm0n3mzMyFMh2JAb9YQb';
 
-//     res.json({tempo_estimado: est_time, taxa: fee})
-//   }
-//   catch(error){
-//     console.log(error)
-//   }
-// });
+  try{
+    const doc = await admin.firestore().collection('restaurantes').doc(res_id).get();
+    const est_time = doc.data().tempo_entrega;
+    const fee = doc.data().taxa;
+
+    res.json({tempo_estimado: est_time, taxa: fee})
+  }
+  catch(error){
+    console.log(error)
+  }
+});
+
+// Rota POST para salvar no campo acompanhamento
+app.post("/storeorderfield", async (req, res) =>{
+
+  const orderData = req.body.orderData;
+  const orderID = req.body.orderID;
+  const auxOrderDate = req.body.orderDate;
+  const orderDate = auxOrderDate.replace(',', '');
+  const orderTime = req.body.orderTime;
+  const orderAddress = req.body.orderAddress;
+  const orderPrice = req.body.orderPrice;
+  const clientName = req.body.clientName;
+  const orderFee = req.body.orderFee;
+  const eTime = req.body.eTime;
+
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+    if (!clienteDoc.exists) {
+      res.status(404).send('Cliente não encontrado');
+    } else {
+
+      const acompanhamento = clienteDoc.data().acompanhamento || {};
+      acompanhamento[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
+                                  'preco': orderPrice, 'endereco': orderAddress, 'nome': clientName, 'taxa': orderFee, 
+                                  'tempo_estimado': eTime}
+
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ acompanhamento })
+        .then(() => {
+          res.json({ message: 'Acompanhamento adicionado com sucesso' });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).send('Erro ao adicionar acompanhamento');
+        });
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao obter cliente');
+  });
+});
 
 
 app.listen(3000, () => {
