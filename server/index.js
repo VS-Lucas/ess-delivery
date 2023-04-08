@@ -454,7 +454,7 @@ app.get('/client-login', async (_req, _res) => {
   });
 
 });
-
+//  ROTA GET QUE RETORNA TODOS OS PEDIDOS
 app.get('/get-orders', async (_req, _res) => {
   
   await admin.firestore().collection('cliente').doc(client_id)
@@ -465,6 +465,66 @@ app.get('/get-orders', async (_req, _res) => {
     _res.status(500).send("Não foi possível acessar os pedidos no momento")
   });
 });
+
+
+app.post('/cancel-customer-order', async (_req, _res) => {
+  const id = _req.body.id;
+
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[id]['status'] = 'Cancelado';
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Cancelamento foi feito com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.post('/cancel-restaurant-order', async (_req, _res) => {
+  const id = _req.body.id;
+  const name = _req.body.name;
+  const justification = _req.body.justification;
+
+  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
+  .then(clienteDoc => {
+      // Adicionar o prato ao array de carrinho
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[name][id]['status'] = 'Cancelado';
+      pedidos[name][id]['justification'] = justification;
+
+      // Atualizar o cliente com o novo array de carrinho
+      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Cancelamento foi feito com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro a fazer o cancelamento do pedido!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
 
 app.get('/restaurant-orders', async (_req, _res) => {
   
