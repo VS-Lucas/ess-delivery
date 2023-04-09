@@ -6,7 +6,7 @@ import RegisterLoginView from '../views/RegisterLoginView.vue'
 import ClientHome from '../views/ClientHome.vue'
 import ShoppingCart from '../views/ShoppingCart.vue'
 import HomeRestaurant from '../views/HomeRestaurant.vue'
-
+import RestaurantsList from '../views/RestaurantsList.vue'
 const routes = [
   {
     path: '/',
@@ -82,6 +82,11 @@ const routes = [
     path: '/checkout/:pratos+',
     name: 'checkout',
     component: () => import('../views/CheckoutView.vue')
+  },
+  {
+    path: '/restaurants-list',
+    name: 'restaurants-list',
+    component: RestaurantsList
   },
 ]
 

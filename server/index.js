@@ -748,7 +748,7 @@ app.put('/shoppingcart2', async (req, res) => {
 
 //Get para pegar as informações dos pratos do 1 restaurante 
 app.get('/clienthome_first_restaurant', (req, res) => {
- const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+ const restauranteId  = 'DGoe9PEt7pEg6nRAgXYK';
   admin.firestore()
     .collection('restaurantes')
     .doc(restauranteId)
@@ -766,7 +766,7 @@ app.get('/clienthome_first_restaurant', (req, res) => {
 
 //Get para pegar as informações dos pratos do 2 restaurante
 app.get('/clienthome_second_restaurant', (req, res) => {
-  const restauranteId  = 'L9fhnBFA2DkVxHUIDjPr';
+  const restauranteId  = 'EbKwC2ud8dRr5kzcrJwH';
 
   // const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
   admin.firestore()
@@ -1381,6 +1381,21 @@ app.delete('/removecoupons_used', (req, res) => {
     });
 });
 
+
+// Rota GET para mostrar os restaurantes
+app.get('/restaurants-list', async (req, res) => {
+  await admin.firestore()
+    .collection('restaurantes')
+    .get()
+    .then(doc => {
+      const restaurantData = doc.data();
+      res.json(restaurantData);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+});
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
