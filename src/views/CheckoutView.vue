@@ -41,6 +41,12 @@
                         <div class="col-start-7">
                             R${{ this.fee }}
                         </div>
+                        <div class="col-span-1">
+                            <p>Desconto</p>
+                        </div>
+                        <div class="col-start-7">
+                            R${{ this.discount }}
+                        </div>
                         <div class="col-span-1 font-bold py-3 text-2xl">
                             <p>Total</p>
                         </div>
@@ -197,6 +203,8 @@ import qs from 'qs';
                 currTime: '', 
                 cupons : [],
                 finalPrice: null,
+                discount: null,
+                resName: '',
             }
         },
         methods: {
@@ -272,6 +280,7 @@ import qs from 'qs';
                         clientName: this.clientName,
                         orderFee: this.fee,
                         eTime: this.estTime,
+                        resName: this.resName,
                     });
 
                     console.log(response.data.message);
@@ -289,17 +298,21 @@ import qs from 'qs';
                 }
             },
             async getEstimatedTime() {
-                await axios.get('http://localhost:3000/estimatedtime')
-                .then(response => {
+                console.log(this.resName)
+                try{
+                    const response = await axios.post('http://localhost:3000/estimatedtime', {
+                        resName: this.resName,
+                    });
                     const auxFee = response.data.taxa.split(" ");
                     const iAux = auxFee[1]
                     this.fee = parseFloat(iAux);
                     this.estTime = response.data.tempo_estimado;
-                    this.finalPrice = this.orderPrice + this.fee;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                    this.finalPrice = (this.orderPrice - this.discount + this.fee).toFixed(2);
+                }
+                catch (error){
+                    console.log(error);
+                }
+
             }, 
             OrderConfirmation(){
                 if (this.modalCard){
@@ -330,21 +343,17 @@ import qs from 'qs';
             this.getAddress();
             this.OrdersAmount();
             this.getName();
-            this.getEstimatedTime();
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);
-            const objectLength = Object.keys(object).length;
-            
-            this.clientDict = object;
+            const subTotal = this.$route.params.subtotal;
+            const discount = this.$route.params.desconto;
+            const resName = this.$route.params.restaurante;
 
-            for (var i = 0; i < objectLength; i++) {
-                this.clientDict[i].preco = this.clientDict[i].preco.replace(',', '.');
-                let floatPrice = parseFloat(this.clientDict[i].preco);
-                this.orderPrice += floatPrice*this.clientDict[i].quantidade;
-            }
-            // this.orderPrice += this.fee;
-            this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
+            this.resName = resName;
+            this.orderPrice = parseFloat(subTotal).toFixed(2);
+            this.discount = parseFloat(discount);
+            this.clientDict = object;
 
             const aDate = new Date();
             const options = { timeZone: 'America/Sao_Paulo', hour12: false };
@@ -353,6 +362,8 @@ import qs from 'qs';
 
             this.todayDate = aux[0];
             this.currTime = aux[1];
+
+            this.getEstimatedTime();
         },
     }
 </script>
