@@ -41,12 +41,6 @@
                         <div class="col-start-7">
                             R${{ this.fee }}
                         </div>
-                        <div class="col-span-1">
-                            <p>Desconto</p>
-                        </div>
-                        <div class="col-start-7">
-                            R${{ this.discount }}
-                        </div>
                         <div class="col-span-1 font-bold py-3 text-2xl">
                             <p>Total</p>
                         </div>
@@ -203,7 +197,6 @@ import qs from 'qs';
                 currTime: '', 
                 cupons : [],
                 finalPrice: null,
-                discount: null,
             }
         },
         methods: {
@@ -302,7 +295,7 @@ import qs from 'qs';
                     const iAux = auxFee[1]
                     this.fee = parseFloat(iAux);
                     this.estTime = response.data.tempo_estimado;
-                    this.finalPrice = (this.orderPrice + this.fee - this.discount).toFixed(2);
+                    this.finalPrice = this.orderPrice + this.fee;
                 })
                 .catch(error => {
                     console.error(error);
@@ -341,12 +334,17 @@ import qs from 'qs';
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);
-            const subTotal = this.$route.params.subtotal;
-            const discount = this.$route.params.desconto;
-
-            this.orderPrice = parseFloat(subTotal);
-            this.discount = parseFloat(discount);
+            const objectLength = Object.keys(object).length;
+            
             this.clientDict = object;
+
+            for (var i = 0; i < objectLength; i++) {
+                this.clientDict[i].preco = this.clientDict[i].preco.replace(',', '.');
+                let floatPrice = parseFloat(this.clientDict[i].preco);
+                this.orderPrice += floatPrice*this.clientDict[i].quantidade;
+            }
+            // this.orderPrice += this.fee;
+            this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
 
             const aDate = new Date();
             const options = { timeZone: 'America/Sao_Paulo', hour12: false };
