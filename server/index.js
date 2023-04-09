@@ -1143,8 +1143,8 @@ app.post("/storeorderfield", async (req, res) =>{
   const orderFee = req.body.orderFee;
   const eTime = req.body.eTime;
 
-  admin.firestore().collection('cliente').doc(client_id).get()
-  .then(clienteDoc => {
+  await admin.firestore().collection('cliente').doc(client_id).get()
+  .then(async (clienteDoc) => {
     if (!clienteDoc.exists) {
       res.status(404).send('Cliente não encontrado');
     } else {
@@ -1154,7 +1154,7 @@ app.post("/storeorderfield", async (req, res) =>{
                                   'preco': orderPrice, 'endereco': orderAddress, 'nome': clientName, 'taxa': orderFee, 
                                   'tempo_estimado': eTime}
 
-      admin.firestore().collection('cliente').doc(client_id)
+      await admin.firestore().collection('cliente').doc(client_id) 
         .update({ acompanhamento })
         .then(() => {
           res.json({ message: 'Acompanhamento adicionado com sucesso' });
