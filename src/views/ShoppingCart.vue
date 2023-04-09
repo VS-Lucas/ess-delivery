@@ -111,8 +111,6 @@
                     </div>
                 </div>
             </div>
-
-
 <div v-if="this.cupom_invalido">
             <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
                 <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
@@ -321,6 +319,7 @@ export default {
                 console.error(error);
         });
 
+        let cupom_valido = false;
         for (let i = 0; i < this.cupons.length; i++) {
           console.log("entrou aq")
           if (this.cupons[i].nome === cupom.cupom) {
@@ -363,8 +362,27 @@ export default {
         if (this.cupons.length == 0 && !cupom_valido ){
             console.log("entrou nesse if")
             this.cupom_invalido = true;
-          }
-        
+          }   
+    },
+    async retrieveCoupon(cupom_efetivado){
+      //Botar o cupom no array de cupons disponíveis
+      await axios.post('http://localhost:3000/addtocoupons_avaliable',  {nome: cupom_efetivado.nome, valor: cupom_efetivado.valor})
+              .then(response => {
+                console.log(response.data.message);
+              })
+              .catch(error => {
+                console.error(error);
+              });
+
+      //Remover o cupom do array de cupons efetivados
+      await axios.delete('http://localhost:3000/removecoupons_used', { data: {nome: cupom_efetivado.nome}})
+        .then(response => {
+            console.log(response.data)
+            location.reload();
+        })
+        .catch(error => {
+            console.error(error)
+        }) 
     }
   }
 }
