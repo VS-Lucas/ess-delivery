@@ -510,13 +510,13 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
   const name = _req.body.name;
   const justification = _req.body.justification;
 
-  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
+  admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
   .then(clienteDoc => {
       const pedidos = clienteDoc.data().pedidos;
       
       pedidos[name][id]['status'] = 'Cancelado';
       pedidos[name][id]['justification'] = justification;
-      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+      admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
         .update({ pedidos })
         .then(() => {
           _res.json({ message: 'Cancelamento foi feito com sucesso!' });
@@ -535,7 +535,7 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
 
 app.get('/restaurant-orders', async (_req, _res) => {
   
-  await admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+  await admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
   .get()
   .then( async (doc) => {
     _res.send(doc.data().pedidos);
@@ -742,13 +742,15 @@ app.put('/shoppingcart2', async (req, res) => {
 
 //Get para pegar as informações dos pratos do 1 restaurante 
 app.get('/clienthome_first_restaurant', (req, res) => {
- const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+ const restauranteId  = 'DGoe9PEt7pEg6nRAgXYK';
+//  DGoe9PEt7pEg6nRAgXYK
   admin.firestore()
     .collection('restaurantes')
     .doc(restauranteId)
     .get()
     .then(doc => {
       const restauranteData = doc.data();
+      console.log(restauranteData)
       const pratos = restauranteData.pratos;
       res.json(pratos);
     })
@@ -760,9 +762,9 @@ app.get('/clienthome_first_restaurant', (req, res) => {
 
 //Get para pegar as informações dos pratos do 2 restaurante
 app.get('/clienthome_second_restaurant', (req, res) => {
-  const restauranteId  = 'L9fhnBFA2DkVxHUIDjPr';
-
-  // const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+  const restauranteId  = 'EbKwC2ud8dRr5kzcrJwH';
+  // L9fhnBFA2DkVxHUIDjPr
+  // const restauranteId  = 'DGoe9PEt7pEg6nRAgXYK';
   admin.firestore()
     .collection('restaurantes')
     .doc(restauranteId)
@@ -1050,7 +1052,7 @@ app.post("/storeclientorder", async (req, res) =>{
 // Rota POST para salvar a demanda do restaurante
 app.post("/reststore", async (req, res) =>{
 
-  const res_id = 'hm0n3mzMyFMh2JAb9YQb';
+  const res_id = 'DGoe9PEt7pEg6nRAgXYK';
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
   const auxOrderDate = req.body.orderDate;
@@ -1107,7 +1109,7 @@ app.put("/clearcart", async (req, res) =>{
 
 // Rota GET do tempo estimado de entrega
 app.get('/estimatedtime', async(req, res) =>{
-  const res_id = 'hm0n3mzMyFMh2JAb9YQb';
+  const res_id = 'DGoe9PEt7pEg6nRAgXYK';
 
 
 // // Rota GET do tempo estimado de entrega
@@ -1391,7 +1393,7 @@ app.post('/finish-order', async (_req, _res) => {
   const name = _req.body.name;
 
   
-  admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
+  admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
   .then(clienteDoc => {
       const pedidos = clienteDoc.data().pedidos;
       // console.log(pedidos)
@@ -1399,7 +1401,7 @@ app.post('/finish-order', async (_req, _res) => {
       pedidos[name][id]['status'] = 'A caminho';
       // console.log(pedidos[name][id]['status'])
 
-      admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
+      admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
         .update({ pedidos })
         .then(() => {
           _res.json({ message: 'Pedido conluído com sucesso!' });
@@ -1443,7 +1445,7 @@ app.post('/notify-finish-order', async (_req, _res) => {
 
 
 app.get('/get-tracking', async (_req, _res) => {
-  admin.firestore().collection('cliente').doc(client_id).get()
+  await admin.firestore().collection('cliente').doc(client_id).get()
   .then((doc) => {
       const order = doc.data().acompanhamento;
       _res.json(order);
@@ -1454,7 +1456,7 @@ app.get('/get-tracking', async (_req, _res) => {
 
 
 app.put('/clear-tracking', async (_req, _res) => {
-  admin.firestore()
+  await admin.firestore()
        .collection('cliente')
        .doc(client_id)
        .update({ acompanhamento: {} })
