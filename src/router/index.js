@@ -79,7 +79,7 @@ const routes = [
     component: HomeRestaurant
   },
   {
-    path: '/checkout/:pratos+',
+    path: '/checkout/:pratos:subtotal:desconto',
     name: 'checkout',
     component: () => import('../views/CheckoutView.vue')
   },
