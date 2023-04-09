@@ -41,6 +41,12 @@
                         <div class="col-start-7">
                             R${{ this.fee }}
                         </div>
+                        <div class="col-span-1">
+                            <p>Desconto</p>
+                        </div>
+                        <div class="col-start-7">
+                            R${{ this.discount }}
+                        </div>
                         <div class="col-span-1 font-bold py-3 text-2xl">
                             <p>Total</p>
                         </div>
@@ -197,6 +203,7 @@ import qs from 'qs';
                 currTime: '', 
                 cupons : [],
                 finalPrice: null,
+                discount: null,
             }
         },
         methods: {
@@ -295,7 +302,7 @@ import qs from 'qs';
                     const iAux = auxFee[1]
                     this.fee = parseFloat(iAux);
                     this.estTime = response.data.tempo_estimado;
-                    this.finalPrice = this.orderPrice + this.fee;
+                    this.finalPrice = (this.orderPrice + this.fee - this.discount).toFixed(2);
                 })
                 .catch(error => {
                     console.error(error);
@@ -314,17 +321,9 @@ import qs from 'qs';
                 this.storeResOrder();
                 this.storeOrderField();
                 this.clearCart();
-
-                this.clientDict['orderID'] = this.ordersAm;
-                this.clientDict['address'] = this.addressDict;
-                this.clientDict['totalprice'] = this.orderPrice;
-                this.clientDict['name'] = this.clientName;
-                this.clientDict['date'] = this.todayDate;
-                this.clientDict['hour'] = this.currTime;
                 
                 this.$router.push ({
-                    name: 'order-tracking',
-                    params: { clientOrder: qs.stringify(this.clientDict) }
+                    path: '/order-tracking',
                 });
             },
             toCart(){
@@ -342,17 +341,12 @@ import qs from 'qs';
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);
-            const objectLength = Object.keys(object).length;
-            
-            this.clientDict = object;
+            const subTotal = this.$route.params.subtotal;
+            const discount = this.$route.params.desconto;
 
-            for (var i = 0; i < objectLength; i++) {
-                this.clientDict[i].preco = this.clientDict[i].preco.replace(',', '.');
-                let floatPrice = parseFloat(this.clientDict[i].preco);
-                this.orderPrice += floatPrice*this.clientDict[i].quantidade;
-            }
-            // this.orderPrice += this.fee;
-            this.orderPrice = parseFloat(this.orderPrice.toFixed(2));
+            this.orderPrice = parseFloat(subTotal);
+            this.discount = parseFloat(discount);
+            this.clientDict = object;
 
             const aDate = new Date();
             const options = { timeZone: 'America/Sao_Paulo', hour12: false };
