@@ -176,7 +176,7 @@
         });
         // console.log("Passou pelo axios")
         // console.log(this.pratos)
-      
+
         let precoTotal = 0;
         this.pratos.forEach((doc) => {
           precoTotal+= parseFloat(doc.preco.replace(',','.'))*doc.quantidade;
@@ -223,6 +223,7 @@
       console.log('rota:')
       console.log(this.precoRota)
       console.log(this.descontoRota)
+      console.log(this.pratos[0].restaurante)
     },
     methods: {
       goToClientHome() {
@@ -238,7 +239,8 @@
                 name: 'checkout',
                 params: { pratos: qs.stringify(this.pratos),
                           subtotal: this.precoRota,
-                          desconto: this.descontoRota
+                          desconto: this.descontoRota,
+                          restaurante: this.pratos[0].restaurante
                         }
               });
         }
