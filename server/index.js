@@ -485,12 +485,9 @@ app.post('/cancel-customer-order', async (_req, _res) => {
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
-      // Adicionar o prato ao array de carrinho
       const pedidos = clienteDoc.data().pedidos;
       
       pedidos[id]['status'] = 'Cancelado';
-
-      // Atualizar o cliente com o novo array de carrinho
       admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
         .then(() => {
@@ -515,13 +512,10 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
 
   admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb').get()
   .then(clienteDoc => {
-      // Adicionar o prato ao array de carrinho
       const pedidos = clienteDoc.data().pedidos;
       
       pedidos[name][id]['status'] = 'Cancelado';
       pedidos[name][id]['justification'] = justification;
-
-      // Atualizar o cliente com o novo array de carrinho
       admin.firestore().collection('restaurantes').doc('hm0n3mzMyFMh2JAb9YQb')
         .update({ pedidos })
         .then(() => {
@@ -746,9 +740,29 @@ app.put('/shoppingcart2', async (req, res) => {
   })
 });
 
-//Get para pegar as informações dos pratos 
-app.get('/clienthome', (req, res) => {
-  const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+//Get para pegar as informações dos pratos do 1 restaurante 
+app.get('/clienthome_first_restaurant', (req, res) => {
+ const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+  admin.firestore()
+    .collection('restaurantes')
+    .doc(restauranteId)
+    .get()
+    .then(doc => {
+      const restauranteData = doc.data();
+      const pratos = restauranteData.pratos;
+      res.json(pratos);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+});
+
+//Get para pegar as informações dos pratos do 2 restaurante
+app.get('/clienthome_second_restaurant', (req, res) => {
+  const restauranteId  = 'L9fhnBFA2DkVxHUIDjPr';
+
+  // const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
   admin.firestore()
     .collection('restaurantes')
     .doc(restauranteId)
@@ -846,7 +860,7 @@ app.post('/add-to-cart', (_req, _res) => {
         })
         .catch(err => {
           console.error(err);
-          res.status(500).send('Erro ao atualizar carrinho do cliente');
+          _res.status(500).send('Erro ao atualizar carrinho do cliente');
         });
   })
   .catch(err => {
@@ -1093,6 +1107,15 @@ app.put("/clearcart", async (req, res) =>{
 // Rota GET do tempo estimado de entrega
 app.get('/estimatedtime', async(req, res) =>{
   const res_id = 'hm0n3mzMyFMh2JAb9YQb';
+
+
+// // Rota GET do tempo estimado de entrega
+// app.get('/estimatedtime', async(req, res) =>{
+//   try{
+//     const doc = await admin.firestore().collection('restaurantes').doc(id_restaurant).get();
+//     const est_time = doc.data().tempo_entrega;
+//     const fee = doc.data().taxa;
+
 
   try{
     const doc = await admin.firestore().collection('restaurantes').doc(res_id).get();
@@ -1416,6 +1439,32 @@ app.post('/notify-finish-order', async (_req, _res) => {
     _res.status(500).send('Erro ao obter cliente');
   });
 });
+
+
+app.get('/get-tracking', async (_req, _res) => {
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then((doc) => {
+      const order = doc.data().acompanhamento;
+      _res.json(order);
+  }).catch((error) => {
+    console.error(error);
+  });
+});
+
+
+app.put('/clear-tracking', async (_req, _res) => {
+  admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ acompanhamento: {} })
+  .then(() => {
+    _res.json({ message: 'Acompanhamento Limpor' });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao limpar o acompanhamento');
+  }); 
+})
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
