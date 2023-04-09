@@ -1107,6 +1107,21 @@ app.put("/clearcart", async (req, res) =>{
   }); 
 });
 
+// Rota PUT para limpar o array de cupons efetivados
+app.put("/clearcoupons_used", async (req, res) =>{
+  admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ cupons_efetivados: [] })
+  .then(() => {
+    res.json({ message: 'Array de cupons efetivados limpo com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao limpar array de cupons efetivados');
+  }); 
+});
+
 // Rota GET do tempo estimado de entrega
 app.get('/estimatedtime', async(req, res) =>{
   const res_id = 'DGoe9PEt7pEg6nRAgXYK';
