@@ -29,7 +29,7 @@
         </header>
 
         <!-- CARD -->
-        <div :style="{ height: this.height + 'px' }" class="bg-[#A62C21] sm:w-11/12 w-[450px] h-[300px] grid grid-cols-3 rounded-[20px] mx-auto">
+        <div :style="{ height: this.height + 'px' }" class="bg-[#A62C21] sm:w-11/12 w-[450px] h-[300px] grid grid-cols-3 gap-2 rounded-[20px] mx-auto">
             
             <!-- <div class="flex col-span-1 text-white font-medium items-center">
                 <div class="flex flex-col items-center justify-center ml-7 sm:mr-0 mr-4">
@@ -40,13 +40,14 @@
             
             
             <div class="flex col-span-1 text-white">
-                <div class="flex flex-col ml-7 sm:mr-0 p-4 ">
+                <div class="flex flex-col p-4 ">
                     <h2 style="font-size: 20px; font-weight: 800;">Novo pedido</h2>
 
                     <p style="font-size: 15px; font-weight: 400;"><span style="font-weight: 600;">Cliente:</span> {{ this.$route.params.clientName }}</p>
                     <p class="pb-1" style="font-size: 15px; font-weight: 400;"><span style="font-weight: 600;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
 
-                    <p style="font-size: 15px; font-weight: 400;"><span style="font-weight: 600;">Endereço de entrega:</span> #{{ this.$route.params.address }}</p>
+                    <!-- <p style="font-size: 15px; font-weight: 400;"><span style="font-weight: 600;">Endereço de entrega:</span> #{{ this.$route.params.address }}</p> -->
+                    
 
                     <!-- <h2 class="text-[#261918] font-bold">ID: #{{ this.$route.params.id }}</h2>
                     <h4 class="text-[#261918] mb-3">{{ this.$route.params.date }}</h4>
@@ -59,6 +60,23 @@
                     <h3> {{this.address.rua}}, Nº {{this.address.numero}}, {{this.address.bairro}}</h3> -->
                 </div>
             </div>
+
+            
+
+            <div class="col-start-3 p-4 text-white">
+                
+                <button @click="deny" class="block w-[200px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    Recusar pedido
+                </button>
+                
+                <button @click="accept" class="block w-[200px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    Confirmar pedido
+                </button>
+
+            </div>
+
+            
+
 
             <!-- <div class="flex col-span-2 text-white mr-2 ml-10">
                 <div class="grid grid-cols-2 mt-20">
@@ -98,6 +116,7 @@ import NavBar from '@/components/NavBar.vue';
         props: {
             orderId: String,
             clientName: String,
+            status: String,
             address: Object
         },
         data() {
@@ -110,6 +129,12 @@ import NavBar from '@/components/NavBar.vue';
             NavBar
         },
         methods: {
+            // async accept() {
+            //     this.status = 'Confirmado'
+            // },
+            // async deny() {
+            //     this.status = 'Cancelado'
+            // }
             // getStatus(key, id, orders) {
             //     console.log(orders[key][id]['status']);
             //     return orders[key][id]['status'];

@@ -136,7 +136,7 @@ export default ({
       }
    },
    mounted() {
-      setInterval(() => {
+      // setInterval(() => {
             axios.get('http://localhost:3000/restaurant-orders')
             .then((res) => {
                const base_orders = res.data;
@@ -162,7 +162,7 @@ export default ({
             }).catch((error) => {
                console.log(error.message)
             });
-        }, 2000)
+      //   }, 7000)
       
    },
    components: {

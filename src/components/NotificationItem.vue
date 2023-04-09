@@ -56,8 +56,6 @@
 
 <script>
 
-    import axios from "axios"
-
     export default {
         props: {
             orderId: String,
@@ -73,20 +71,20 @@
                     {
                         orderId: this.orderId, 
                         clientName: this.clientName,
-                        address: this.getAddress(this.clientName, this.orderId, this.orders)
+                        // address: this.getAddress(this.clientName, this.orderId, this.orders)
                         // items: this.items,
                         // date: this.date,
                         // total_price: this.total_price,
                         // form_pay: this.form_pay,
-                        // status: this.status
+                        status: this.status
                         // prices: this.prices,
                         // dishes: JSON.stringify(this.dishes)
                     }
                 })
             },
-            getAddress(key, id, orders){
-                return orders[key][id]['endereço'];
-            }
+            // getAddress(key, id, orders){
+            //     return orders[key][id]['endereço'];
+            // }
         }
     }
 </script>
