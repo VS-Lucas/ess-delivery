@@ -64,12 +64,12 @@ const routes = [
     component: ShoppingCart
   },
   {
-    path: '/history-details/:id/:imgSrc/:name/:date/:total_price/:form_pay/:items+/:status/:prices+/:dishes+',
+    path: '/history-details/:id/:imgSrc/:name/:date/:total_price/:form_pay/:items+/:status/:prices+/:dishes+/:hour',
     name: 'history-details',
     component: () => import('../views/HistoryDetailsView.vue')
   },
   {
-    path:'/order-tracking/:clientOrder+',
+    path:'/order-tracking',
     name: 'order-tracking',
     component: () => import('../views/OrderTracking.vue')
   },
@@ -79,7 +79,7 @@ const routes = [
     component: HomeRestaurant
   },
   {
-    path: '/checkout/:pratos+',
+    path: '/checkout/:pratos:subtotal:desconto',
     name: 'checkout',
     component: () => import('../views/CheckoutView.vue')
   },
