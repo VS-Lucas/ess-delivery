@@ -474,7 +474,8 @@ app.get('/get-orders', async (_req, _res) => {
   await admin.firestore().collection('cliente').doc(client_id)
   .get()
   .then( async (doc) => {
-    _res.send(doc.data().pedidos);
+    
+    _res.send({pedidos: doc.data().pedidos, nome: doc.data().nome});
   }).catch(() => {
     _res.status(500).send("Não foi possível acessar os pedidos no momento")
   });
@@ -483,6 +484,7 @@ app.get('/get-orders', async (_req, _res) => {
 
 app.post('/cancel-customer-order', async (_req, _res) => {
   const id = _req.body.id;
+  
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
@@ -510,14 +512,23 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
   const id = _req.body.id;
   const name = _req.body.name;
   const justification = _req.body.justification;
+  const restaurant = _req.body.restaurant;
+  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
+                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
 
-  admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
+  const restaurant_id = restaurants[restaurant];
+
+  admin.firestore().collection('restaurantes').doc(restaurant_id).get()
   .then(clienteDoc => {
+      console.log(restaurant_id)
+      console.log(name);
       const pedidos = clienteDoc.data().pedidos;
-      
+      console.log(pedidos);
+      console.log(id);
+
       pedidos[name][id]['status'] = 'Cancelado';
       pedidos[name][id]['justification'] = justification;
-      admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
+      admin.firestore().collection('restaurantes').doc(restaurant_id)
         .update({ pedidos })
         .then(() => {
           _res.json({ message: 'Cancelamento foi feito com sucesso!' });
@@ -536,7 +547,7 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
 
 app.get('/restaurant-orders', async (_req, _res) => {
   
-  await admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
+  await admin.firestore().collection('restaurantes').doc(restaurantId).get()
   .get()
   .then( async (doc) => {
     _res.send(doc.data().pedidos);
@@ -751,7 +762,6 @@ app.get('/clienthome_first_restaurant', (req, res) => {
     .get()
     .then(doc => {
       const restauranteData = doc.data();
-      console.log(restauranteData)
       const pratos = restauranteData.pratos;
       res.json(pratos);
     })
@@ -1170,6 +1180,7 @@ app.post("/storeorderfield", async (req, res) =>{
   const orderFee = req.body.orderFee;
   const eTime = req.body.eTime;
   const resName = req.body.resName;
+  const status = req.body.status;
 
   await admin.firestore().collection('cliente').doc(client_id).get()
   .then(async (clienteDoc) => {
@@ -1178,7 +1189,7 @@ app.post("/storeorderfield", async (req, res) =>{
     } else {
 
       const acompanhamento = clienteDoc.data().acompanhamento || {};
-      acompanhamento[orderID] = {'pratos': orderData, 'restaurante': resName, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
+      acompanhamento[orderID] = {'pratos': orderData, 'restaurante': resName, 'status': status, 'data': orderDate, 'hora': orderTime,
                                   'preco': orderPrice, 'endereco': orderAddress, 'nome': clientName, 'taxa': orderFee, 
                                   'tempo_estimado': eTime}
 
@@ -1418,7 +1429,7 @@ app.post('/finish-order', async (_req, _res) => {
   const name = _req.body.name;
 
 
-  admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
+  admin.firestore().collection('restaurantes').doc(restaurantId).get()
   .then(clienteDoc => {
       const pedidos = clienteDoc.data().pedidos;
       // console.log(pedidos)
@@ -1426,7 +1437,7 @@ app.post('/finish-order', async (_req, _res) => {
       pedidos[name][id]['status'] = 'A caminho';
       // console.log(pedidos[name][id]['status'])
 
-      admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
+      admin.firestore().collection('restaurantes').doc(restaurantId)
         .update({ pedidos })
         .then(() => {
           _res.json({ message: 'Pedido conluído com sucesso!' });
@@ -1574,23 +1585,165 @@ app.put('/clear-tracking', async (_req, _res) => {
     console.error(err);
     _res.status(500).send('Erro ao limpar o acompanhamento');
   }); 
+});
+
+
+app.get('/get-name', async (_req, _res) => {
+  await admin.firestore().collection('cliente').doc(client_id).get()
+  .then((doc) => {
+      const name = doc.data().nome;
+      _res.json(name);
+  }).catch((error) => {
+    console.error(error);
+  });
 })
 
 
 // Rota GET para mostrar os restaurantes
+// app.get('/restaurants-list', async (req, res) => {
+//   await admin.firestore()
+//     .collection('restaurantes')
+//     .get()
+//     .then(doc => {
+//       const restaurantData = doc.data();
+//       res.json(restaurantData);
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send('Erro ao buscar dados do restaurante');
+//     });
+// });
+
 app.get('/restaurants-list', async (req, res) => {
-  await admin.firestore()
-    .collection('restaurantes')
-    .get()
-    .then(doc => {
-      const restaurantData = doc.data();
-      res.json(restaurantData);
+  try {
+  const restaurantList = [];
+  const snapshot = await admin.firestore().collection('restaurantes').get();
+  snapshot.forEach((doc) => {
+  restaurantList.push(doc.data());
+  });
+  res.json(restaurantList);
+  } catch (err) {
+  console.error(err);
+  res.status(500).send('Erro ao buscar dados do restaurante');
+  }
+  });
+
+//Rota para notificar o BD do restaurante que o pedido foi corfirmado
+app.post('/accept-order', async (_req, _res) => {
+    const id = _req.body.id;
+    const name = _req.body.name;
+  
+  
+    admin.firestore().collection('restaurantes').doc(restaurantId).get()
+    .then(clienteDoc => {
+        const pedidos = clienteDoc.data().pedidos;
+        // console.log(pedidos)
+        //Mudando status
+        pedidos[name][id]['status'] = 'Confirmado';
+        // console.log(pedidos[name][id]['status'])
+  
+        admin.firestore().collection('restaurantes').doc(restaurantId)
+          .update({ pedidos })
+          .then(() => {
+            _res.json({ message: 'Pedido confirmado com sucesso!' });
+          })
+          .catch(err => {
+            console.error(err);
+            _res.status(500).send('Erro ao confirmar pedido!!');
+          });
     })
     .catch(err => {
       console.error(err);
-      res.status(500).send('Erro ao buscar dados do restaurante');
+      _res.status(500).send('Erro ao obter cliente');
     });
-});
+  });
+
+//Rota de Notificar o que cliente que o pedido foi confirmado
+app.post('/notify-order-accepted', async (_req, _res) => {
+    const id = _req.body.id;
+  
+    admin.firestore().collection('cliente').doc(client_id).get()
+    .then(clienteDoc => {
+        const pedidos = clienteDoc.data().pedidos;
+        
+        pedidos[id]['status'] = 'Confirmado';
+  
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({ pedidos })
+          .then(() => {
+            _res.json({ message: 'O seu pedido foi confirmado' });
+          })
+          .catch(err => {
+            console.error(err);
+            _res.status(500).send('Seu pedido não pode ser confirmado');
+          });
+    })
+    .catch(err => {
+      console.error(err);
+      _res.status(500).send('Erro ao obter cliente');
+    });
+  });
+
+  //Rota para notificar o BD do restaurante que o pedido foi recusado
+  app.post('/deny-order', async (_req, _res) => {
+    const name = _req.body.name;  
+    const id = _req.body.id;
+    
+    
+      admin.firestore().collection('restaurantes').doc(restaurantId).get()
+      .then(clienteDoc => {
+          const pedidos = clienteDoc.data().pedidos;
+          // console.log(pedidos)
+          //Mudando status
+          pedidos[name][id]['status'] = 'Recusado';
+          // console.log(pedidos[name][id]['status'])
+    
+          admin.firestore().collection('restaurantes').doc(restaurantId)
+            .update({ pedidos })
+            .then(() => {
+              _res.json({ message: 'Pedido recusado!' });
+            })
+            .catch(err => {
+              console.error(err);
+              _res.status(500).send('Erro ao recusar pedido!!');
+            });
+      })
+      .catch(err => {
+        console.error(err);
+        _res.status(500).send('Erro ao obter cliente');
+      });
+    });
+
+//Rota de Notificar o que cliente que o pedido foi recusado
+app.post('/notify-order-denied', async (_req, _res) => {
+    const name = _req.body.name;
+    const id = _req.body.id;
+    const justification = _req.body.justification;
+  
+    admin.firestore().collection('cliente').doc(client_id).get()
+    .then(clienteDoc => {
+        const pedidos = clienteDoc.data().pedidos;
+        
+        pedidos[id]['status'] = 'Recusado';
+        pedidos[id]['justification'] = justification;
+  
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({ pedidos })
+          .then(() => {
+            _res.json({ message: 'O seu pedido foi recusado' });
+          })
+          .catch(err => {
+            console.error(err);
+            _res.status(500).send('Erro ao ter pedido recusado');
+          });
+    })
+    .catch(err => {
+      console.error(err);
+      _res.status(500).send('Erro ao obter cliente');
+    });
+  });
+
+//Rota para notificar o cliente que o pedido foi aceito
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });

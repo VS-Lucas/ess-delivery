@@ -1,14 +1,14 @@
 <template>
-    <div class="mx-auto mt-10 flex items-center justify-center">
+    <!-- <div class="mx-auto mt-10 flex items-center justify-center">
         <div>  
             <button @click="confirmButton" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Confirmar Pedido</button>
         </div>
         <div>
-            <button @click="refuseButton" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Recusar Pedido</button>
+            <button @click="denyButton" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Recusar Pedido</button>
         </div>       
-    </div>
+    </div> -->
 
-    <div v-if="this.refuseModal">
+    <div v-if="this.denyModal">
         <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
             <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
                 <div class="modal-container bg-white w-[400px] mx-auto h-[200px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
@@ -20,12 +20,12 @@
 
                             <div class="grid grid-cols-2 mt-10">
                                 <div class="col-span-1">
-                                    <button @click="cancelRefuse" type="button" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5">
+                                    <button @click="cancelDeny" type="button" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5">
                                         Voltar
                                     </button>
                                 </div>
                                 <div class="col-start-3">
-                                    <button @click="confirmRefuse" type="button" class="bg-[#9DBF69] hover:bg-green-500 rounded-lg text-sm px-4 py-2.5">
+                                    <button @click="confirmDenied" type="button" class="bg-[#9DBF69] hover:bg-green-500 rounded-lg text-sm px-4 py-2.5">
                                         <p class="text-black font-bold">Recusar Pedido</p>
                                     </button>
                                 </div>
@@ -45,42 +45,42 @@ export default ({
     data() {
         return {
             justification: '',
-            refuseModal: false
+            denyModal: false
         }
     },
     methods: {
         confirmButton() {
-            // Confirmar pedido e enviar para o cliente
-            axios.post('http://localhost:3000/', {id: this.id})
-            .then(() => {
-                
-            }).catch(err => {
-                console.log(err.message);
-            });
             // Confirmar pedido e enviar para o restaurante
-            axios.post('http://localhost:3000/', {name: this.name, id: this.id, justification: this.justification})
+            axios.post('http://localhost:3000/accept-order', {name: this.name, id: this.id})
+            .then(() => {
+                
+            }).catch(err => {
+                console.log(err.message);
+            });
+            // Confirmar pedido e enviar para o cliente
+            axios.post('http://localhost:3000/notify-order-accepted', {name: this.name, id: this.id})
             .then(() => {
                 
             }).catch(err => {
                 console.log(err.message);
             });
         },
-        refuseButton() {
-            refuseModal = !refuseModal;
+        denyButton() {
+            denyModal = !denyModal;
         },
-        cancelRefuse() {
-            refuseModal = !refuseModal;
+        cancelDeny() {
+            denyModal = !denyModal;
         },
-        confirmRefuse() {
-            // Recusar pedido e enviar para o cliente
-            axios.post('http://localhost:3000/', {id: this.id})
+        confirmDenied() {
+            // Recusar pedido e enviar para o restaurante
+            axios.post('http://localhost:3000/deny-order', {name: this.name, id: this.id})
             .then(() => {
-                refuseModal = !refuseModal;
+                denyModal = !denyModal;
             }).catch(err => {
                 console.log(err.message);
             });
-            // Recusar pedido e enviar para o restaurante
-            axios.post('http://localhost:3000/', {name: this.name, id: this.id, justification: this.justification})
+            // Recusar pedido e enviar para o cliente
+            axios.post('http://localhost:3000/notify-order-denied', {name: this.name, id: this.id, justification: this.justification})
             .then(() => {
                 
             }).catch(err => {
