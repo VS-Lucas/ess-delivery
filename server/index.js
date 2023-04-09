@@ -474,7 +474,8 @@ app.get('/get-orders', async (_req, _res) => {
   await admin.firestore().collection('cliente').doc(client_id)
   .get()
   .then( async (doc) => {
-    _res.send(doc.data().pedidos);
+    
+    _res.send({pedidos: doc.data().pedidos, nome: doc.data().nome});
   }).catch(() => {
     _res.status(500).send("Não foi possível acessar os pedidos no momento")
   });
@@ -483,6 +484,7 @@ app.get('/get-orders', async (_req, _res) => {
 
 app.post('/cancel-customer-order', async (_req, _res) => {
   const id = _req.body.id;
+  
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
@@ -510,14 +512,23 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
   const id = _req.body.id;
   const name = _req.body.name;
   const justification = _req.body.justification;
+  const restaurant = _req.body.restaurant;
+  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
+                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
 
-  admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
+  const restaurant_id = restaurants[restaurant];
+
+  admin.firestore().collection('restaurantes').doc(restaurant_id).get()
   .then(clienteDoc => {
+      console.log(restaurant_id)
+      console.log(name);
       const pedidos = clienteDoc.data().pedidos;
-      
+      console.log(pedidos);
+      console.log(id);
+
       pedidos[name][id]['status'] = 'Cancelado';
       pedidos[name][id]['justification'] = justification;
-      admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
+      admin.firestore().collection('restaurantes').doc(restaurant_id)
         .update({ pedidos })
         .then(() => {
           _res.json({ message: 'Cancelamento foi feito com sucesso!' });
@@ -751,7 +762,6 @@ app.get('/clienthome_first_restaurant', (req, res) => {
     .get()
     .then(doc => {
       const restauranteData = doc.data();
-      console.log(restauranteData)
       const pratos = restauranteData.pratos;
       res.json(pratos);
     })
@@ -1170,6 +1180,7 @@ app.post("/storeorderfield", async (req, res) =>{
   const orderFee = req.body.orderFee;
   const eTime = req.body.eTime;
   const resName = req.body.resName;
+  const status = req.body.status;
 
   await admin.firestore().collection('cliente').doc(client_id).get()
   .then(async (clienteDoc) => {
@@ -1178,7 +1189,7 @@ app.post("/storeorderfield", async (req, res) =>{
     } else {
 
       const acompanhamento = clienteDoc.data().acompanhamento || {};
-      acompanhamento[orderID] = {'pratos': orderData, 'restaurante': resName, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
+      acompanhamento[orderID] = {'pratos': orderData, 'restaurante': resName, 'status': status, 'data': orderDate, 'hora': orderTime,
                                   'preco': orderPrice, 'endereco': orderAddress, 'nome': clientName, 'taxa': orderFee, 
                                   'tempo_estimado': eTime}
 
@@ -1574,6 +1585,17 @@ app.put('/clear-tracking', async (_req, _res) => {
     console.error(err);
     _res.status(500).send('Erro ao limpar o acompanhamento');
   }); 
+});
+
+
+app.get('/get-name', async (_req, _res) => {
+  await admin.firestore().collection('cliente').doc(client_id).get()
+  .then((doc) => {
+      const name = doc.data().nome;
+      _res.json(name);
+  }).catch((error) => {
+    console.error(error);
+  });
 })
 
 

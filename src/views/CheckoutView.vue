@@ -281,6 +281,7 @@ import qs from 'qs';
                         orderFee: this.fee,
                         eTime: this.estTime,
                         resName: this.resName,
+                        status: 'Pagamento'
                     });
 
                     console.log(response.data.message);
