@@ -84,10 +84,16 @@ const routes = [
     component: () => import('../views/CheckoutView.vue')
   },
   {
+    path: '/notification-details/:orderId/:clientName/:status',
+    name: 'notification-details',
+    component: () => import('../views/NotificationDetails.vue')
+  },
+  
+  {
     path: '/restaurants-list',
     name: 'restaurants-list',
     component: RestaurantsList
-  },
+  }
 ]
 
 const router = createRouter({
