@@ -314,17 +314,9 @@ import qs from 'qs';
                 this.storeResOrder();
                 this.storeOrderField();
                 this.clearCart();
-
-                this.clientDict['orderID'] = this.ordersAm;
-                this.clientDict['address'] = this.addressDict;
-                this.clientDict['totalprice'] = this.orderPrice;
-                this.clientDict['name'] = this.clientName;
-                this.clientDict['date'] = this.todayDate;
-                this.clientDict['hour'] = this.currTime;
                 
                 this.$router.push ({
-                    name: 'order-tracking',
-                    params: { clientOrder: qs.stringify(this.clientDict) }
+                    path: '/order-tracking',
                 });
             },
             toCart(){

@@ -69,7 +69,7 @@ const routes = [
     component: () => import('../views/HistoryDetailsView.vue')
   },
   {
-    path:'/order-tracking/:clientOrder+',
+    path:'/order-tracking',
     name: 'order-tracking',
     component: () => import('../views/OrderTracking.vue')
   },
