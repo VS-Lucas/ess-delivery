@@ -401,9 +401,20 @@ app.post('/verify-data/:index', (req, res) => {
 });
 
 // Rota DELETE do descadastramento de restaurante
-app.delete('/unsubscribe', (req, res) => {
+app.delete('/unsubscribe', async (req, res) => {
 
-  admin.auth().deleteUser(userId)
+  const restDoc = await admin.firestore()
+                            .collection('restaurantes')
+                            .doc(restaurantId)
+                            .get()
+
+  const pedido = restDoc.data().pedidos;
+  console.log(pedido);
+
+  if (Object.keys(pedido).length > 0) {//Object.keys(pedido).length > 0 // pedido.length > 0
+    res.send('Restaurante com pedidos em andamento');
+  } else {   
+    admin.auth().deleteUser(userId)
     .then(() => {
       console.log(`(auth)Usuário excluído com sucesso.`);
       admin.firestore().collection('restaurantes').doc(restaurantId).delete()
@@ -427,7 +438,11 @@ app.delete('/unsubscribe', (req, res) => {
     .catch((error) => {
       console.error(`(auth)Erro ao excluir usuário: ${error}`);
       res.status(500).send('(auth)Erro ao excluir usuário.');
-    });
+    })
+
+  }
+  
+  
 
 });
 
