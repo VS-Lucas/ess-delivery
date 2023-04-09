@@ -1,11 +1,13 @@
 <template>
 <body class="bg-[#261918] min-h-screen">
     <header class="bg-[#541F1B] w-full h-[6rem] flex items-center py-4 mb-8">
-        <button class="ml-4"><img src="../assets/img/back-button.png" alt="back"></button>
-
+        <button @click="clearOrder" class="ml-4"><img src="../assets/img/back-button.png" alt="back"></button>
         <h1 class="text-white font-bold mx-auto text-3xl">Pedido #{{this.id}}</h1>
     </header>
     
+    <div class="text-white ml-5 mb-3 bg-[#541F1B] w-[175px] p-1 rounded-[20px]">
+        <button @click="goToHome">Ir para página inicial</button>
+    </div>
 
     <div class="flex items-center justify-center">
         <div>
@@ -118,9 +120,9 @@
                         <td colspan="3"><hr class="w-11/12 m-2 border-[#541F1B]"></td>
                     </tr>
                     
-                    <tr v-for="dish in Object.keys(this.freq)" :key="dish.id">
-                        <th class="font-normal">{{ this.freq[dish] }}</th>
-                        <th class="font-normal">{{ dish }}</th>
+                    <tr v-for="dish in dishes" :key="dish.id" class="overflow-auto">
+                        <th class="font-normal">{{ dish.amount }}</th>
+                        <th class="font-normal">{{ dish.nome }}</th>
                     </tr>
 
                     <tr>
@@ -154,7 +156,7 @@
                 <hr class="w-11/12 m-2 border-[#541F1B]">
                 <div class="flex items-center">   
                     <img class="ml-2" src="@/assets/img/delivery.png" alt="delivery">
-                    <h2 class="ml-6 text-white">12:12-12:40</h2>
+                    <h2 class="ml-6 text-white">{{this.time}}</h2>
                 </div>
                 
             </div>
@@ -245,12 +247,13 @@
 
 
 <script>
-import qs from 'qs';
 import axios from 'axios';
 
 export default {
     data() {
         return {
+            time: '',
+            dishes: {},
             justification: '',
             name: '',
             show: false,
@@ -268,17 +271,41 @@ export default {
                 delivered: false,
             },
             error: false,
+            intervalId: null
         }
-    }, 
+    },
     mounted() {
-        this.checkFrequency();
-        this.steps.payment = true;
-        setInterval(() => {
+        setTimeout(() => {
+
+            axios.get('http://localhost:3000/get-tracking')
+            .then(response => {
+                const order = response.data;
+                console.log(order);
+                const id = Object.keys(response.data);
+                this.id = id[0];
+                this.address = order[id[0]]['endereco'];
+                this.totalprice = order[id[0]]['preco'];
+                this.time = order[id[0]]['tempo_estimado'];
+                const key_dishes = Object.keys(order[id[0]]['pratos']);
+                
+                key_dishes.forEach(key => {
+                    this.dishes[key] = {
+                        nome: order[id[0]]['pratos'][key].nome,
+                        amount: order[id[0]]['pratos'][key].quantidade
+                    }
+                });
+                console.log(this.dishes);
+            }).catch(error => {
+                console.error(error);
+            });
+
+            this.steps.payment = true;
+            // this.intervalId = setInterval(() => {
             axios.get('http://localhost:3000/get-orders')
             .then(response => {
                 const orders = response.data;
-                this.status = orders[this.id].status;
-    
+                this.status = orders[this.id]['status'];
+                console.log(this.status)
                 if (this.status === 'Pedido confirmado') {
                     this.steps.confirmed_order = true;
                 } else if (this.status === 'Pedido em preparação') {
@@ -291,10 +318,12 @@ export default {
             })
             .catch(error => {
                 console.error(error)
-            })
-        }, 2000) // Envia a solicitação a cada 2 segundos
-
-        
+            });
+            // }, 7000) // Envia a solicitação a cada 2 segundos
+        }, 2000);
+    },
+    Destroy() {
+        clearInterval(this.intervalId);
     },
     methods: {
         cancelOrder() {
@@ -303,32 +332,6 @@ export default {
             } else {
                 this.show = true;
             }
-
-        },
-        checkFrequency() {
-            const objectString = this.$route.params.clientOrder;
-            const object = qs.parse(objectString);
-            console.log(object);
-            const keys = Object.keys(object);
-        
-            keys.forEach(key => {
-                if (key !== "address" && key !== "orderID" && key !== "totalprice" &&
-                    key !== "date" && key !== 'hour' && key !== 'name') {
-                    this.freq[object[key].nome] = 0;
-                }
-            });
-
-            this.totalprice = object.totalprice;
-            this.id = object.orderID;
-            this.address = object.address;
-            this.name = object.name;
-            
-            keys.forEach(key => {
-                if (key !== "address" && key !== "orderID" && key !== "totalprice" &&
-                    key !== "date" && key !== 'hour' && key !== 'name') {
-                    this.freq[object[key].nome]++;
-                }
-            }); 
         },
         back() {
             this.show = false;
@@ -357,8 +360,23 @@ export default {
         },
         toBack() {
             this.error = false;
+        },
+        clearOrder() {
+            axios.put('http://localhost:3000/clear-tracking')
+            .then(() => {
+                history.back();
+            }).catch(error => { 
+                console.error(error);
+            });
+        },
+        goToHome() {
+            axios.put('http://localhost:3000/clear-tracking')
+            .then(() => {
+                this.$router.push('clienthome');
+            }).catch(error => { 
+                console.error(error);
+            });
         }
-
     }
 }
 </script>
