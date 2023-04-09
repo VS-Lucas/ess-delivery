@@ -1,14 +1,14 @@
 <template>
     <body class="bg-[#261918] min-h-screen">
         <header class="bg-[#A62C21] w-full flex items-center justify-between py-4 mb-8">
-            <a href="#">
+            <a href="/clienthome">
                 <img class="ml-4 pb-1 sm:w-32 sm:h-16 w-30 h-12 object-contain" src="../assets/img/logo-text.png" alt="logo">
             </a>
         </header> <!--header-->
 
         <div class="flex items-center w-full mb-3">
             <div>
-                <a href="#">
+                <a href="javascript:history.back()">
                     <img class="ml-4 sm:w-12 sm:h-12 w-8 h-8 object-contain" src="../assets/img/back-button.png" alt="back-button">
                 </a>
             </div> <!--back-butoon-->
@@ -36,8 +36,12 @@
                 :name="object.restaurant_name"
                 :items="object.items"
                 :date="object.date"
-                :price="object.price"
+                :total_price="object.price"
                 :form_pay="object.form_of_payment"
+                :status="object.status"
+                :prices="object.prices"
+                :dishes="object.dishes"
+                :hour="object.hour"
                 />
             </div>
         </div>
@@ -59,23 +63,87 @@
     import axios from 'axios';
     
     export default {
-        components: { InfoCard, SearchBar },
+        components: { SearchBar, InfoCard},
+        data() {
+            return {
+                orders: [],
+                keys: []
+            }
+        },
         mounted() {
             axios.get('http://localhost:3000/get-orders')
             .then((res) => {
-                this.orders = res.data;
+                const base_orders = res.data;
+                let aux = []
+                this.keys = Object.keys(base_orders);
 
-                if (Object.keys(this.orders).length === 1)  {
-                    console.log("aqui");
-                    this.orders = []
-                }
+                this.keys.forEach(key => {
+                    aux.push({
+                        order_id: key,
+                        img_src: 'https://www.pizzariaatlantico.com.br/mobile/img/logo.png',
+                        restaurant_name: 'Anonymous',
+                        items: this.get_items(key, base_orders),
+                        price: this.get_total_price(key, base_orders),
+                        form_of_payment: 'Cartão de crédito',
+                        status: this.get_status(key, base_orders),
+                        prices: this.get_prices(key, base_orders),
+                        dishes: this.get_dishes(key, base_orders),
+                        date: this.get_date(key, base_orders),
+                        hour: this.get_hour(key, base_orders)
+                    });
+                });
+
+                this.orders = [...aux];
             }).catch((error) => {
                 console.log(error.message)
-            })
+            });
         },
-        data() {
-            return {
-                orders: []
+        methods: {
+            get_items(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                const items = [];
+                keys.forEach(ky =>{
+                    items.push(orders[key]['pratos'][ky].nome);
+                });
+
+                return items;
+            },
+            get_total_price(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                var price = 0;
+                keys.forEach(ky =>{
+                    var n = orders[key]['pratos'][ky].preco.replace(',', '.');
+                    price += parseFloat(n);
+                });
+                return `${price.toFixed(2)}`;
+            },
+            get_status(key, orders) {
+                return orders[key]['status'];
+            },
+            get_prices(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                var prices = [];
+                keys.forEach(ky =>{
+                    prices.push(orders[key]['pratos'][ky].preco);
+                });
+
+                return prices;
+            },
+            get_dishes(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                var dishes = []
+                keys.forEach(ky =>{
+                    dishes.push(orders[key]['pratos'][ky]);
+                    console.log(dishes);
+                });
+
+                return dishes;
+            },
+            get_date(key, orders) {
+                return orders[key]['data'];
+            },
+            get_hour(key, orders) {
+                return orders[key]['hora'];
             }
         }
     }

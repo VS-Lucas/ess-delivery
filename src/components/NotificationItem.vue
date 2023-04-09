@@ -1,0 +1,54 @@
+<template>
+
+    <div>
+
+        <div class="divide-y bg-gray-50 divide-gray-100 dark:divide-gray-700">
+
+            <div v-if="status === 'Pedido realizado'">
+                <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+                
+                    <div class="w-full pl-3">
+                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">Você recebeu um novo pedido: ID <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span></div>
+                        <div class="text-xs text-blue-600 dark:text-blue-500">a few moments ago</div>
+                    </div>
+
+                </a>
+            </div>
+
+            <div v-if="status === 'Pedido cancelado'">
+                <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+
+                    <div class="w-full pl-3">
+                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">O pedido <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> foi cancelado.</div>
+                        <div class="text-xs text-blue-600 dark:text-blue-500">10 minutes ago</div>
+                    </div>
+
+                </a>
+            </div>
+
+            <div v-if="status === 'Pedido entregue'">
+                <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+
+                    <div class="w-full pl-3">
+                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">O pedido <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> foi entregue com sucesso!</div>
+                        <div class="text-xs text-blue-600 dark:text-blue-500">44 minutes ago</div>
+                    </div>
+
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</template>
+
+<script>
+
+    export default {
+        props: {
+            orderId: String,
+            status: String,
+        }
+    }
+</script>
