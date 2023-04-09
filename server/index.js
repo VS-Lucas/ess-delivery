@@ -1107,6 +1107,36 @@ app.put("/clearcart", async (req, res) =>{
   }); 
 });
 
+// Rota PUT para limpar o array de cupons efetivados
+app.put("/clearcoupons_used", async (req, res) =>{
+  admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ cupons_efetivados: [] })
+  .then(() => {
+    res.json({ message: 'Array de cupons efetivados limpo com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao limpar array de cupons efetivados');
+  }); 
+});
+
+// Rota PUT para limpar o array de cupons efetivados
+app.put("/clearcoupons_used", async (req, res) =>{
+  admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ cupons_efetivados: [] })
+  .then(() => {
+    res.json({ message: 'Array de cupons efetivados limpo com sucesso' });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).send('Erro ao limpar array de cupons efetivados');
+  }); 
+});
+
 // Rota POST do tempo estimado de entrega
 app.post('/estimatedtime', async(req, res) =>{
   const res_name = req.body.resName
@@ -1387,6 +1417,88 @@ app.post('/finish-order', async (_req, _res) => {
   const id = _req.body.id;
   const name = _req.body.name;
 
+
+  admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
+  .then(clienteDoc => {
+      const pedidos = clienteDoc.data().pedidos;
+      // console.log(pedidos)
+      //Mudando status
+      pedidos[name][id]['status'] = 'A caminho';
+      // console.log(pedidos[name][id]['status'])
+
+      admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Pedido conluído com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro ao concluir pedido!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+//Rota de Notificar Cliente que o pedido está A Caminho
+app.post('/notify-finish-order', async (_req, _res) => {
+  const id = _req.body.id;
+
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[id]['status'] = 'A caminho';
+
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'O seu pedido está a caminho' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Seu pedido não pode ser concluído');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.get('/get-tracking', async (_req, _res) => {
+  await admin.firestore().collection('cliente').doc(client_id).get()
+  .then((doc) => {
+      const order = doc.data().acompanhamento;
+      _res.json(order);
+  }).catch((error) => {
+    console.error(error);
+  });
+});
+
+
+app.put('/clear-tracking', async (_req, _res) => {
+  await admin.firestore()
+       .collection('cliente')
+       .doc(client_id)
+       .update({ acompanhamento: {} })
+  .then(() => {
+    _res.json({ message: 'Acompanhamento Limpor' });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao limpar o acompanhamento');
+  }); 
+})
+
+// Rota de Finalização do Pedido para trocar Status(Em preparo -> A caminho)
+app.post('/finish-order', async (_req, _res) => {
+  const id = _req.body.id;
+  const name = _req.body.name;
+
   
   admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
   .then(clienteDoc => {
@@ -1464,6 +1576,21 @@ app.put('/clear-tracking', async (_req, _res) => {
   }); 
 })
 
+
+// Rota GET para mostrar os restaurantes
+app.get('/restaurants-list', async (req, res) => {
+  await admin.firestore()
+    .collection('restaurantes')
+    .get()
+    .then(doc => {
+      const restaurantData = doc.data();
+      res.json(restaurantData);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+});
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });

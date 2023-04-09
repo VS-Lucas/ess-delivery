@@ -297,6 +297,15 @@ import qs from 'qs';
                     console.log(error);
                 }
             },
+            async clearCouponsUsed() {
+                try {
+                    const response = await axios.put('http://localhost:3000/clearcoupons_used')
+                    console.log(response.data.message);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+            },
             async getEstimatedTime() {
                 console.log(this.resName)
                 try{
@@ -327,6 +336,7 @@ import qs from 'qs';
                 this.storeResOrder();
                 this.storeOrderField();
                 this.clearCart();
+                this.clearCouponsUsed();
                 
                 this.$router.push ({
                     path: '/order-tracking',

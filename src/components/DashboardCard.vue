@@ -21,8 +21,8 @@
             
             
             <!-- Modal toggle -->
-            <button @click="showDetail" data-modal-target="orderDetail" data-modal-toggle="orderDetail" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-            Mais info...
+            <button @click="showDetail" data-modal-target="orderDetail" data-modal-toggle="orderDetail" class="block text-black bg-[#9DBF69] hover:bg-[#7B9844] focus:ring-4 focus:outline-none focus:ring-[#477205] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#9DBF69] dark:hover:bg-[#7B9844] dark:focus:ring-[#477205]" type="button">
+            Ver mais
             </button>
 
             <!-- Main modal -->
@@ -55,7 +55,7 @@
                                 </div>
                                 <!-- Modal footer -->
                                 <div class="flex items-center justify-end p-4 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                <button @click="finishButton" data-modal-hide="orderDetail" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Concluir Pedido</button>
+                                <button @click="finishButton" data-modal-hide="orderDetail" type="button" class="text-white bg-[#9DBF69] hover:bg-[#7B9844] focus:ring-4 focus:outline-none focus:ring-[#477205] font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#9DBF69] dark:hover:bg-[#7B9844] dark:focus:ring-[#477205]">Concluir Pedido</button>
                                 </div>
                         </div>
 
