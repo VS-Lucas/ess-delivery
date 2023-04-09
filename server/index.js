@@ -740,9 +740,29 @@ app.put('/shoppingcart2', async (req, res) => {
   })
 });
 
-//Get para pegar as informações dos pratos 
-app.get('/clienthome', (req, res) => {
-  const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+//Get para pegar as informações dos pratos do 1 restaurante 
+app.get('/clienthome_first_restaurant', (req, res) => {
+ const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+  admin.firestore()
+    .collection('restaurantes')
+    .doc(restauranteId)
+    .get()
+    .then(doc => {
+      const restauranteData = doc.data();
+      const pratos = restauranteData.pratos;
+      res.json(pratos);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao buscar dados do restaurante');
+    });
+});
+
+//Get para pegar as informações dos pratos do 2 restaurante
+app.get('/clienthome_second_restaurant', (req, res) => {
+  const restauranteId  = 'L9fhnBFA2DkVxHUIDjPr';
+
+  // const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
   admin.firestore()
     .collection('restaurantes')
     .doc(restauranteId)
