@@ -61,7 +61,8 @@
             orderId: String,
             status: String,
             clientName: String,
-            address: Object
+            address: Object,
+            date: String
         },
         methods: {
             showDetails() {
@@ -71,9 +72,7 @@
                     {
                         orderId: this.orderId, 
                         clientName: this.clientName,
-                        // address: this.getAddress(this.clientName, this.orderId, this.orders)
                         // items: this.items,
-                        // date: this.date,
                         // total_price: this.total_price,
                         // form_pay: this.form_pay,
                         status: this.status

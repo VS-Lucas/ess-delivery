@@ -87,8 +87,7 @@ const routes = [
     path: '/notification-details/:orderId/:clientName/:status',
     name: 'notification-details',
     component: () => import('../views/NotificationDetails.vue')
-  },
-  
+  },  
   {
     path: '/restaurants-list',
     name: 'restaurants-list',
