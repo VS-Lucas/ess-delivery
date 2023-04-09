@@ -64,7 +64,7 @@ const routes = [
     component: ShoppingCart
   },
   {
-    path: '/history-details/:id/:imgSrc/:name/:date/:total_price/:form_pay/:items+/:status/:prices+/:dishes+/:hour',
+    path: '/history-details/:id/:imgSrc/:name/:date/:total_price/:form_pay/:items+/:status/:prices+/:dishes+/:hour/:estimated_time/:info_dishes/:client_name',
     name: 'history-details',
     component: () => import('../views/HistoryDetailsView.vue')
   },

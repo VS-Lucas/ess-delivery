@@ -16,18 +16,27 @@
             <div class="ml-7">
                 <h1 class="text-white font-bold sm:text-2xl text-xl"> Histórico </h1>
             </div> <!--Text-->
+            
+            
         </div>
+        
 
-        <div class="flex items-center justify-center mx-auto mb-12">
+        <div class="flex items-center justify-center mx-auto mb-3">
             <hr class="w-11/12 items-center">
         </div> <!--bar-->
+
+        <div class="flex justify-end  text-white mb-2 w-full">
+            <div class="bg-[#F26938] p-2 rounded-[20px] mr-16">
+                <button @click="goToTracking" class="">Acompanhar</button>
+            </div>        
+        </div>
 
         <!-- CARD -->
         <div :style="{ height: this.height + 'px' }" class="bg-[#A62C21] sm:w-11/12  w-[450px] h-[300px] grid grid-cols-4 rounded-[20px] mx-auto">
             <div class="flex col-span-1 text-white font-medium items-center">
                 <div class="flex flex-col items-center justify-center ml-7 sm:mr-0 mr-4">
-                    <img class="rounded-[20px] mb-3 sm:w-[200px] sm:h-[150px]" src="https://bodedono.com.br/wp-content/uploads/2020/06/LOGO-1.png" alt="Imagem do Restaurante">
-                    <h2 class="text-white font-bold text-center">Bode do nô</h2>
+                    <img class="rounded-[20px] mb-3 sm:w-[200px] sm:h-[150px]" :src="this.$route.params.imgSrc">
+                    <h2 class="text-white font-bold text-center">{{this.$route.params.name}}</h2>
                 </div>
             </div>
             
@@ -56,7 +65,7 @@
                     
                     <div class="relative col-span-1 mt-5 text-right">
                         <div v-for="(price, index) in this.$route.params.prices" :key="index">
-                            <span class="text-white sm:text-[17px] text-[12px] mb-1">{{ price }}</span>
+                            <span class="text-white sm:text-[17px] text-[12px] mb-1">R$ {{ price }}</span>
                         </div>
                         
                         <hr class="text-center mr-3 mb-2 w-full">
@@ -66,7 +75,7 @@
                 </div>
             </div>
         </div>
-
+        
         <footer class="w-full bg-[#261918] h-20">
 
         </footer>
@@ -87,12 +96,39 @@ import axios from 'axios';
         methods: {
             async goToShoppingCart() {
                 const data = JSON.parse(this.$route.params.dishes);
-
                 await axios.post('http://localhost:3000/add-to-cart', data)
                 .then(() => {
                     this.$router.push('/shoppingcart');
                 }).catch(error => {
                     console.log(error.message);
+                });
+            },
+            goToTracking() {
+                var orderData = JSON.parse(this.$route.params.info_dishes);
+                var id = this.$route.params.id;
+                var date = this.$route.params.date;
+                var hour = this.$route.params.hour;
+                var total = this.$route.params.total_price;
+                var restaurant_name = this.$route.params.name;
+                var client_name = this.$route.params.client_name;
+                var estimated_time = this.$route.params.estimated_time;
+                var status = this.$route.params.status;
+                axios.post('http://localhost:3000/storeorderfield', {
+                    orderData: orderData,
+                    orderID: id,
+                    orderDate: date,
+                    orderTime: hour, 
+                    orderAddress: this.address,
+                    orderPrice: total,
+                    clientName: client_name,
+                    orderFee: "5",
+                    eTime: estimated_time,
+                    resName: restaurant_name,
+                    status: status
+                }).then(() => {
+                    this.$router.push('/order-tracking')
+                }).catch(error => {
+                    console.error(error);
                 });
             }
         },
