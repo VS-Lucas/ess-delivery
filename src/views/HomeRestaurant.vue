@@ -136,7 +136,7 @@ export default ({
       }
    },
    mounted() {
-      setInterval(() => {
+      // setInterval(() => {
             axios.get('http://localhost:3000/restaurant-orders')
             .then((res) => {
                const base_orders = res.data;
@@ -145,7 +145,7 @@ export default ({
                console.log(keys)
                keys.forEach(key => {
                   var ids = Object.keys(base_orders[key]);
-                  console.log('ids:' + ids);
+                  // console.log('ids:' + ids);
                   ids.forEach(id => {
                      aux.push({
                         order_id: id,
@@ -157,13 +157,13 @@ export default ({
                      });
                   });
                });
-               console.log('AUX:   ' + aux);
+               // console.log('AUX:   ' + aux);
                this.orders = [...aux];
             }).catch((error) => {
                console.log(error.message)
             });
-        }, 2000)
-      
+      //   }, )
+         // 2000)
    },
    components: {
       RestaurantNavBar,
@@ -171,9 +171,9 @@ export default ({
    },
    methods: {
       showDetail() {
-         console.log(this.modalCard)
+         // console.log(this.modalCard)
          this.modalCard = !this.modalCard
-         console.log(this.modalCard)
+         // console.log(this.modalCard)
       },
       getAddres(key, id, orders){
          return orders[key][id]['endereço'];
@@ -187,7 +187,7 @@ export default ({
             items.push(orders[key][id]['pratos'][ky].nome);
          });
          keys.forEach(ky =>{
-            amount.push(orders[key][id]['pratos'][ky].amount);
+            amount.push(orders[key][id]['pratos'][ky].quantidade);
          });
          amount.forEach((elem, index) => {
             sorted_items.push(elem + "- " + items[index]);
