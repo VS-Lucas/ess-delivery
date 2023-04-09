@@ -120,9 +120,9 @@
                         <td colspan="3"><hr class="w-11/12 m-2 border-[#541F1B]"></td>
                     </tr>
                     
-                    <tr v-for="dish in Object.keys(this.freq)" :key="dish.id">
-                        <th class="font-normal">{{ this.freq[dish] }}</th>
-                        <th class="font-normal">{{ dish }}</th>
+                    <tr v-for="dish in dishes" :key="dish.id" class="overflow-auto">
+                        <th class="font-normal">{{ dish.amount }}</th>
+                        <th class="font-normal">{{ dish.nome }}</th>
                     </tr>
 
                     <tr>
@@ -253,6 +253,7 @@ export default {
     data() {
         return {
             time: '',
+            dishes: {},
             justification: '',
             name: '',
             show: false,
@@ -270,35 +271,41 @@ export default {
                 delivered: false,
             },
             error: false,
+            intervalId: null
         }
-    }, 
+    },
     mounted() {
-        axios.get('http://localhost:3000/get-tracking')
-        .then(response => {
-            const order = response.data;
-            console.log(order);
-            const id = Object.keys(response.data);
-            this.id = id;
-            this.address = order[id[0]]['endereço'];
-            this.totalprice = order[id[0]]['preco'];
-            this.time = order[id[0]]['tempo_estimado'];
+        setTimeout(() => {
 
-            const key_dishes = Object.keys(order[id[0]]['pratos']);
-            
-            key_dishes.forEach(key => {
-                this.freq[order[id[0]]['pratos'][key].nome]++;
+            axios.get('http://localhost:3000/get-tracking')
+            .then(response => {
+                const order = response.data;
+                console.log(order);
+                const id = Object.keys(response.data);
+                this.id = id[0];
+                this.address = order[id[0]]['endereco'];
+                this.totalprice = order[id[0]]['preco'];
+                this.time = order[id[0]]['tempo_estimado'];
+                const key_dishes = Object.keys(order[id[0]]['pratos']);
+                
+                key_dishes.forEach(key => {
+                    this.dishes[key] = {
+                        nome: order[id[0]]['pratos'][key].nome,
+                        amount: order[id[0]]['pratos'][key].quantidade
+                    }
+                });
+                console.log(this.dishes);
+            }).catch(error => {
+                console.error(error);
             });
-        }).catch(error => {
-            console.error(error);
-        })
 
-        this.steps.payment = true;
-        setInterval(() => {
+            this.steps.payment = true;
+            // this.intervalId = setInterval(() => {
             axios.get('http://localhost:3000/get-orders')
             .then(response => {
                 const orders = response.data;
-                this.status = orders[this.id].status;
-    
+                this.status = orders[this.id]['status'];
+                console.log(this.status)
                 if (this.status === 'Pedido confirmado') {
                     this.steps.confirmed_order = true;
                 } else if (this.status === 'Pedido em preparação') {
@@ -311,10 +318,12 @@ export default {
             })
             .catch(error => {
                 console.error(error)
-            })
-        }, 1000) // Envia a solicitação a cada 2 segundos
-
-        
+            });
+            // }, 7000) // Envia a solicitação a cada 2 segundos
+        }, 2000);
+    },
+    Destroy() {
+        clearInterval(this.intervalId);
     },
     methods: {
         cancelOrder() {

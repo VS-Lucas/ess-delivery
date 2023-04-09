@@ -204,6 +204,7 @@ import qs from 'qs';
                 cupons : [],
                 finalPrice: null,
                 discount: null,
+                resName: '',
             }
         },
         methods: {
@@ -279,6 +280,7 @@ import qs from 'qs';
                         clientName: this.clientName,
                         orderFee: this.fee,
                         eTime: this.estTime,
+                        resName: this.resName,
                     });
 
                     console.log(response.data.message);
@@ -295,18 +297,31 @@ import qs from 'qs';
                     console.log(error);
                 }
             },
+            async clearCouponsUsed() {
+                try {
+                    const response = await axios.put('http://localhost:3000/clearcoupons_used')
+                    console.log(response.data.message);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+            },
             async getEstimatedTime() {
-                await axios.get('http://localhost:3000/estimatedtime')
-                .then(response => {
+                console.log(this.resName)
+                try{
+                    const response = await axios.post('http://localhost:3000/estimatedtime', {
+                        resName: this.resName,
+                    });
                     const auxFee = response.data.taxa.split(" ");
                     const iAux = auxFee[1]
                     this.fee = parseFloat(iAux);
                     this.estTime = response.data.tempo_estimado;
-                    this.finalPrice = (this.orderPrice + this.fee - this.discount).toFixed(2);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                    this.finalPrice = (this.orderPrice - this.discount + this.fee).toFixed(2);
+                }
+                catch (error){
+                    console.log(error);
+                }
+
             }, 
             OrderConfirmation(){
                 if (this.modalCard){
@@ -321,6 +336,7 @@ import qs from 'qs';
                 this.storeResOrder();
                 this.storeOrderField();
                 this.clearCart();
+                this.clearCouponsUsed();
                 
                 this.$router.push ({
                     path: '/order-tracking',
@@ -337,14 +353,15 @@ import qs from 'qs';
             this.getAddress();
             this.OrdersAmount();
             this.getName();
-            this.getEstimatedTime();
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);
             const subTotal = this.$route.params.subtotal;
             const discount = this.$route.params.desconto;
+            const resName = this.$route.params.restaurante;
 
-            this.orderPrice = parseFloat(subTotal);
+            this.resName = resName;
+            this.orderPrice = parseFloat(subTotal).toFixed(2);
             this.discount = parseFloat(discount);
             this.clientDict = object;
 
@@ -355,6 +372,8 @@ import qs from 'qs';
 
             this.todayDate = aux[0];
             this.currTime = aux[1];
+
+            this.getEstimatedTime();
         },
     }
 </script>

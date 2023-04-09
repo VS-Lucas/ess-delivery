@@ -179,16 +179,22 @@ export default ({
          return orders[key][id]['endereço'];
       },
       get_items(key, id, orders) {
-         // id
-         // console.log('to aq')
          var keys = Object.keys(orders[key][id]['pratos']);
-         console.log(keys);
          var items = [];
+         var amount = [];
+         var sorted_items = [];
          keys.forEach(ky =>{
             items.push(orders[key][id]['pratos'][ky].nome);
          });
-         // console.log('to aq em items' + items)
-         return items;
+         keys.forEach(ky =>{
+            amount.push(orders[key][id]['pratos'][ky].amount);
+         });
+         amount.forEach((elem, index) => {
+            sorted_items.push(elem + "- " + items[index]);
+            // sorted_items.push(items[index])
+         });
+
+         return sorted_items;
       },
       get_total_price(key, id, orders) {
          var keys = Object.keys(orders[key][id]['pratos']);
