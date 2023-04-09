@@ -13,12 +13,15 @@
                 <div class="col-start-2 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
                     <div class="mt-[20px] ml-[20px]">
                         <h1 class="text-3xl text-white">Meu carrinho</h1>
-                        <div v-for="(object, index) in this.clientDict" :key="index" class="grid grid-cols-9 p-1 text-white">
+                        <div v-for=" (object, index) in this.clientDict" :key="index" class="grid grid-cols-9 p-1 text-white">
                             <div class="col-start-1 col-span-5">
                                 {{ object.nome }}
                             </div>
+                            <div class="col-start-7">
+                                {{ object.quantidade }}x
+                            </div>
                             <div class="col-start-8">
-                                {{ object.quantidade }}x R${{ object.preco }} 
+                                R${{ object.preco }} 
                             </div>
                         </div>
                     </div>
@@ -36,9 +39,14 @@
                             <p>Taxa de entrega</p>
                         </div>
                         <div class="col-start-7">
-                            <!-- {{ this.fee }} -->
+                            R${{ this.fee }}
                         </div>
-                        
+                        <div class="col-span-1 font-bold py-3 text-2xl">
+                            <p>Total</p>
+                        </div>
+                        <div class="col-start-7 font-bold py-3 text-2xl">
+                            R${{ this.finalPrice }}
+                        </div>
                     </div>
                 </div>
                 <div class="col-start-5 col-span-2 bg-[#BA442A] h-[280px] rounded-[10px] overflow-auto">
@@ -187,7 +195,8 @@ import qs from 'qs';
                 fee: '',
                 todayDate: '', 
                 currTime: '', 
-                cupons : []
+                cupons : [],
+                finalPrice: null,
             }
         },
         methods: {
@@ -286,6 +295,7 @@ import qs from 'qs';
                     const iAux = auxFee[1]
                     this.fee = parseFloat(iAux);
                     this.estTime = response.data.tempo_estimado;
+                    this.finalPrice = this.orderPrice + this.fee;
                 })
                 .catch(error => {
                     console.error(error);

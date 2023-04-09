@@ -13,7 +13,7 @@
             <img :src="prato.url" :alt="prato.nome" class="w-full rounded-lg sm:w-40" />
             <div class="sm:ml-4 sm:flex md:w-3/4 sm:justify-between">
               <div class="mt-5 sm:mt-0">
-                <h2 class="text-white font-bold text-white">{{prato.nome}}</h2>
+                <h2 class="text-white font-bold ">{{prato.nome}}</h2>
                 <p class="mt-1 text-xxl text-white">{{prato.descricao}}</p>
               </div>
               <div class="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-5">
@@ -41,6 +41,38 @@
           <p class="text-white font-bold">Subtotal:</p>
           <p class="text-white">{{precoTotal}} <span class="ml-1">R$</span></p>
         </div>
+        <!-- Descontos aplicados -->
+          <p class="text-white font-bold">Descontos aplicados:</p>
+          <div v-for="cupom_efetivado in cuponsEfetivados" :key="cupom_efetivado.id">
+            <div class="mb-2 d-flex">
+              <div class="flex items-center ml-auto">
+                <div class="flex-grow"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-auto h-4 w-4 cursor-pointer duration-150 hover:text-red-500" @click="retrieveCoupon(cupom_efetivado)">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <p class="text-white ml-auto">-{{cupom_efetivado.valor.toFixed(2).replace('.',',')}} <span class="ml-1">R$</span></p>
+              </div>
+            </div>
+          </div>
+      
+
+        <!-- Caixa de cupom desconto -->
+        <div class="py-3" >
+            <form @submit.prevent="getDiscount($event)">   
+                <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only  p-3">Search</label>
+                <div class="relative">
+                    <input id= "cupom_desconto" type="cupom" name="cupom" v-model="cupom" class="block w-100 p-10 pl-10 text-sm py-4 h-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 " placeholder="Cupom de desconto..." required>
+                    <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 ">Aplicar</button>
+                </div>
+            </form>
+        </div> 
+
+        <!-- Sub total com desconto -->
+        <div v-if="(this.descontoAplicado == true)" class="mb-2 flex justify-between">
+          <p class="text-white font-bold">Subtotal após desconto:</p>
+          <p class="text-white">{{precoDescontado}} <span class="ml-1">R$</span></p>
+        </div>
+
         <div class="flex justify-between">
           <!-- <p class="text-white">Shipping</p> -->
           <!-- <p class="text-white">$4.99</p> -->
@@ -79,6 +111,26 @@
                     </div>
                 </div>
             </div>
+<div v-if="this.cupom_invalido">
+            <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+                <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+                    <div class="modal-container bg-white w-[300px] mx-auto h-[175px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
+                        <div class="modal-content py-4 text-left px-6">
+                            <div class="modal-body mt-2">
+                                <!-- Conteúdo do modal aqui -->
+                                <div class="text-center font-bold">
+                                    <p>Cupom inválido!</p>
+                                </div>
+                                <div class="flex justify-center">
+                                  <button @click="fecharModalCupom" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5 mt-7" >
+                                    Voltar
+                                  </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 </body>
 </template>
 
@@ -96,9 +148,14 @@ export default {
   data() {
    return {
     pratos: [],
-    precoTotal: '0',
+    precoTotal: '0,00',
+    precoDescontado: '0,00',
     vazio: false,
-    itens: 0
+    cupom_invalido: false,
+    itens: 0,
+    cupons: [],
+    cuponsEfetivados: [],
+    descontoAplicado: false
    }
   },
   // computed: {
@@ -124,13 +181,41 @@ export default {
         this.precoTotal = precoTotal.toFixed(2).replace('.',',')
         console.log(this.precoTotal) 
       });
-      
 
+      // A partir daqui é o cálculo do subtotal com desconto
+      await axios.get('http://localhost:3000/getcoupons_used')
+        .then(response => {
+            this.cuponsEfetivados = response.data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+      // Calcula o total do desconto
+      let desconto = 0;
+      for (let i = 0; i < this.cuponsEfetivados.length; i++) {
+        desconto = desconto + this.cuponsEfetivados[i].valor;
+      }
+
+      let precoDescontado = 0;
+      precoDescontado = precoTotal - desconto;
+      if (precoDescontado < 0){
+        precoDescontado = 0
+      }
+      this.precoDescontado = precoDescontado.toFixed(2).replace('.',',')
+
+      console.log(this.precoDescontado)
+
+      // Se houver cupons aplicados, o novo valor é mostrado na tela
+      if(this.cuponsEfetivados.length>0){
+        this.descontoAplicado = true;
+      }
     //   for(let objeto in this.pratos){
     //   console.log('Mensagem');
     //   this.precoTotal+= parseFloat(objeto.preco);      
     // }
     console.log(this.precoTotal)
+    console.log(this.precoDescontado)
   },
   methods: {
     goToClientHome() {
@@ -150,6 +235,9 @@ export default {
     },
     fecharModal(){
       this.vazio = false;
+    },
+    fecharModalCupom(){
+      this.cupom_invalido = false;
     },
     deleteItem(prato) {
       const nomePrato = prato.nome
@@ -209,6 +297,92 @@ export default {
             console.error(error);
           });
       }
+    },
+    async getDiscount() {
+        const cupom  = this;
+
+        // GET dos cupons disponíveis
+        await axios.get('http://localhost:3000/getcoupons_available')
+            .then(response => {
+                this.cupons = response.data;
+            })
+            .catch(error => {
+                console.error(error);
+        });
+
+        // GET dos cupons efetivados
+        await axios.get('http://localhost:3000/getcoupons_used')
+            .then(response => {
+                this.cuponsEfetivados = response.data;
+            })
+            .catch(error => {
+                console.error(error);
+        });
+
+        let cupom_valido = false;
+        for (let i = 0; i < this.cupons.length; i++) {
+          console.log("entrou aq")
+          if (this.cupons[i].nome === cupom.cupom) {
+            cupom_valido = true;
+            // Se o cupom existe, colocamos ele no array de cupons efetivados
+            await axios.post('http://localhost:3000/getcoupons_used',  {nome: this.cupons[i].nome, valor: this.cupons[i].valor}  ) //pode dar erro
+              .then(response => {
+                console.log(response.data.message);
+                console.log('Entrou aqui 0000')
+              })
+              .catch(error => {
+                console.error(error);
+                console.log('Entrou aqui 9999')
+              });
+
+              
+            // Cupom sai do array de cupons disponíveis
+            await axios.delete('http://localhost:3000/getcoupons_available', {
+              data: {
+              nome: cupom.cupom
+              }
+              })
+              .then(response => {
+                  console.log(response.data)
+                  location.reload();
+              })
+              .catch(error => {
+                  console.error(error)
+              })
+          }
+          // Chega no final do array e não tem nenhum cupom com esse nome, o cupom é inválido
+          if (i == (this.cupons.length - 1) && !cupom_valido ){
+            console.log("entrou nesse if")
+            this.cupom_invalido = true;
+          }
+
+        }
+        // Só entra nesse if se o array de cupons (disponíveis) está vazio, então qualquer cupom é inválido
+        // A booleana cupom_valido só vira true caso o array não seja vazio e tenha um cupom válido
+        if (this.cupons.length == 0 && !cupom_valido ){
+            console.log("entrou nesse if")
+            this.cupom_invalido = true;
+          }   
+    },
+    async retrieveCoupon(cupom_efetivado){
+      //Botar o cupom no array de cupons disponíveis
+      await axios.post('http://localhost:3000/addtocoupons_avaliable',  {nome: cupom_efetivado.nome, valor: cupom_efetivado.valor})
+              .then(response => {
+                console.log(response.data.message);
+              })
+              .catch(error => {
+                console.error(error);
+              });
+
+      //Remover o cupom do array de cupons efetivados
+      await axios.delete('http://localhost:3000/removecoupons_used', { data: {nome: cupom_efetivado.nome}})
+        .then(response => {
+            console.log(response.data)
+            location.reload();
+        })
+        .catch(error => {
+            console.error(error)
+        }) 
     }
   }
 }
