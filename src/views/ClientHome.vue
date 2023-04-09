@@ -36,7 +36,7 @@
           </button> 
         </div>
       
-      <!-- Botão das comidas-->
+      <!-- Botão das comidas -->
         <div>
           <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
             <img src="@\assets\img\comidas.png" alt="Descrição da imagem" style="width: 550px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
@@ -58,25 +58,48 @@
           </div>
         </div> -->
 
+      <div class="text-xl font-bold text-white px-28 py-3"> Bode do Nô </div>
       <div class=" flex flex-wrap items-center space-x-12 justify-center py-4 bg-cover inset-x-0  " > <!-- Flexbox do cardápio de pratos-->
-      <div v-for="prato in pratos" :key="prato.id">
-      <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 " @click="addToCart(prato)">
-        <a href="#">
-          <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full  mx-auto block'>
-        </a>
-        <div class="px-5 pb-5">
+        <div v-for="prato in pratos_1" :key="prato.id">
+          <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 " @click="addToCart(prato)">
             <a href="#">
-                <h5 class="text-lg font-semibold tracking-tight text-white ">{{prato.nome}}</h5>
+              <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full  mx-auto block'>
             </a>
-            <div class="text-xs text-white">{{prato.descricao}} </div>
-            <div class="flex items-center justify-between p-1">
-                <div class="text-xl font-bold text-white">{{prato.preco}} </div>
-                <a href="#" class="text-white bg-blue-700   font-medium rounded-lg text-sm px-1 py-1.5 text-center ">Add to cart</a>
-            </div>
-          </div>
-        </button>
+            <div class="px-5 pb-5">
+                <a href="#">
+                    <h5 class="text-lg font-semibold tracking-tight text-white ">{{prato.nome}}</h5>
+                </a>
+                <div class="text-xs text-white">{{prato.descricao}} </div>
+                <div class="flex items-center justify-between p-1">
+                    <div class="text-xl font-bold text-white">{{prato.preco}} </div>
+                    <a href="#" class="text-white bg-blue-700   font-medium rounded-lg text-sm px-1 py-1.5 text-center ">Add to cart</a>
+                </div>
+              </div>
+            </button>
+        </div>
       </div>
-    </div>
+      
+      <!-- Segundo restaurante -->
+      <div class="text-xl font-bold text-white px-28 py-3"> Ratão Burguer </div>
+      <div class=" flex flex-wrap items-center space-x-12 justify-center py-4 bg-cover inset-x-0  " > <!-- Flexbox do cardápio de pratos-->
+        <div v-for="prato in pratos_2" :key="prato.id">
+          <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 " @click="addToCart(prato)">
+            <a href="#">
+              <img :src="prato.url" :alt="prato.nome" class= ' object-scale-down h-28 w-full  mx-auto block'>
+            </a>
+            <div class="px-5 pb-5">
+                <a href="#">
+                    <h5 class="text-lg font-semibold tracking-tight text-white ">{{prato.nome}}</h5>
+                </a>
+                <div class="text-xs text-white">{{prato.descricao}} </div>
+                <div class="flex items-center justify-between p-1">
+                    <div class="text-xl font-bold text-white">{{prato.preco}} </div>
+                    <a href="#" class="text-white bg-blue-700   font-medium rounded-lg text-sm px-1 py-1.5 text-center ">Add to cart</a>
+                </div>
+              </div>
+            </button>
+        </div>
+      </div>
     
 
     
@@ -96,7 +119,8 @@
     },
     data() {
     return {
-      pratos: [],
+      pratos_1: [],
+      pratos_2: [],
       carrinho: [],
       found: false
     }
@@ -109,9 +133,16 @@
       .catch(error=> {
         console.error(error);
       });
-    axios.get('http://localhost:3000/clienthome')
+    axios.get('http://localhost:3000/clienthome_first_restaurant')
       .then(response => {
-        this.pratos = response.data;
+        this.pratos_1 = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+      axios.get('http://localhost:3000/clienthome_second_restaurant')
+      .then(response => {
+        this.pratos_2 = response.data;
       })
       .catch(error => {
         console.error(error);
