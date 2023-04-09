@@ -880,6 +880,7 @@ app.post('/clienthome', (req, res) => {
       if (!clienteDoc.exists) {
         res.status(404).send('Cliente não encontrado');
       } else {
+        console.log(novoPrato)
         // Adicionar o prato ao array de carrinho
         const carrinho = clienteDoc.data().carrinho || [];
         carrinho.push(novoPrato);

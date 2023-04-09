@@ -100,6 +100,26 @@
             </button>
         </div>
       </div>
+      <div v-if="this.notCompatible">
+              <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+                  <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+                      <div class="modal-container bg-white w-[300px] mx-auto h-[175px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
+                          <div class="modal-content py-4 text-left px-6">
+                              <div class="modal-body mt-2">
+                                  <!-- Conteúdo do modal aqui -->
+                                  <div class="text-center font-bold">
+                                      <p>Só é possível acrescentar ao carrinho itens de um mesmo restaurante!</p>
+                                  </div>
+                                  <div class="flex justify-center">
+                                    <button @click="fecharModal" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5 mt-7" >
+                                      Voltar
+                                    </button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
     
 
     
@@ -122,11 +142,12 @@
       pratos_1: [],
       pratos_2: [],
       carrinho: [],
-      found: false
+      found: false,
+      notCompatible: false
     }
   },
-  mounted() {
-    axios.get('http://localhost:3000/clienthome1')
+  async mounted() {
+    await axios.get('http://localhost:3000/clienthome1')
       .then(response => {
         this.carrinho = [...response.data];
       })
@@ -147,6 +168,7 @@
       .catch(error => {
         console.error(error);
       });
+      console.log(this.carrinho)
   },
     methods:{
       goToShoppingCart() {
@@ -166,16 +188,16 @@
           console.error(error);
         });
       },
-
       addToCart(prato) {
         this.update();
         console.log('addToCart')
         console.log(this.carrinho)
         if (this.carrinho.length == 0){
           console.log('length == 0')
-          axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1}  )
+          axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1, restaurante: prato.restaurante}  )
           .then(response => {
             console.log(response.data.message);
+            location.reload();
           })
           .catch(error => {
             console.error(error);
@@ -185,6 +207,11 @@
         let i = 0;
         let index = 0;
         this.carrinho.forEach((doc) => {
+          console.log(doc)
+          console.log(prato.restaurante)
+          if(doc.restaurante !== prato.restaurante){
+            this.notCompatible = true;
+          }
           console.log(doc.nome)
           if(doc.nome == prato.nome){
             console.log('Está no carrinho')
@@ -193,30 +220,38 @@
           }
           i = i + 1;
         });
-        if(!this.found){
-          console.log('not found');
-          axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1}  )
-          .then(response => {
-            console.log(response.data.message);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-        }
-        if(this.found){
-          console.log('found');
-          console.log(index)
-          axios.put('http://localhost:3000/clienthome2',  {nome: prato.nome, index: index}  )
-          .then(response => {
-            console.log(response.data.message);
-          })
-          .catch(error => {
-            console.error(error);
-          });
+        if (!this.notCompatible){
+          console.log('ENTROU NO IF')
+          if(!this.found){
+            console.log('not found');
+            axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1, restaurante: prato.restaurante}  )
+            .then(response => {
+              console.log(response.data.message);
+              location.reload();
+            })
+            .catch(error => {
+              console.error(error);
+            });
+          }
+          if(this.found){
+            console.log('found');
+            console.log(index)
+            axios.put('http://localhost:3000/clienthome2',  {nome: prato.nome, index: index}  )
+            .then(response => {
+              console.log(response.data.message);
+              location.reload();
+            })
+            .catch(error => {
+              console.error(error);
+            });
+          }
         }
       }
       this.found = false;
-      location.reload();
+      // location.reload();
+      },
+      fecharModal(){
+        this.notCompatible = false;
       }
     }
   }
