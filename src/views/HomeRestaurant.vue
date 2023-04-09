@@ -31,7 +31,7 @@
 
             </div>
 
-            <div class="h-76 mb-4 rounded bg-[#DDDDDD] dark:bg-gray-800">
+            <div class="h-76 mb-4 rounded bg-[#FFF3F3] dark:bg-gray-800">
 
                <h2 class="flex items-start justify-start pt-4 pl-4" style="font-size: 20px; font-weight: 800;">Lista de Pedidos</h2>
                   
@@ -39,7 +39,7 @@
                      
                      <div class="relative overflow-x-auto">
                         <table class="w-full text-sm text-center font-semibold text-gray-500 dark:text-gray-600">
-                           <thead class="text-xs text-gray-800 uppercase bg-[#DDDDDD] dark:bg-gray-800 dark:text-gray-700">
+                           <thead class="text-xs text-gray-800 uppercase bg-[#FFF3F3] dark:bg-gray-800 dark:text-gray-700">
                                  <tr>
                                     <th scope="col" class="px-6 py-3 text-left">
                                        No
@@ -66,7 +66,7 @@
                            </thead>
                            
                            <tbody>
-                                 <tr v-for="(order, index) in this.orders" :key="index" class="bg-[#DDDDDD] border-b font-medium dark:bg-gray-800 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-600">
+                                 <tr v-for="(order, index) in this.orders" :key="index" class="bg-[#FFF3F3] border-b font-medium dark:bg-gray-800 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-600">
                                     <th scope="row" class="px-6 py-4 text-left font-medium text-gray-900 whitespace-normal dark:text-gray-900">
                                        {{index}}
                                     </th>
@@ -89,26 +89,26 @@
 
             </div>
 
-            <div class="grid grid-cols-4 gap-4 pb-2 text-white" style="font-size: 18px; font-weight: 700;">
+            <div class="grid grid-cols-3 gap-4 pb-2 pt-6 text-white" style="font-size: 18px; font-weight: 700;">
                
-               <h2 class="flex items-start justify-start col-start-0 col-span-2">Média de pedidos</h2>
+               <h2 class="flex items-start justify-start col-start-0 ">Média de pedidos</h2>
                <h2 class="flex items-start justify-start">Total de pedidos</h2>
                <h2 class="flex items-start justify-start">Pratos mais consumidos</h2>
 
             </div>
 
-            <div class="grid grid-cols-4 gap-4 col-start-1 col-span-2 h-36">
+            <div class="grid grid-cols-3 gap-4 col-start-1 col-span-2 h-40">
 
-               <div class="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
+               <div class="flex items-center justify-center rounded bg-[#FFF3F3] h-32 dark:bg-gray-800">
                   <img src="..\assets\img\graphic.png" alt="graphichome">
                </div>
 
-               <div class="flex items-center justify-center rounded bg-gray-50 h-32 dark:bg-gray-800">
-                  <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+               <div class="flex items-center justify-center rounded bg-[#FFF3F3] h-32 dark:bg-gray-800">
+                  <img src="..\assets\img\total_home.png" alt="graphichome" style="width: 100%; height: 80%; object-fit: contain;">
                </div>
 
-               <div class="flex items-center justify-center rounded bg-gray-50 h-32 dark:bg-gray-800">
-                  <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+               <div class="flex items-center justify-center rounded bg-[#FFF3F3] h-32 dark:bg-gray-800">
+                  <img src="..\assets\img\prato_home.png" alt="graphichome" style="width: 100%; height: 100%; object-fit: contain;">
                </div>
                
             </div>
@@ -136,31 +136,34 @@ export default ({
       }
    },
    mounted() {
-      axios.get('http://localhost:3000/restaurant-orders')
-      .then((res) => {
-         const base_orders = res.data;
-         let aux = []
-         var keys = Object.keys(base_orders);
-         console.log(keys)
-         keys.forEach(key => {
-            var ids = Object.keys(base_orders[key]);
-            console.log('ids:' + ids);
-            ids.forEach(id => {
-               aux.push({
-                  order_id: id,
-                  items: this.get_items(key, id, base_orders),
-                  price: this.get_total_price(key, id, base_orders),
-                  status: this.get_status(key, id, base_orders),
-                  nome: key,
-                  address: this.getAddres(key, id, base_orders),
+      setInterval(() => {
+            axios.get('http://localhost:3000/restaurant-orders')
+            .then((res) => {
+               const base_orders = res.data;
+               let aux = []
+               var keys = Object.keys(base_orders);
+               console.log(keys)
+               keys.forEach(key => {
+                  var ids = Object.keys(base_orders[key]);
+                  console.log('ids:' + ids);
+                  ids.forEach(id => {
+                     aux.push({
+                        order_id: id,
+                        items: this.get_items(key, id, base_orders),
+                        price: this.get_total_price(key, id, base_orders),
+                        status: this.get_status(key, id, base_orders),
+                        nome: key,
+                        address: this.getAddres(key, id, base_orders),
+                     });
+                  });
                });
+               console.log('AUX:   ' + aux);
+               this.orders = [...aux];
+            }).catch((error) => {
+               console.log(error.message)
             });
-         });
-         console.log('AUX:   ' + aux);
-         this.orders = [...aux];
-      }).catch((error) => {
-         console.log(error.message)
-      });
+        }, 2000)
+      
    },
    components: {
       RestaurantNavBar,
@@ -177,21 +180,21 @@ export default ({
       },
       get_items(key, id, orders) {
          // id
-         console.log('to aq')
+         // console.log('to aq')
          var keys = Object.keys(orders[key][id]['pratos']);
          console.log(keys);
          var items = [];
          keys.forEach(ky =>{
             items.push(orders[key][id]['pratos'][ky].nome);
          });
-         console.log('to aq em items' + items)
+         // console.log('to aq em items' + items)
          return items;
       },
       get_total_price(key, id, orders) {
          var keys = Object.keys(orders[key][id]['pratos']);
          var price = 0;
          keys.forEach(ky =>{
-            price += parseFloat(orders[key][id]['pratos'][ky].preco.replace(',', '.'));
+            price += parseFloat(orders[key][id]['pratos'][ky].preco.replace(',', '.')*parseInt(orders[key][id]['pratos'][ky].quantidade));
          });
          return `${price.toFixed(2)}`;
       },

@@ -47,7 +47,7 @@
                                 <p class="text-base text-left leading-relaxed text-gray-500 dark:text-gray-400">
                                     Cliente: {{ this.name }} <br/>
                                     Pedido: {{ this.order.join(', ') }} <br/>
-                                    Endereço: {{ this.address.rua }}, {{ this.address.numero }} <br/>
+                                    Endereço: {{ this.address.rua }}, n°{{ this.address.numero }} <br/>
                                     Preço: {{ this.price }} <br/>
                                     Status: {{ this.status }} <br/>
                                     Método de Pagamento: {{ this.payment }}
@@ -55,7 +55,7 @@
                                 </div>
                                 <!-- Modal footer -->
                                 <div class="flex items-center justify-end p-4 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                <button @click="showDetail" data-modal-hide="orderDetail" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Concluir Pedido</button>
+                                <button @click="finishButton" data-modal-hide="orderDetail" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Concluir Pedido</button>
                                 </div>
                         </div>
 
@@ -91,18 +91,23 @@ import axios from 'axios'
         },
         methods: {
             showDetail() {
-                console.log(this.modalCard)
                 this.modalCard = !this.modalCard
-                console.log(this.modalCard)
             },
-            finishButton(){
-                axios.post('http://localhost:3000/finish-order', {name: this.name, id: this.id})
+            async finishButton(){
+                await axios.post('http://localhost:3000/finish-order', {name: this.name, id: this.id})
                 .then(() => {
                     this.modalCard = !this.modalCard
                 }).catch(err => {
                     console.log(err.message);
                 });
-            }
+
+                await axios.post('http://localhost:3000/notify-finish-order', {id: this.id})
+                .then(() => {
+                    
+                }).catch(err => {
+                    console.log(err.message);
+                });
+                }
         }
 })
 </script>
