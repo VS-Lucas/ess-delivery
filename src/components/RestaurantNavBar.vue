@@ -41,6 +41,7 @@
                     <NotificationItem
                     :orderId="object.orderId"
                     :status="object.status"
+                    :clientName="object.clientName"
                     />
                     
                 </div>
@@ -154,7 +155,8 @@
                     ids.forEach(id => {
                         aux.push({
                             orderId: id,
-                            status: this.getStatus(key, id, base_orders)
+                            status: this.getStatus(key, id, base_orders),
+                            clientName: key
                             })
                     })
                     
