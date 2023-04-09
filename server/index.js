@@ -1019,8 +1019,8 @@ app.post("/storeclientorder", async (req, res) =>{
   const orderFee = req.body.orderFee;
   const eTime = req.body.eTime;
 
-  admin.firestore().collection('cliente').doc(client_id).get()
-  .then(clienteDoc => {
+  await admin.firestore().collection('cliente').doc(client_id).get()
+  .then(async (clienteDoc) => {
     if (!clienteDoc.exists) {
       res.status(404).send('Cliente não encontrado');
     } else {
@@ -1029,7 +1029,7 @@ app.post("/storeclientorder", async (req, res) =>{
       pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
                           'taxa': orderFee, 'tempo_estimado': eTime}
 
-      admin.firestore().collection('cliente').doc(client_id)
+      await admin.firestore().collection('cliente').doc(client_id)
         .update({ pedidos })
         .then(() => {
           res.json({ message: 'Pedido adicionado com sucesso' });
@@ -1057,8 +1057,8 @@ app.post("/reststore", async (req, res) =>{
   const orderTime = req.body.orderTime;
   const orderAddress = req.body.orderAddress;
 
-  admin.firestore().collection('restaurantes').doc(res_id).get()
-  .then(clienteDoc => {
+  await admin.firestore().collection('restaurantes').doc(res_id).get()
+  .then(async (clienteDoc) => {
     if (!clienteDoc.exists) {
       res.status(404).send('Restaurante não encontrado');
     } else {
@@ -1071,7 +1071,7 @@ app.post("/reststore", async (req, res) =>{
         pedidos[client_name][orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime, 'endereço': orderAddress};
       }
       
-      admin.firestore().collection('restaurantes').doc(res_id)
+      await admin.firestore().collection('restaurantes').doc(res_id)
         .update({ pedidos })
         .then(() => {
           res.json({ message: 'Demanda adicionada com sucesso' });
