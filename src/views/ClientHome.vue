@@ -24,9 +24,9 @@
     </button>
 
 
-    <div class=" mx-auto max-w-6xl justify-center px-6 md:flex md:space-x-7 xl:px-0 pt-52 " > <!-- Cards dos restaurantes e das comidas-->
+    <div  class=" mx-auto max-w-6xl justify-center px-6 md:flex md:space-x-7 xl:px-0 pt-52 " > <!-- Cards dos restaurantes e das comidas-->
       <!-- Botão dos restaurantes -->
-        <div>
+        <div @click="goToRestaurants()">
           <button class="focus:outline-none focus:ring-4 focus:ring-red-300">  
             <img src="@\assets\img\restaurantes.png" alt="Descrição da imagem" style="width: 550px;" class="rounded-lg transform hover:scale-105 transition duration-300"> <!-- fica um pouco maior quando passa o mouse por cima-->
           </button> 
@@ -170,9 +170,11 @@
       goToShoppingCart() {
       this.$router.push('/shoppingcart');
       },
-      
       goToOrderHistory() {
       this.$router.push('/order-history');
+      },
+      goToRestaurants() {
+        this.$router.push('/restaurants-list')
       },
       update(){
         console.log('updated')

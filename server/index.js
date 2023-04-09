@@ -1578,19 +1578,33 @@ app.put('/clear-tracking', async (_req, _res) => {
 
 
 // Rota GET para mostrar os restaurantes
+// app.get('/restaurants-list', async (req, res) => {
+//   await admin.firestore()
+//     .collection('restaurantes')
+//     .get()
+//     .then(doc => {
+//       const restaurantData = doc.data();
+//       res.json(restaurantData);
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).send('Erro ao buscar dados do restaurante');
+//     });
+// });
+
 app.get('/restaurants-list', async (req, res) => {
-  await admin.firestore()
-    .collection('restaurantes')
-    .get()
-    .then(doc => {
-      const restaurantData = doc.data();
-      res.json(restaurantData);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Erro ao buscar dados do restaurante');
-    });
-});
+  try {
+  const restaurantList = [];
+  const snapshot = await admin.firestore().collection('restaurantes').get();
+  snapshot.forEach((doc) => {
+  restaurantList.push(doc.data());
+  });
+  res.json(restaurantList);
+  } catch (err) {
+  console.error(err);
+  res.status(500).send('Erro ao buscar dados do restaurante');
+  }
+  });
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
