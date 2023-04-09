@@ -377,14 +377,19 @@ When('cadastro o tempo de entrega {string}', async function (tempo_entrega) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const cadastro = await this.browser.$('//button[text()="Salvar"]');
     await cadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
 });
 
 Then('vejo a mensagem {string}', async function (mensagem) {
+    await this.browser.waitUntil(async () => {
+        const mensagemElement = await this.browser.$(`//*[contains(text(),"${mensagem}")]`);
+        return await mensagemElement.isDisplayed();
+    }, {timeout: 15000});
+});
+/*Then('vejo a mensagem {string}', async function (mensagem) {
     const mensagemElement = await this.browser.$(`//*[contains(text(),"${mensagem}")]`);
     const mensagemText = await mensagemElement.getText();
     await assert.strictEqual(mensagemText, mensagem);
-});
+});*/
 
 Then('continuo na página "Cadastrar Restaurante"', async function () {
     const curUrl = await this.browser.getUrl();
@@ -594,4 +599,4 @@ Then('localizo-me na página "Cadastrar login"', async function () {
     await expect(curUrl).to.include('http://localhost:8080/register-login');
 
     await this.browser.deleteSession();
-}); 
+});

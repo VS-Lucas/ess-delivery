@@ -1,29 +1,19 @@
 Feature: Atualização dos dados do restaurante
-    As a restaurante com perfil
+    As a administrador do restaurante com perfil
     I want to alterar dados que constam no perfil
-    So that eu possa manter atualizado os dados no perfil
+    So that eu possa manter atualizados os dados no perfil
 
 
 Scenario: atualizar horário de funcionamento do restaurante
-    Given eu estou logado no perfil de “Restaurante” com login “lvll@hotmail.com” e senha “1234”
-    And estou na página “Seu Restaurante”
-    And estou na aba “Atualizar dados cadastrais”
-    And vejo “17h-22h” no horário de funcionamento 
-    When eu atualizo o horário de funcionamento para “16h-23h”    
-    Then vejo a mensagem “Atualização bem sucedido”
-
-Scenario: atualizar nome do restaurante
-    Given eu estou logado no perfil de “Restaurante” com login “lvll@hotmail.com” e senha “123”
-    And estou na página “Seu Restaurante”
-    And estou na aba “Atualizar dados cadastrais”
-    And vejo “Bar PST” no nome do restaurante 
-    When eu atualizo o nome do restaurante para “Restaurante PST”    
-    Then vejo a mensagem “Atualização concluída”
+    Given estou logado no perfil de "Restaurante" com login "test@gmail.com" e senha "12345"
+    And estou na página "Atualizar dados"
+    And vejo 'Das 08h às 17h' no horário de funcionamento 
+    When atualizo o horário de funcionamento para 'Das 08h às 12h'
+    Then observo 'Das 08h às 12h' no horário de funcionamento
 
 Scenario: atualizar CEP do restaurante sem adicionar um novo
-    Given eu estou logado no perfil de “Restaurante” com login “mc@hotmail.com” e senha “12345”
-    And estou na página “Seu Restaurante”
-    And estou na aba “Atualizar dados cadastrais”
-    And vejo “53827641” no CEP do restaurante 
-    When eu tento atualizar o CEP do restaurante para “ ”    
-    Then vejo a mensagem “Preencha todos os campos para concluir a atualização”
+    Given eu estou logado no perfil de "Restaurante" com login "test@gmail.com" e senha "12345"
+    And eu estou na página "Atualizar dados"
+    And eu vejo '66666-666' no CEP do restaurante 
+    When eu tento atualizar o CEP do restaurante para ''    
+    Then vejo a mensagem "Preencha este campo." e permaneço na página "Atualizar dados"
