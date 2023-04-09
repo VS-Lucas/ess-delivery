@@ -111,6 +111,28 @@
                     </div>
                 </div>
             </div>
+
+
+<div v-if="this.cupom_invalido">
+            <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+                <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+                    <div class="modal-container bg-white w-[300px] mx-auto h-[175px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
+                        <div class="modal-content py-4 text-left px-6">
+                            <div class="modal-body mt-2">
+                                <!-- Conteúdo do modal aqui -->
+                                <div class="text-center font-bold">
+                                    <p>Cupom inválido!</p>
+                                </div>
+                                <div class="flex justify-center">
+                                  <button @click="fecharModalCupom" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5 mt-7" >
+                                    Voltar
+                                  </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 </body>
 </template>
 
@@ -131,6 +153,7 @@ export default {
     precoTotal: '0,00',
     precoDescontado: '0,00',
     vazio: false,
+    cupom_invalido: false,
     itens: 0,
     cupons: [],
     cuponsEfetivados: [],
@@ -215,6 +238,9 @@ export default {
     fecharModal(){
       this.vazio = false;
     },
+    fecharModalCupom(){
+      this.cupom_invalido = false;
+    },
     deleteItem(prato) {
       const nomePrato = prato.nome
       axios.delete('http://localhost:3000/shoppingcart', {
@@ -294,8 +320,11 @@ export default {
             .catch(error => {
                 console.error(error);
         });
+
         for (let i = 0; i < this.cupons.length; i++) {
+          console.log("entrou aq")
           if (this.cupons[i].nome === cupom.cupom) {
+            cupom_valido = true;
             // Se o cupom existe, colocamos ele no array de cupons efetivados
             await axios.post('http://localhost:3000/getcoupons_used',  {nome: this.cupons[i].nome, valor: this.cupons[i].valor}  ) //pode dar erro
               .then(response => {
@@ -307,6 +336,7 @@ export default {
                 console.log('Entrou aqui 9999')
               });
 
+              
             // Cupom sai do array de cupons disponíveis
             await axios.delete('http://localhost:3000/getcoupons_available', {
               data: {
@@ -321,27 +351,20 @@ export default {
                   console.error(error)
               })
           }
-        }    
-    },
-    async retrieveCoupon(cupom_efetivado){
-      //Botar o cupom no array de cupons disponíveis
-      await axios.post('http://localhost:3000/addtocoupons_avaliable',  {nome: cupom_efetivado.nome, valor: cupom_efetivado.valor})
-              .then(response => {
-                console.log(response.data.message);
-              })
-              .catch(error => {
-                console.error(error);
-              });
+          // Chega no final do array e não tem nenhum cupom com esse nome, o cupom é inválido
+          if (i == (this.cupons.length - 1) && !cupom_valido ){
+            console.log("entrou nesse if")
+            this.cupom_invalido = true;
+          }
 
-      //Remover o cupom do array de cupons efetivados
-      await axios.delete('http://localhost:3000/removecoupons_used', { data: {nome: cupom_efetivado.nome}})
-        .then(response => {
-            console.log(response.data)
-            location.reload();
-        })
-        .catch(error => {
-            console.error(error)
-        }) 
+        }
+        // Só entra nesse if se o array de cupons (disponíveis) está vazio, então qualquer cupom é inválido
+        // A booleana cupom_valido só vira true caso o array não seja vazio e tenha um cupom válido
+        if (this.cupons.length == 0 && !cupom_valido ){
+            console.log("entrou nesse if")
+            this.cupom_invalido = true;
+          }
+        
     }
   }
 }
