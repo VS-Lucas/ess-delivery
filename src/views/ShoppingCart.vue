@@ -41,6 +41,20 @@
           <p class="text-white font-bold">Subtotal:</p>
           <p class="text-white">{{precoTotal}} <span class="ml-1">R$</span></p>
         </div>
+        <!-- Descontos aplicados -->
+          <p class="text-white font-bold">Descontos aplicados:</p>
+          <div v-for="cupom_efetivado in cuponsEfetivados" :key="cupom_efetivado.id">
+            <div class="mb-2 d-flex">
+              <div class="flex items-center ml-auto">
+                <div class="flex-grow"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-auto h-4 w-4 cursor-pointer duration-150 hover:text-red-500" @click="retrieveCoupon(cupom_efetivado)">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <p class="text-white ml-auto">-{{cupom_efetivado.valor.toFixed(2).replace('.',',')}} <span class="ml-1">R$</span></p>
+              </div>
+            </div>
+          </div>
+      
 
         <!-- Caixa de cupom desconto -->
         <div class="py-3" >
@@ -97,8 +111,6 @@
                     </div>
                 </div>
             </div>
-
-
 <div v-if="this.cupom_invalido">
             <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
                 <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
@@ -187,12 +199,15 @@ export default {
 
       let precoDescontado = 0;
       precoDescontado = precoTotal - desconto;
+      if (precoDescontado < 0){
+        precoDescontado = 0
+      }
       this.precoDescontado = precoDescontado.toFixed(2).replace('.',',')
 
       console.log(this.precoDescontado)
 
       // Se houver cupons aplicados, o novo valor é mostrado na tela
-      if(this.precoTotal !==  this.precoDescontado){
+      if(this.cuponsEfetivados.length>0){
         this.descontoAplicado = true;
       }
     //   for(let objeto in this.pratos){
@@ -313,9 +328,11 @@ export default {
             await axios.post('http://localhost:3000/getcoupons_used',  {nome: this.cupons[i].nome, valor: this.cupons[i].valor}  ) //pode dar erro
               .then(response => {
                 console.log(response.data.message);
+                console.log('Entrou aqui 0000')
               })
               .catch(error => {
                 console.error(error);
+                console.log('Entrou aqui 9999')
               });
 
               
@@ -345,8 +362,27 @@ export default {
         if (this.cupons.length == 0 && !cupom_valido ){
             console.log("entrou nesse if")
             this.cupom_invalido = true;
-          }
-        
+          }   
+    },
+    async retrieveCoupon(cupom_efetivado){
+      //Botar o cupom no array de cupons disponíveis
+      await axios.post('http://localhost:3000/addtocoupons_avaliable',  {nome: cupom_efetivado.nome, valor: cupom_efetivado.valor})
+              .then(response => {
+                console.log(response.data.message);
+              })
+              .catch(error => {
+                console.error(error);
+              });
+
+      //Remover o cupom do array de cupons efetivados
+      await axios.delete('http://localhost:3000/removecoupons_used', { data: {nome: cupom_efetivado.nome}})
+        .then(response => {
+            console.log(response.data)
+            location.reload();
+        })
+        .catch(error => {
+            console.error(error)
+        }) 
     }
   }
 }
