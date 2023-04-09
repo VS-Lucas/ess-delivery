@@ -3,8 +3,8 @@
     
         <div class="flex col-span-1 text-white font-medium items-center">
             <div class="flex flex-col items-center justify-center ml-7 sm:mr-0 mr-4">
-                <img class="rounded-[10px] sm:w-28 sm:h-20 w-10 h-10 mb-1" src="https://bodedono.com.br/wp-content/uploads/2020/06/LOGO-1.png">
-                <p class="text-white  font-bold sm:text-[15px] text-[12px]">Bode nô</p>
+                <img class="rounded-[10px] sm:w-28 sm:h-20 w-10 h-10 mb-1" :src="this.imgSrc" alt="logo">
+                <p class="text-white  font-bold sm:text-[15px] text-[12px]">{{this.name}}</p>
             </div>
             <div class="border-l border-white h-28 mx-auto"></div>
         </div>
@@ -63,7 +63,10 @@
             prices: Array,
             dishes: Array,
             date: String,
-            hour: String
+            hour: String,
+            estimated_time: String,
+            info_dishes: String,
+            client_name: String
         },
         methods: {
             goToDetails() {
@@ -81,12 +84,17 @@
                         status: this.status,
                         prices: this.prices,
                         dishes: JSON.stringify(this.dishes),
-                        hour: this.hour
+                        hour: this.hour,
+                        estimated_time: this.estimated_time,
+                        info_dishes: this.info_dishes,
+                        client_name: this.client_name
                     }
                 })
             },
         },
         mounted() {
+            console.log('img ' + this.imgSrc);
+            console.log(this.name);
             this.overflow = this.items.length > 5;
         }
     }
