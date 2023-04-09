@@ -238,7 +238,7 @@
 
     <div class="mx-auto mt-10 flex items-center justify-center">
         <div>
-            <button @click="cancelOrder" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Cancelar pedido</button>
+            <button v-if="this.status != 'Cancelado'" @click="cancelOrder" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Cancelar pedido</button>
         </div>       
     </div>
 </body>    
@@ -290,6 +290,7 @@ export default {
                 this.restaurant = order[id[0]]['restaurante'];
                 this.name = order[id[0]]['nome'];
                 this.status = order[id[0]]['status'];
+                console.log(this.status);
                 const key_dishes = Object.keys(order[id[0]]['pratos']);
                 
                 key_dishes.forEach(key => {
@@ -308,28 +309,34 @@ export default {
             setTimeout(() => {
                 axios.get('http://localhost:3000/get-orders')
                 .then(response => {
-                    const orders = response.data;
-                    console.log('orders' + orders[this.id])
+                    const orders = response.data.pedidos;
                     this.status = orders[this.id]['status'];
-                    console.log(this.status)
-                    if (this.status === 'Pedido confirmado') {
-                        this.steps.payment = true;
-                        this.steps.confirmed_order = true;
-                    } else if (this.status === 'Pedido em preparação') {
-                        this.steps.payment = true;
-                        this.steps.confirmed_order = true;
-                        this.steps.order_in_preparation = true;
-                    } else if (this.status === 'A caminho') {
-                        this.steps.payment = true;
-                        this.steps.confirmed_order = true;
-                        this.steps.order_in_preparation = true;
-                        this.steps.underway = true;
-                    } else if (this.status === 'Entregue') {
-                        this.steps.payment = true;
-                        this.steps.confirmed_order = true;
-                        this.steps.order_in_preparation = true;
-                        this.steps.underway = true;
-                        this.steps.delivered = true;
+                    if (this.status === 'Cancelado') {
+                        this.steps.payment = false;
+                        this.steps.confirmed_order = false;
+                        this.steps.order_in_preparation = false;
+                        this.steps.underway = false;
+                        this.steps.delivered = false;
+                    } else {
+                        if (this.status === 'Pedido confirmado') {
+                            this.steps.payment = true;
+                            this.steps.confirmed_order = true;
+                        } else if (this.status === 'Pedido em preparação') {
+                            this.steps.payment = true;
+                            this.steps.confirmed_order = true;
+                            this.steps.order_in_preparation = true;
+                        } else if (this.status === 'A caminho') {
+                            this.steps.payment = true;
+                            this.steps.confirmed_order = true;
+                            this.steps.order_in_preparation = true;
+                            this.steps.underway = true;
+                        } else if (this.status === 'Entregue') {
+                            this.steps.payment = true;
+                            this.steps.confirmed_order = true;
+                            this.steps.order_in_preparation = true;
+                            this.steps.underway = true;
+                            this.steps.delivered = true;
+                        }
                     }
                 }).catch(error => {
                     console.error(error)
@@ -367,6 +374,7 @@ export default {
                 console.log(err.message);
             });
             // Cancelamento do pedido do restaurante
+            console.log('NAME' + this.name);
             axios.post('http://localhost:3000/cancel-restaurant-order', {name: this.name, id: this.id, justification: this.justification, restaurant: this.restaurant})
             .then(() => {
                 this.show = false;
