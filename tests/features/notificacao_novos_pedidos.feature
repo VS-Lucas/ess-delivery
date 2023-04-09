@@ -26,13 +26,8 @@ Scenario: Notificação de Pedido Entregue
     And o detalhamento de pedido é aberto na tela
     Then o status do pedido mostra 'Entregue'
 
-Scenario: Notificação de Avaliação 
-    When o pedido 0258 é finalizado e entregue
-    And o cliente avalia o restaurante com 4 estrelas
-    Then o restaurante recebe a notificação 'O pedido 0379 avaliou a experiência com 5 estrelas'
-
 Scenario: Notificação de Cancelamento de Pedido
     When o restaurante recebe a notificação  de cancelamento do pedido de número '#12453'
     And o detalhamento de pedido é aberto na tela
-    Then o status do pedido mostra Cancelado
+    Then o status do pedido mostra 'Cancelado'
     And é mostrado a justificativa do cliente 'Pedido demorou demais!!'
