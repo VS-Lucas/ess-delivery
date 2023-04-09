@@ -162,8 +162,8 @@ export default ({
             }).catch((error) => {
                console.log(error.message)
             });
-      //   }, )
-         // 2000)
+      //   }, 7000)
+      
    },
    components: {
       RestaurantNavBar,

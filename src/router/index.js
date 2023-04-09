@@ -6,7 +6,7 @@ import RegisterLoginView from '../views/RegisterLoginView.vue'
 import ClientHome from '../views/ClientHome.vue'
 import ShoppingCart from '../views/ShoppingCart.vue'
 import HomeRestaurant from '../views/HomeRestaurant.vue'
-
+import RestaurantsList from '../views/RestaurantsList.vue'
 const routes = [
   {
     path: '/',
@@ -79,10 +79,21 @@ const routes = [
     component: HomeRestaurant
   },
   {
-    path: '/checkout/:pratos:subtotal:desconto',
+    path: '/checkout/:pratos:subtotal:desconto:restaurante',
     name: 'checkout',
     component: () => import('../views/CheckoutView.vue')
   },
+  {
+    path: '/notification-details/:orderId/:clientName/:status',
+    name: 'notification-details',
+    component: () => import('../views/NotificationDetails.vue')
+  },
+  
+  {
+    path: '/restaurants-list',
+    name: 'restaurants-list',
+    component: RestaurantsList
+  }
 ]
 
 const router = createRouter({
