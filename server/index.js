@@ -484,7 +484,7 @@ app.get('/get-orders', async (_req, _res) => {
 
 app.post('/cancel-customer-order', async (_req, _res) => {
   const id = _req.body.id;
-  
+    
 
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {

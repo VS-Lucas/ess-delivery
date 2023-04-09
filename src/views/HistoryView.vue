@@ -42,6 +42,9 @@
                 :prices="object.prices"
                 :dishes="object.dishes"
                 :hour="object.hour"
+                :estimated_time="object.estimated_time"
+                :info_dishes="object.info_dishes"
+                :client_name="object.client_name"
                 />
             </div>
         </div>
@@ -73,15 +76,15 @@
         mounted() {
             axios.get('http://localhost:3000/get-orders')
             .then((res) => {
-                const base_orders = res.data;
+                const base_orders = res.data.pedidos;
+                const name = res.data.nome;
                 let aux = []
                 this.keys = Object.keys(base_orders);
-
                 this.keys.forEach(key => {
                     aux.push({
                         order_id: key,
-                        img_src: 'https://www.pizzariaatlantico.com.br/mobile/img/logo.png',
-                        restaurant_name: 'Anonymous',
+                        img_src: this.get_image(key, base_orders),
+                        restaurant_name: this.get_restaurant_name(key, base_orders),
                         items: this.get_items(key, base_orders),
                         price: this.get_total_price(key, base_orders),
                         form_of_payment: 'Cartão de crédito',
@@ -89,16 +92,51 @@
                         prices: this.get_prices(key, base_orders),
                         dishes: this.get_dishes(key, base_orders),
                         date: this.get_date(key, base_orders),
-                        hour: this.get_hour(key, base_orders)
+                        hour: this.get_hour(key, base_orders),
+                        estimated_time: base_orders[key]['tempo_estimado'],
+                        info_dishes: JSON.stringify(base_orders[key]['pratos']),
+                        client_name: name
                     });
+                    console.log(aux)
                 });
-
+                // console.log('client name' + client_name)
                 this.orders = [...aux];
             }).catch((error) => {
                 console.log(error.message)
             });
         },
         methods: {
+            async get_client_name() {
+                await axios.get('http://localhost:3000/get-name')
+                .then(res => {
+                    return res.data;
+                }).catch(error => { 
+                    console.error(error);
+                })
+            },  
+            get_image(key, orders) {
+                console.log('KEY> ' + key);
+                var keys = Object.keys(orders[key]['pratos']);
+                var name = ''
+                 keys.forEach(ky =>{
+                    name = orders[key]['pratos'][ky].restaurante;
+                });
+
+                var img_src = {
+                    'Bode do Nô': 'https://bodedono.com.br/wp-content/uploads/2020/06/LOGO-1.png',
+                    'Ratão Burguer': 'https://static.ifood-static.com.br/image/upload/t_medium/logosgde/495a9874-72de-493f-a56f-fa9a1ac47afc/202010131216_oCGu_i.png'
+                };
+
+                return img_src[name];
+            },
+            get_restaurant_name(key, orders) {
+                var keys = Object.keys(orders[key]['pratos']);
+                var name = '';
+                keys.forEach(ky =>{
+                    name = orders[key]['pratos'][ky].restaurante;
+                });
+                return name;
+            },
             get_items(key, orders) {
                 var keys = Object.keys(orders[key]['pratos']);
                 const items = [];
@@ -112,8 +150,8 @@
                 var keys = Object.keys(orders[key]['pratos']);
                 var price = 0;
                 keys.forEach(ky =>{
-                    var n = orders[key]['pratos'][ky].preco.replace(',', '.');
-                    price += parseFloat(n);
+                    var n = parseFloat(orders[key]['pratos'][ky].preco.replace(',', '.')) * parseInt(orders[key]['pratos'][ky].quantidade);
+                    price += n;
                 });
                 return `${price.toFixed(2)}`;
             },
@@ -124,7 +162,7 @@
                 var keys = Object.keys(orders[key]['pratos']);
                 var prices = [];
                 keys.forEach(ky =>{
-                    prices.push(orders[key]['pratos'][ky].preco);
+                    prices.push(parseFloat(orders[key]['pratos'][ky].preco.replace(',', '.')) * parseInt(orders[key]['pratos'][ky].quantidade));
                 });
 
                 return prices;
