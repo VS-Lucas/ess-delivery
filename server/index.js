@@ -1281,7 +1281,85 @@ app.delete('/getcoupons_available', (req, res) => {
 //     });
 // });
 
+// Rota POST para adicionar itens no array de cupons disponíveis
+app.post('/addtocoupons_avaliable', (req, res) => {
+  const cupom = req.body; // Dados do novo prato a ser adicionado
+  
+  admin.firestore().collection('cliente').doc(client_id).get()
+    .then(clienteDoc => {
+      if (!clienteDoc.exists) {
+        res.status(404).send('Cliente não encontrado');
+      } else {
+        // Adicionar o cupom ao array de cupons efetivados
+        const cupons = clienteDoc.data().cupons || [];
+        cupons.push(cupom);
 
+        // Atualizar o cliente com o novo array de carrinho
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({cupons})
+          .then(() => {
+            res.json({ message: 'Cupom efetivado' });
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Erro ao efetivar cupom');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao obter cliente');
+    });
+});
+
+//Rota DELETE para remover cupom do array de cupons efetivados do cliente
+app.delete('/removecoupons_used', (req, res) => {
+  const nomeCupom = req.body.nome;
+  //console.log(nomePrato);
+  console.log("delete");
+  console.log(nomeCupom);
+
+  admin.firestore()
+    .collection('cliente')
+    .doc(client_id)
+    .get()
+    .then(clienteDoc => {
+      if (!clienteDoc.exists) {
+        res.status(404).send('Cliente não encontrado');
+      } else {
+
+        // Remover o item do array de cupons efetivados
+        const cupons_efetivados = clienteDoc.data().cupons_efetivados || [];
+        let index = -1;
+        for (let i = 0; i < cupons_efetivados.length; i++) {
+          console.log(cupons_efetivados[i].nome);
+          console.log(nomeCupom);
+          if (cupons_efetivados[i].nome === nomeCupom) {
+            index = i;
+            break;
+          }
+        }
+        if (index !== -1) {
+          cupons_efetivados.splice(index, 1);
+        }
+
+        // Atualizar o cliente com o novo array de cupons efetivados
+        admin.firestore().collection('cliente').doc(client_id)
+          .update({ cupons_efetivados })
+          .then(() => {
+            res.json({ message: 'Item removido do array de cupons com sucesso' });
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).send('Erro ao atualizar array de cupons do cliente');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Erro ao obter cliente');
+    });
+});
 
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
