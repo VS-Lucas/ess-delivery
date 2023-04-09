@@ -748,7 +748,9 @@ app.put('/shoppingcart2', async (req, res) => {
 
 //Get para pegar as informações dos pratos 
 app.get('/clienthome', (req, res) => {
-  const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
+  const restauranteId  = 'L9fhnBFA2DkVxHUIDjPr';
+
+  // const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
   admin.firestore()
     .collection('restaurantes')
     .doc(restauranteId)
