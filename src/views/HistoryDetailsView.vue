@@ -26,6 +26,10 @@
         </div> <!--bar-->
 
         <div class="flex justify-end  text-white mb-2 w-full">
+            <div v-if="this.$route.params.status === 'A caminho'" @click="isDelivered" class="bg-[#F26938] p-2 rounded-[20px] mr-5">
+                <button>Confirmar entrega</button>
+            </div>
+
             <div class="bg-[#F26938] p-2 rounded-[20px] mr-16">
                 <button @click="goToTracking" class="">Acompanhar</button>
             </div>        
@@ -127,6 +131,21 @@ import axios from 'axios';
                     status: status
                 }).then(() => {
                     this.$router.push('/order-tracking')
+                }).catch(error => {
+                    console.error(error);
+                });
+            },
+            isDelivered() {
+                axios.post('http://localhost:3000/client-confirmation', { name: this.$route.params.client_name, 
+                                                                  id: this.$route.params.id })
+                .then(() => {
+                }).catch(error => {
+                    console.error(error);
+                });
+
+                axios.post('http://localhost:3000/restaurant-confirmation', { restaurant_name: this.$route.params.name, 
+                                                                  id: this.$route.params.id, client_name: this.$route.params.client_name })
+                .then(() => {
                 }).catch(error => {
                     console.error(error);
                 });
