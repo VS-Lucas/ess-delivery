@@ -264,24 +264,12 @@
                     </div>
 
                     <div class="col-span-11 sm:col-start-2 sm:col-span-9">
-                      <label for="logo" class="block text-sm font-medium leading-6 text-gray-900">Logo</label>
-                      <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                        <div class="text-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path d="M13 2v2h-2V2H9v2H7V2H6a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2h-1zM7 6h6v2H7V6zm0 4h6v2H7v-2zm6 6H7v-2h6v2z" />
-                          </svg>
-                          <div class="mt-4 flex text-sm leading-6 text-gray-600">
-                            <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                              <span>Upload a file</span>
-                              <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="mostrarImagem" />
-                            </label>
-                            <p class="pl-1">or drag and drop</p>
-                          </div>
-                          <p class="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
-                        </div>
-                        <div class="logo-preview" v-if="imagemSelecionada">
-                          <img :src="imagemSelecionada" />
-                        </div>
+                      <label for="logo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Logo</label>
+                      <div class="flex">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                          URL
+                        </span>
+                        <input type="text" id="logo" v-model="logo" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="">
                       </div>
                     </div>
                    
@@ -333,11 +321,11 @@ export default {
       taxa: '',
       tempo_entrega: '',
       horario: '',
+      logo: '',
       razao_social_failure: false,
       nome_loja_failure: false,
       telefone_failure: false,
       cnpj_failure: false,
-      imagemSelecionada: null,
     }
   },
   methods: {
@@ -365,6 +353,7 @@ export default {
         taxa: this.taxa,
         tempo_entrega: this.tempo_entrega,
         horario: this.horario,
+        logo: this.logo,
       };
       axios.post('http://localhost:3000/register-restaurant', formData)
         .then(
@@ -487,14 +476,6 @@ export default {
         this.nome_loja_failure = false;
         this.cnpj_failure = false;
         this.telefone_failure = false;
-    },
-    mostrarImagem(event) {
-      const arquivoSelecionado = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.imagemSelecionada = e.target.result;
-      };
-      reader.readAsDataURL(arquivoSelecionado);
     },
   }
 }
