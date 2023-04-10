@@ -754,7 +754,7 @@ app.put('/shoppingcart2', async (req, res) => {
 
 //Get para pegar as informações dos pratos do 1 restaurante 
 app.get('/clienthome_first_restaurant', (req, res) => {
- const restauranteId  = 'DGoe9PEt7pEg6nRAgXYK';
+ const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
 //  DGoe9PEt7pEg6nRAgXYK
   admin.firestore()
     .collection('restaurantes')
@@ -773,7 +773,7 @@ app.get('/clienthome_first_restaurant', (req, res) => {
 
 //Get para pegar as informações dos pratos do 2 restaurante
 app.get('/clienthome_second_restaurant', (req, res) => {
-  const restauranteId  = 'EbKwC2ud8dRr5kzcrJwH';
+  const restauranteId  = 'L9fhnBFA2DkVxHUIDjPr';
   // L9fhnBFA2DkVxHUIDjPr
   // const restauranteId  = 'DGoe9PEt7pEg6nRAgXYK';
   admin.firestore()
