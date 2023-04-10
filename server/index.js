@@ -1161,8 +1161,8 @@ app.put("/clearcoupons_used", async (req, res) =>{
 // Rota POST do tempo estimado de entrega
 app.post('/estimatedtime', async(req, res) =>{
   const res_name = req.body.resName
-  const res_id = {'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH', 
-                  'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK'}
+  const res_id = {'Ratão Burguer': 'L9fhnBFA2DkVxHUIDjPr', 
+                  'Bode do Nô': 'hm0n3mzMyFMh2JAb9YQb'}
   id_rest = res_id[res_name];
 
   try{
