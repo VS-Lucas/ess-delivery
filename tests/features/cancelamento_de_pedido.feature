@@ -5,27 +5,19 @@ Feature: cancelamento de pedido
     So that não vou receber um pedido indesejado
     
     Scenario: cancelar pedido antes da entrega começar
-        Given estou logado como "usuário" com o login "lucas" e senha "1234"
-        And fiz um pedido
-        And o status do pedido é "Sendo preparado"
-        And estou na tela "Acompanhamento do Pedido"
-        When clico no botão "Cancelar pedido"
-        And vejo um modal com uma caixa de input para justificar o cancelamento
-        And justifico o motivo do cancelamento
-        And clico no botão "Confirmar cancelamento"
-        Then vejo a mensagem "Pedido cancelado"
+        Given estou logado como "cliente" com o login "lucasvini@gmail.com" e senha "lucasvini"
+        And estou na tela "Acompanhamento do Pedido" e fiz um pedido
+        And o status do pedido é 'Pedido em preparação'
+        When tento cancelar o pedido
+        And escrevo 'Desisti do pedido'
+        And confirmo o cancelamento
+        Then vejo a mensagem 'Pedido cancelado com sucesso!!'
 
     Scenario: cancelar pedido após a entrega começar 
-        Given estou logado como "usuário" com o login "lucas" e senha "1234"
-        And fiz um pedido
-        And o status do pedido é "Entrega em andamento"
-        And estou na tela de informações do pedido
-        When clico no botão "Cancelar pedido"
-        Then vejo a mensagem "Falha ao cancelar! Entrega em andamento"
-
-    Scenario: pedido consta como cancelado no histórico de pedidos
-        Given estou logado como "usuário" com o login "lucas" e senha "1234"
-        And fiz um pedido de ID "123"
-        And o pedido foi cancelado
-        When clico em "Histórico de pedidos"
-        Then vejo o pedido de ID "123" cancelado
+        Given estou logado como "cliente" com o login "lucasvini@gmail.com" e senha "lucasvini"
+        And estou na tela "Acompanhamento do Pedido" e fiz um pedido
+        And o status do pedido é 'A caminho'
+        When tento cancelar o pedido
+        And escrevo 'Desisti do pedido'
+        And confirmo o cancelamento
+        Then vejo a mensagem 'Falha ao cancelar! Entrega em andamento'

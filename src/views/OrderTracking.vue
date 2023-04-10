@@ -84,7 +84,7 @@
                 
                 <li class="flex w-full items-center  space-x-2.5">
                     <div v-if="this.steps.delivered">
-                        <span class="flex items-center justify-center w-10 h-10 bg-[#6C4131] border-2 border-[#6C4131] rounded-full lg:h-24 lg:w-24 shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 bg-[#F26938] border-2 border-[#F26938] rounded-full lg:h-24 lg:w-24 shrink-0">
                             <img class="lg:h-14 lg:w-14 w-6 h-6" src="@/assets/img/done.png" alt="payment">
                         </span>
                     </div>
@@ -170,7 +170,7 @@
                     <div class="modal-content py-4 text-left px-6">
                         <div class="modal-body mt-2">
                             <!-- Conteúdo do modal aqui -->
-                            <label for="input">Porque você deseja cancelar:</label>
+                            <label for="input">Por que você deseja cancelar:</label>
                             <input v-model="justification" name="input" class="w-full rounded-[20px]" type="text">
 
                             <div class="grid grid-cols-2 mt-10">
@@ -238,7 +238,7 @@
 
     <div class="mx-auto mt-10 flex items-center justify-center">
         <div>
-            <button v-if="this.status != 'Cancelado'" @click="cancelOrder" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Cancelar pedido</button>
+            <button v-if="this.status !== 'Cancelado' && this.status !== 'Entregue'" @click="cancelOrder" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Cancelar pedido</button>
         </div>       
     </div>
 </body>    
@@ -276,12 +276,11 @@ export default {
         }
     },
     mounted() {
-        setTimeout(() => {
+        setTimeout(async () => {
 
-            axios.get('http://localhost:3000/get-tracking')
+            await axios.get('http://localhost:3000/get-tracking')
             .then(response => {
                 const order = response.data;
-                console.log(order);
                 const id = Object.keys(response.data);
                 this.id = id[0];
                 this.address = order[id[0]]['endereco'];
@@ -290,60 +289,53 @@ export default {
                 this.restaurant = order[id[0]]['restaurante'];
                 this.name = order[id[0]]['nome'];
                 this.status = order[id[0]]['status'];
-                console.log(this.status);
                 const key_dishes = Object.keys(order[id[0]]['pratos']);
-                
                 key_dishes.forEach(key => {
                     this.dishes[key] = {
                         nome: order[id[0]]['pratos'][key].nome,
                         amount: order[id[0]]['pratos'][key].quantidade
                     }
                 });
-                console.log(this.dishes);
             }).catch(error => {
                 console.error(error);
             });
 
             this.steps.payment = true;
-            // this.intervalId = setInterval(() => {
-            setTimeout(() => {
-                axios.get('http://localhost:3000/get-orders')
-                .then(response => {
-                    const orders = response.data.pedidos;
-                    this.status = orders[this.id]['status'];
-                    if (this.status === 'Cancelado') {
-                        this.steps.payment = false;
-                        this.steps.confirmed_order = false;
-                        this.steps.order_in_preparation = false;
-                        this.steps.underway = false;
-                        this.steps.delivered = false;
-                    } else {
-                        if (this.status === 'Pedido confirmado') {
-                            this.steps.payment = true;
-                            this.steps.confirmed_order = true;
-                        } else if (this.status === 'Pedido em preparação') {
-                            this.steps.payment = true;
-                            this.steps.confirmed_order = true;
-                            this.steps.order_in_preparation = true;
-                        } else if (this.status === 'A caminho') {
-                            this.steps.payment = true;
-                            this.steps.confirmed_order = true;
-                            this.steps.order_in_preparation = true;
-                            this.steps.underway = true;
-                        } else if (this.status === 'Entregue') {
-                            this.steps.payment = true;
-                            this.steps.confirmed_order = true;
-                            this.steps.order_in_preparation = true;
-                            this.steps.underway = true;
-                            this.steps.delivered = true;
-                        }
-                    }
-                }).catch(error => {
-                    console.error(error)
-                });
-            }, 2000);
-            // }, 7000) // Envia a solicitação a cada 2 segundos
-        }, 2000);
+            await axios.get('http://localhost:3000/get-orders')
+            .then(response => {
+            const orders = response.data.pedidos;
+            this.status = orders[this.id]['status'];
+            if (this.status === 'Cancelado') {
+                this.steps.payment = false;
+                this.steps.confirmed_order = false;
+                this.steps.order_in_preparation = false;
+                this.steps.underway = false;
+                this.steps.delivered = false;
+            } else {
+                if (this.status === 'Pedido confirmado') {
+                    this.steps.payment = true;
+                    this.steps.confirmed_order = true;
+                } else if (this.status === 'Pedido em preparação') {
+                    this.steps.payment = true;
+                    this.steps.confirmed_order = true;
+                    this.steps.order_in_preparation = true;
+                } else if (this.status === 'A caminho') {
+                    this.steps.payment = true;
+                    this.steps.confirmed_order = true;
+                    this.steps.order_in_preparation = true;
+                    this.steps.underway = true;
+                } else if (this.status === 'Entregue') {
+                    this.steps.payment = true;
+                    this.steps.confirmed_order = true;
+                    this.steps.order_in_preparation = true;
+                    this.steps.underway = true;
+                    this.steps.delivered = true;
+                }
+            }
+            }).catch(error => {
+                console.error(error)
+            });
+        }, 200);
     },
     Destroy() {
         clearInterval(this.intervalId);
@@ -374,7 +366,6 @@ export default {
                 console.log(err.message);
             });
             // Cancelamento do pedido do restaurante
-            console.log('NAME' + this.name);
             axios.post('http://localhost:3000/cancel-restaurant-order', {name: this.name, id: this.id, justification: this.justification, restaurant: this.restaurant})
             .then(() => {
                 this.show = false;

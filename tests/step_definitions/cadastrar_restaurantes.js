@@ -7,258 +7,6 @@ const { remote } = require('webdriverio');
 
 setDefaultTimeout(100000);
 
-//////////// Scenario: cadastro de novo restaurante ////////////
-
-Given('eu estou na página "Cadastrar login"', async function () {
-    this.browser = await remote({
-        capabilities: {
-            browserName: 'chrome'
-        }
-    });
-    await this.browser.url('http://localhost:8080/register-login');
-});
-
-When('eu cadastro o email {string} e a senha {string}', async function (email, password) {
-    const emailInput = await this.browser.$('[name="email"]');
-    const passwordInput = await this.browser.$('[name="password"]');
-    await emailInput.setValue(email);
-    await passwordInput.setValue(password);
-    await new Promise((resolve) => setTimeout(resolve, 2000)); 
-    const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
-    await ContinuarCadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 15000)); 
-});
-
-When('na página "Cadastrar Restaurante" eu registro o nome completo {string}', async function (nomeCompleto) {
-    const currentUrl = await this.browser.getUrl();
-    expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
-
-    const nomeInput = await this.browser.$('[id="nome"]');
-    await nomeInput.setValue(nomeCompleto);
-});
-
-When('eu registro o CPF {string}', async function (cpf) {
-    const cpfInput = await this.browser.$('[id="cpf"]');
-    await cpfInput.setValue(cpf);
-});
-
-When('eu registro o RG {string}', async function (rg) {
-    const rgInput = await this.browser.$('[id="rg"]');
-    await rgInput.setValue(rg);
-});
-
-When('eu registro o CNPJ {string}', async function (cnpj) {
-    const cnpjInput = await this.browser.$('[id="cnpj"]');
-    await cnpjInput.setValue(cnpj);
-});
-
-When('eu registro a razão social {string}', async function (razaoSocial) {
-    const rzInput = await this.browser.$('[id="razao_social"]');
-    await rzInput.setValue(razaoSocial);
-});
-
-When('eu registro o nome da loja {string}', async function (nomeLoja) {
-    const nlInput = await this.browser.$('[id="nome_loja"]');
-    await nlInput.setValue(nomeLoja);
-});
-
-When('eu registro o telefone {string}', async function (tel) {
-    const telInput = await this.browser.$('[id="telefone"]');
-    await telInput.setValue(tel);
-});
-
-When('eu registro a especialidade {string}', async function (especialidade) {
-    const espInput = await this.browser.$('[id="especialidade"]');
-    await espInput.setValue(especialidade);
-});
-
-When('eu registro o CEP {string}', async function (cep) {
-    const cepInput = await this.browser.$('[id="cep"]');
-    await cepInput.setValue(cep);
-});
-
-When('eu registro a UF {string}', async function (uf) {
-    const ufInput = await this.browser.$('[id="estado_uf"]');
-    await ufInput.setValue(uf);
-});
-
-When('eu registro a cidade {string}', async function (cidade) {
-    const cidadeInput = await this.browser.$('[id="cidade"]');
-    await cidadeInput.setValue(cidade);
-});
-
-When('eu registro o bairro {string}', async function (bairro) {
-    const bairroInput = await this.browser.$('[id="bairro"]');
-    await bairroInput.setValue(bairro);
-});
-
-When('eu registro o endereço {string}', async function (endereco) {
-    const endInput = await this.browser.$('[id="endereco"]');
-    await endInput.setValue(endereco);
-});
-
-When('eu registro o número {string}', async function (numero) {
-    const numInput = await this.browser.$('[id="numero"]');
-    await numInput.setValue(numero);
-});
-
-When('eu registro o complemento {string}', async function (complemento) {
-    const comInput = await this.browser.$('[id="complemento"]');
-    await comInput.setValue(complemento);
-});
-
-When('eu registro a taxa {string}', async function (taxa) {
-    const taxaInput = await this.browser.$('[id="taxa"]');
-    await taxaInput.setValue(taxa);
-});
-
-When('eu registro o horario {string}', async function (horario) {
-    const horaInput = await this.browser.$('[id="horario"]');
-    await horaInput.setValue(horario);
-});
-
-When('eu registro o tempo de entrega {string}', async function (tempo_entrega) {
-    const entregaInput = await this.browser.$('[id="tempo_entrega"]');
-    await entregaInput.setValue(tempo_entrega);
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const cadastro = await this.browser.$('//button[text()="Salvar"]');
-    await cadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 20000));
-});
-
-Then('sou direcionado para a página "Home Restaurante"', async function () {
-    const curUrl = await this.browser.getUrl();
-    await expect(curUrl).to.include('http://localhost:8080/home-restaurant');
-
-    await this.browser.deleteSession();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-});
-
-
-//////////// Scenario: cadastro de novo restaurante sem informar a razão social ////////////
-
-Given('estou na página "Cadastrar login"', async function () {
-    this.browser = await remote({
-        capabilities: {
-            browserName: 'chrome'
-        }
-    });
-    await this.browser.url('http://localhost:8080/register-login');
-});
-
-When('cadastro o email {string} e a senha {string}', async function (email, password) {
-    const emailInput = await this.browser.$('[name="email"]');
-    const passwordInput = await this.browser.$('[name="password"]');
-    await emailInput.setValue(email);
-    await passwordInput.setValue(password);
-    await new Promise((resolve) => setTimeout(resolve, 2000)); 
-    const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
-    await ContinuarCadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000)); 
-});
-
-When('na página "Cadastrar Restaurante" registro o nome completo {string}', async function (nomeCompleto) {
-    const currentUrl = await this.browser.getUrl();
-    expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
-
-    const nomeInput = await this.browser.$('[id="nome"]');
-    await nomeInput.setValue(nomeCompleto);
-});
-
-When('registro o CPF {string}', async function (cpf) {
-    const cpfInput = await this.browser.$('[id="cpf"]');
-    await cpfInput.setValue(cpf);
-});
-
-When('registro o RG {string}', async function (rg) {
-    const rgInput = await this.browser.$('[id="rg"]');
-    await rgInput.setValue(rg);
-});
-
-When('registro o CNPJ {string}', async function (cnpj) {
-    const cnpjInput = await this.browser.$('[id="cnpj"]');
-    await cnpjInput.setValue(cnpj);
-});
-
-When('registro o nome da loja {string}', async function (nomeLoja) {
-    const nlInput = await this.browser.$('[id="nome_loja"]');
-    await nlInput.setValue(nomeLoja);
-});
-
-When('registro o telefone {string}', async function (tel) {
-    const telInput = await this.browser.$('[id="telefone"]');
-    await telInput.setValue(tel);
-});
-
-When('registro a especialidade {string}', async function (especialidade) {
-    const espInput = await this.browser.$('[id="especialidade"]');
-    await espInput.setValue(especialidade);
-});
-
-When('registro o CEP {string}', async function (cep) {
-    const cepInput = await this.browser.$('[id="cep"]');
-    await cepInput.setValue(cep);
-});
-
-When('registro a UF {string}', async function (uf) {
-    const ufInput = await this.browser.$('[id="estado_uf"]');
-    await ufInput.setValue(uf);
-});
-
-When('registro a cidade {string}', async function (cidade) {
-    const cidadeInput = await this.browser.$('[id="cidade"]');
-    await cidadeInput.setValue(cidade);
-});
-
-When('registro o bairro {string}', async function (bairro) {
-    const bairroInput = await this.browser.$('[id="bairro"]');
-    await bairroInput.setValue(bairro);
-});
-
-When('registro o endereço {string}', async function (endereco) {
-    const endInput = await this.browser.$('[id="endereco"]');
-    await endInput.setValue(endereco);
-});
-
-When('registro o número {string}', async function (numero) {
-    const numInput = await this.browser.$('[id="numero"]');
-    await numInput.setValue(numero);
-});
-
-When('registro o complemento {string}', async function (complemento) {
-    const comInput = await this.browser.$('[id="complemento"]');
-    await comInput.setValue(complemento);
-});
-
-When('registro a taxa {string}', async function (taxa) {
-    const taxaInput = await this.browser.$('[id="taxa"]');
-    await taxaInput.setValue(taxa);
-});
-
-When('registro o horario {string}', async function (horario) {
-    const horaInput = await this.browser.$('[id="horario"]');
-    await horaInput.setValue(horario);
-});
-
-When('registro o tempo de entrega {string}', async function (tempo_entrega) {
-    const entregaInput = await this.browser.$('[id="tempo_entrega"]');
-    await entregaInput.setValue(tempo_entrega);
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const cadastro = await this.browser.$('//button[text()="Salvar"]');
-    await cadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-});
-
-Then('permaneço na página "Cadastrar Restaurante"', async function () {
-    const curUrl = await this.browser.getUrl();
-    await expect(curUrl).to.include('http://localhost:8080/register-restaurant');
-
-    await this.browser.deleteSession();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-});
-
 
 //////////// Scenario: cadastrar restaurante com CNPJ existente ////////////
 
@@ -276,15 +24,17 @@ When('registro o email {string} e a senha {string}', async function (email, pass
     const passwordInput = await this.browser.$('[name="password"]');
     await emailInput.setValue(email);
     await passwordInput.setValue(password);
+
     await new Promise((resolve) => setTimeout(resolve, 2000)); 
     const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
-    await ContinuarCadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000)); 
+    await ContinuarCadastro.click(); 
 });
 
 When('na página "Cadastrar Restaurante" cadastro o nome completo {string}', async function (nomeCompleto) {
-    const currentUrl = await this.browser.getUrl();
-    expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
+    await this.browser.waitUntil(async () => {
+        const currentUrl = await this.browser.getUrl();
+        return await expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
+    }, {timeout: 15000});
 
     const nomeInput = await this.browser.$('[id="nome"]');
     await nomeInput.setValue(nomeCompleto);
@@ -377,13 +127,13 @@ When('cadastro o tempo de entrega {string}', async function (tempo_entrega) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const cadastro = await this.browser.$('//button[text()="Salvar"]');
     await cadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
 });
 
 Then('vejo a mensagem {string}', async function (mensagem) {
-    const mensagemElement = await this.browser.$(`//*[contains(text(),"${mensagem}")]`);
-    const mensagemText = await mensagemElement.getText();
-    await assert.strictEqual(mensagemText, mensagem);
+    await this.browser.waitUntil(async () => {
+        const mensagemElement = await this.browser.$(`//*[contains(text(),"${mensagem}")]`);
+        return await mensagemElement.isDisplayed();
+    }, {timeout: 15000});
 });
 
 Then('continuo na página "Cadastrar Restaurante"', async function () {
@@ -391,7 +141,266 @@ Then('continuo na página "Cadastrar Restaurante"', async function () {
     await expect(curUrl).to.include('http://localhost:8080/register-restaurant');
 
     await this.browser.deleteSession();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+});
+
+
+//////////// Scenario: cadastro de novo restaurante ////////////
+
+Given('eu estou na página "Cadastrar login"', async function () {
+    this.browser = await remote({
+        capabilities: {
+            browserName: 'chrome'
+        }
+    });
+    await this.browser.url('http://localhost:8080/register-login');
+});
+
+When('eu cadastro o email {string} e a senha {string}', async function (email, password) {
+    const emailInput = await this.browser.$('[name="email"]');
+    const passwordInput = await this.browser.$('[name="password"]');
+    await emailInput.setValue(email);
+    await passwordInput.setValue(password);
+
+    await new Promise((resolve) => setTimeout(resolve, 2000)); 
+    const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
+    await ContinuarCadastro.click(); 
+});
+
+When('na página "Cadastrar Restaurante" eu registro o nome completo {string}', async function (nomeCompleto) {
+    await this.browser.waitUntil(async () => {
+        const currentUrl = await this.browser.getUrl();
+        return await expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
+    }, {timeout: 15000});
+
+    const nomeInput = await this.browser.$('[id="nome"]');
+    await nomeInput.setValue(nomeCompleto);
+});
+
+When('eu registro o CPF {string}', async function (cpf) {
+    const cpfInput = await this.browser.$('[id="cpf"]');
+    await cpfInput.setValue(cpf);
+});
+
+When('eu registro o RG {string}', async function (rg) {
+    const rgInput = await this.browser.$('[id="rg"]');
+    await rgInput.setValue(rg);
+});
+
+When('eu registro o CNPJ {string}', async function (cnpj) {
+    const cnpjInput = await this.browser.$('[id="cnpj"]');
+    await cnpjInput.setValue(cnpj);
+});
+
+When('eu registro a razão social {string}', async function (razaoSocial) {
+    const rzInput = await this.browser.$('[id="razao_social"]');
+    await rzInput.setValue(razaoSocial);
+});
+
+When('eu registro o nome da loja {string}', async function (nomeLoja) {
+    const nlInput = await this.browser.$('[id="nome_loja"]');
+    await nlInput.setValue(nomeLoja);
+});
+
+When('eu registro o telefone {string}', async function (tel) {
+    const telInput = await this.browser.$('[id="telefone"]');
+    await telInput.setValue(tel);
+});
+
+When('eu registro a especialidade {string}', async function (especialidade) {
+    const espInput = await this.browser.$('[id="especialidade"]');
+    await espInput.setValue(especialidade);
+});
+
+When('eu registro o CEP {string}', async function (cep) {
+    const cepInput = await this.browser.$('[id="cep"]');
+    await cepInput.setValue(cep);
+});
+
+When('eu registro a UF {string}', async function (uf) {
+    const ufInput = await this.browser.$('[id="estado_uf"]');
+    await ufInput.setValue(uf);
+});
+
+When('eu registro a cidade {string}', async function (cidade) {
+    const cidadeInput = await this.browser.$('[id="cidade"]');
+    await cidadeInput.setValue(cidade);
+});
+
+When('eu registro o bairro {string}', async function (bairro) {
+    const bairroInput = await this.browser.$('[id="bairro"]');
+    await bairroInput.setValue(bairro);
+});
+
+When('eu registro o endereço {string}', async function (endereco) {
+    const endInput = await this.browser.$('[id="endereco"]');
+    await endInput.setValue(endereco);
+});
+
+When('eu registro o número {string}', async function (numero) {
+    const numInput = await this.browser.$('[id="numero"]');
+    await numInput.setValue(numero);
+});
+
+When('eu registro o complemento {string}', async function (complemento) {
+    const comInput = await this.browser.$('[id="complemento"]');
+    await comInput.setValue(complemento);
+});
+
+When('eu registro a taxa {string}', async function (taxa) {
+    const taxaInput = await this.browser.$('[id="taxa"]');
+    await taxaInput.setValue(taxa);
+});
+
+When('eu registro o horario {string}', async function (horario) {
+    const horaInput = await this.browser.$('[id="horario"]');
+    await horaInput.setValue(horario);
+});
+
+When('eu registro o tempo de entrega {string}', async function (tempo_entrega) {
+    const entregaInput = await this.browser.$('[id="tempo_entrega"]');
+    await entregaInput.setValue(tempo_entrega);
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const cadastro = await this.browser.$('//button[text()="Salvar"]');
+    await cadastro.click();
+});
+
+Then('sou direcionado para a página "Home Restaurante"', async function () {
+    await this.browser.waitUntil(async () => {
+        const curUrl = await this.browser.getUrl();
+        return await expect(curUrl).to.include('http://localhost:8080/home-restaurant');
+    }, {timeout: 15000});
+
+    await this.browser.deleteSession();
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+});
+
+
+//////////// Scenario: cadastro de novo restaurante sem informar a razão social ////////////
+
+Given('estou na página "Cadastrar login"', async function () {
+    this.browser = await remote({
+        capabilities: {
+            browserName: 'chrome'
+        }
+    });
+    await this.browser.url('http://localhost:8080/register-login');
+});
+
+When('cadastro o email {string} e a senha {string}', async function (email, password) {
+    const emailInput = await this.browser.$('[name="email"]');
+    const passwordInput = await this.browser.$('[name="password"]');
+    await emailInput.setValue(email);
+    await passwordInput.setValue(password);
+
+    await new Promise((resolve) => setTimeout(resolve, 2000)); 
+    const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
+    await ContinuarCadastro.click(); 
+});
+
+When('na página "Cadastrar Restaurante" registro o nome completo {string}', async function (nomeCompleto) {
+    await this.browser.waitUntil(async () => {
+        const currentUrl = await this.browser.getUrl();
+        return await expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
+    }, {timeout: 15000});
+
+    const nomeInput = await this.browser.$('[id="nome"]');
+    await nomeInput.setValue(nomeCompleto);
+});
+
+When('registro o CPF {string}', async function (cpf) {
+    const cpfInput = await this.browser.$('[id="cpf"]');
+    await cpfInput.setValue(cpf);
+});
+
+When('registro o RG {string}', async function (rg) {
+    const rgInput = await this.browser.$('[id="rg"]');
+    await rgInput.setValue(rg);
+});
+
+When('registro o CNPJ {string}', async function (cnpj) {
+    const cnpjInput = await this.browser.$('[id="cnpj"]');
+    await cnpjInput.setValue(cnpj);
+});
+
+When('registro o nome da loja {string}', async function (nomeLoja) {
+    const nlInput = await this.browser.$('[id="nome_loja"]');
+    await nlInput.setValue(nomeLoja);
+});
+
+When('registro o telefone {string}', async function (tel) {
+    const telInput = await this.browser.$('[id="telefone"]');
+    await telInput.setValue(tel);
+});
+
+When('registro a especialidade {string}', async function (especialidade) {
+    const espInput = await this.browser.$('[id="especialidade"]');
+    await espInput.setValue(especialidade);
+});
+
+When('registro o CEP {string}', async function (cep) {
+    const cepInput = await this.browser.$('[id="cep"]');
+    await cepInput.setValue(cep);
+});
+
+When('registro a UF {string}', async function (uf) {
+    const ufInput = await this.browser.$('[id="estado_uf"]');
+    await ufInput.setValue(uf);
+});
+
+When('registro a cidade {string}', async function (cidade) {
+    const cidadeInput = await this.browser.$('[id="cidade"]');
+    await cidadeInput.setValue(cidade);
+});
+
+When('registro o bairro {string}', async function (bairro) {
+    const bairroInput = await this.browser.$('[id="bairro"]');
+    await bairroInput.setValue(bairro);
+});
+
+When('registro o endereço {string}', async function (endereco) {
+    const endInput = await this.browser.$('[id="endereco"]');
+    await endInput.setValue(endereco);
+});
+
+When('registro o número {string}', async function (numero) {
+    const numInput = await this.browser.$('[id="numero"]');
+    await numInput.setValue(numero);
+});
+
+When('registro o complemento {string}', async function (complemento) {
+    const comInput = await this.browser.$('[id="complemento"]');
+    await comInput.setValue(complemento);
+});
+
+When('registro a taxa {string}', async function (taxa) {
+    const taxaInput = await this.browser.$('[id="taxa"]');
+    await taxaInput.setValue(taxa);
+});
+
+When('registro o horario {string}', async function (horario) {
+    const horaInput = await this.browser.$('[id="horario"]');
+    await horaInput.setValue(horario);
+});
+
+When('registro o tempo de entrega {string}', async function (tempo_entrega) {
+    const entregaInput = await this.browser.$('[id="tempo_entrega"]');
+    await entregaInput.setValue(tempo_entrega);
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const cadastro = await this.browser.$('//button[text()="Salvar"]');
+    await cadastro.click();
+});
+
+Then('permaneço na página "Cadastrar Restaurante"', async function () {
+    await this.browser.waitUntil(async () => {
+        const curUrl = await this.browser.getUrl();
+        return await expect(curUrl).to.include('http://localhost:8080/register-restaurant');
+    }, {timeout: 15000});
+
+    await this.browser.deleteSession();
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 });
 
 
@@ -411,15 +420,17 @@ When('realizo o registro do email {string} e da senha {string}', async function 
     const passwordInput = await this.browser.$('[name="password"]');
     await emailInput.setValue(email);
     await passwordInput.setValue(password);
+
     await new Promise((resolve) => setTimeout(resolve, 2000)); 
     const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
     await ContinuarCadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000)); 
 });
 
 When('na página "Cadastrar Restaurante" eu cadastro o nome completo {string}', async function (nomeCompleto) {
-    const currentUrl = await this.browser.getUrl();
-    expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
+    await this.browser.waitUntil(async () => {
+        const currentUrl = await this.browser.getUrl();
+        return await expect(currentUrl).to.include('http://localhost:8080/register-restaurant');
+    }, {timeout: 15000});
 
     const nomeInput = await this.browser.$('[id="nome"]');
     await nomeInput.setValue(nomeCompleto);
@@ -512,7 +523,7 @@ When('eu cadastro o tempo de entrega {string}', async function (tempo_entrega) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const cadastro = await this.browser.$('//button[text()="Salvar"]');
     await cadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 });
 
 Then('mantenho-me na página "Cadastrar Restaurante"', async function () {
@@ -520,7 +531,7 @@ Then('mantenho-me na página "Cadastrar Restaurante"', async function () {
     await expect(curUrl).to.include('http://localhost:8080/register-restaurant');
 
     await this.browser.deleteSession();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 });
 
 
@@ -542,8 +553,7 @@ When('eu registro o email {string} e a senha {string}', async function (email, p
     await passwordInput.setValue(password);
     await new Promise((resolve) => setTimeout(resolve, 2000)); 
     const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
-    await ContinuarCadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000)); 
+    await ContinuarCadastro.click(); 
 });
 
 Then('observo a mensagem {string}', async function (mensagem) {
@@ -557,7 +567,7 @@ Then('permaneço na página "Cadastrar login"', async function () {
     await expect(curUrl).to.include('http://localhost:8080/register-login');
 
     await this.browser.deleteSession();
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 });
 
 
@@ -579,8 +589,7 @@ When('realizo o cadastro do email {string} e da senha {string}', async function 
     await passwordInput.setValue(password);
     await new Promise((resolve) => setTimeout(resolve, 2000)); 
     const ContinuarCadastro = await this.browser.$('//button[text()="Continuar cadastro"]');
-    await ContinuarCadastro.click();
-    await new Promise((resolve) => setTimeout(resolve, 10000)); 
+    await ContinuarCadastro.click(); 
 });
 
 Then('eu vejo a mensagem {string}', async function (mensagem) {
@@ -594,4 +603,4 @@ Then('localizo-me na página "Cadastrar login"', async function () {
     await expect(curUrl).to.include('http://localhost:8080/register-login');
 
     await this.browser.deleteSession();
-}); 
+});

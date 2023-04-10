@@ -402,9 +402,20 @@ app.post('/verify-data/:index', (req, res) => {
 });
 
 // Rota DELETE do descadastramento de restaurante
-app.delete('/unsubscribe', (req, res) => {
+app.delete('/unsubscribe', async (req, res) => {
 
-  admin.auth().deleteUser(userId)
+  const restDoc = await admin.firestore()
+                            .collection('restaurantes')
+                            .doc(restaurantId)
+                            .get()
+
+  const pedido = restDoc.data().pedidos;
+  console.log(pedido);
+
+  if (Object.keys(pedido).length > 0) {//Object.keys(pedido).length > 0 // pedido.length > 0
+    res.send('Restaurante com pedidos em andamento');
+  } else {   
+    admin.auth().deleteUser(userId)
     .then(() => {
       console.log(`(auth)Usuário excluído com sucesso.`);
       admin.firestore().collection('restaurantes').doc(restaurantId).delete()
@@ -428,7 +439,11 @@ app.delete('/unsubscribe', (req, res) => {
     .catch((error) => {
       console.error(`(auth)Erro ao excluir usuário: ${error}`);
       res.status(500).send('(auth)Erro ao excluir usuário.');
-    });
+    })
+
+  }
+  
+  
 
 });
 
@@ -520,11 +535,7 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
 
   admin.firestore().collection('restaurantes').doc(restaurant_id).get()
   .then(clienteDoc => {
-      console.log(restaurant_id)
-      console.log(name);
       const pedidos = clienteDoc.data().pedidos;
-      console.log(pedidos);
-      console.log(id);
 
       pedidos[name][id]['status'] = 'Cancelado';
       pedidos[name][id]['justification'] = justification;
@@ -754,7 +765,7 @@ app.put('/shoppingcart2', async (req, res) => {
 
 //Get para pegar as informações dos pratos do 1 restaurante 
 app.get('/clienthome_first_restaurant', (req, res) => {
- const restauranteId  = 'DGoe9PEt7pEg6nRAgXYK';
+ const restauranteId  = 'hm0n3mzMyFMh2JAb9YQb';
 //  DGoe9PEt7pEg6nRAgXYK
   admin.firestore()
     .collection('restaurantes')
@@ -773,7 +784,7 @@ app.get('/clienthome_first_restaurant', (req, res) => {
 
 //Get para pegar as informações dos pratos do 2 restaurante
 app.get('/clienthome_second_restaurant', (req, res) => {
-  const restauranteId  = 'EbKwC2ud8dRr5kzcrJwH';
+  const restauranteId  = 'L9fhnBFA2DkVxHUIDjPr';
   // L9fhnBFA2DkVxHUIDjPr
   // const restauranteId  = 'DGoe9PEt7pEg6nRAgXYK';
   admin.firestore()
@@ -1628,6 +1639,63 @@ app.get('/restaurants-list', async (req, res) => {
   }
   });
 
+
+
+app.post('/client-confirmation', async (_req, _res) => {
+  const id = _req.body.id;
+  
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[id]['status'] = 'Entregue';
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Pedido entregue!!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro ao salvar como pedido entregue!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.post('/restaurant-confirmation', async (_req, _res) => {
+  const id = _req.body.id;
+  const restaurant_name = _req.body.restaurant_name;
+  const client_name = _req.body.client_name;
+  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
+                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
+
+  const restaurant_id = restaurants[restaurant_name];
+
+  admin.firestore().collection('restaurantes').doc(restaurant_id).get()
+  .then(clienteDoc => {
+      const pedidos = clienteDoc.data().pedidos;
+
+      pedidos[client_name][id]['status'] = 'Entregue';
+      admin.firestore().collection('restaurantes').doc(restaurant_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Pedido entregue com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Error ao salvar como pedido foi entregue!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
 //Rota para notificar o BD do restaurante que o pedido foi corfirmado
 app.post('/accept-order', async (_req, _res) => {
     const id = _req.body.id;
@@ -1744,6 +1812,7 @@ app.post('/notify-order-denied', async (_req, _res) => {
   });
 
 //Rota para notificar o cliente que o pedido foi aceito
+
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });
