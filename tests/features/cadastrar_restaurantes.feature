@@ -4,6 +4,31 @@ Feature: Cadastrar novo restaurante
     So that eu possa ter um perfil e vender meus produtos
 
 
+Scenario: cadastrar restaurante com CNPJ existente 
+    Given encontro-me na página "Cadastrar login"
+    When registro o email 'vvvl_test@hotmail.com' e a senha '12345'
+    And na página "Cadastrar Restaurante" cadastro o nome completo 'Lucca Silva'
+    And cadastro o CPF '555.652.156-02'
+    And cadastro o RG '5.595.013'
+    And cadastro o CNPJ '66.666.666/6666-66'
+    And cadastro a razão social 'vvvl_test'
+    And cadastro o nome da loja 'vvvl_test'
+    And cadastro o telefone '(81) 99832-3248'
+    And cadastro a especialidade 'Japonesa'
+    And cadastro o CEP '40123-091'
+    And cadastro a UF 'Pernambuco'
+    And cadastro a cidade 'Recife'
+    And cadastro o bairro 'Madalena'
+    And cadastro o endereço 'Rua Batista'
+    And cadastro o número '823'
+    And cadastro o complemento 'Apto 122'
+    And cadastro a taxa 'R$ 10'
+    And cadastro o horario 'Das 12h às 18h'
+    And cadastro o tempo de entrega 'De 30min a 45min' 
+    Then vejo a mensagem 'CNPJ já cadastrado'    
+    And continuo na página "Cadastrar Restaurante"
+
+
 Scenario: cadastro de novo restaurante
     Given eu estou na página "Cadastrar login"
     When eu cadastro o email 'lvll_test@hotmail.com' e a senha '1234'
@@ -49,31 +74,6 @@ Scenario: novo restaurante sem informar a razão social
     And registro o horario 'Das 08h às 12h'
     And registro o tempo de entrega 'De 30min a 45min'    
     Then permaneço na página "Cadastrar Restaurante"
-
-
-Scenario: cadastrar restaurante com CNPJ existente 
-    Given encontro-me na página "Cadastrar login"
-    When registro o email 'vvvl_test@hotmail.com' e a senha '12345'
-    And na página "Cadastrar Restaurante" cadastro o nome completo 'Lucca Silva'
-    And cadastro o CPF '555.652.156-02'
-    And cadastro o RG '5.595.013'
-    And cadastro o CNPJ '49.813.284/6500-32'
-    And cadastro a razão social 'vvvl_test'
-    And cadastro o nome da loja 'vvvl_test'
-    And cadastro o telefone '(81) 99832-3248'
-    And cadastro a especialidade 'Japonesa'
-    And cadastro o CEP '40123-091'
-    And cadastro a UF 'Pernambuco'
-    And cadastro a cidade 'Recife'
-    And cadastro o bairro 'Madalena'
-    And cadastro o endereço 'Rua Batista'
-    And cadastro o número '823'
-    And cadastro o complemento 'Apto 122'
-    And cadastro a taxa 'R$ 10'
-    And cadastro o horario 'Das 12h às 18h'
-    And cadastro o tempo de entrega 'De 30min a 45min' 
-    Then vejo a mensagem 'CNPJ já cadastrado'    
-    And continuo na página "Cadastrar Restaurante"
 
 
 Scenario: registrar restaurante com formatação de CPF inválida 
