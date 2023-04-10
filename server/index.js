@@ -520,11 +520,7 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
 
   admin.firestore().collection('restaurantes').doc(restaurant_id).get()
   .then(clienteDoc => {
-      console.log(restaurant_id)
-      console.log(name);
       const pedidos = clienteDoc.data().pedidos;
-      console.log(pedidos);
-      console.log(id);
 
       pedidos[name][id]['status'] = 'Cancelado';
       pedidos[name][id]['justification'] = justification;
@@ -1627,6 +1623,62 @@ app.get('/restaurants-list', async (req, res) => {
   res.status(500).send('Erro ao buscar dados do restaurante');
   }
   });
+
+
+app.post('/client-confirmation', async (_req, _res) => {
+  const id = _req.body.id;
+  
+  admin.firestore().collection('cliente').doc(client_id).get()
+  .then(clienteDoc => {
+      const pedidos = clienteDoc.data().pedidos;
+      
+      pedidos[id]['status'] = 'Entregue';
+      admin.firestore().collection('cliente').doc(client_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Pedido entregue!!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Erro ao salvar como pedido entregue!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
+
+
+app.post('/restaurant-confirmation', async (_req, _res) => {
+  const id = _req.body.id;
+  const restaurant_name = _req.body.restaurant_name;
+  const client_name = _req.body.client_name;
+  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
+                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
+
+  const restaurant_id = restaurants[restaurant_name];
+
+  admin.firestore().collection('restaurantes').doc(restaurant_id).get()
+  .then(clienteDoc => {
+      const pedidos = clienteDoc.data().pedidos;
+
+      pedidos[client_name][id]['status'] = 'Entregue';
+      admin.firestore().collection('restaurantes').doc(restaurant_id)
+        .update({ pedidos })
+        .then(() => {
+          _res.json({ message: 'Pedido entregue com sucesso!' });
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Error ao salvar como pedido foi entregue!!');
+        });
+  })
+  .catch(err => {
+    console.error(err);
+    _res.status(500).send('Erro ao obter cliente');
+  });
+});
 app.listen(3000, () => {
   console.log('Servidor ON em http://localhost:3000')
 });

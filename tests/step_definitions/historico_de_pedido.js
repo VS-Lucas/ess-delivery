@@ -52,7 +52,7 @@ Then('não vejo nenhum pedido feito anteriormente', async function () {
 // ================================================================ */
  
 
-Given('eu estou logado como {string} com email {string} e senha {string} e não fiz nenhum pedido', async function (s1, s2, s3) {
+Given('eu estou logado como {string} com email {string} e senha {string}', async function (s1, s2, s3) {
     this.browser = await remote({
         capabilities: {
             browserName: 'chrome'
@@ -129,7 +129,7 @@ Then('vejo meu pedido que contém o prato {string}', async function (dish) {
 
 // ================================================================ */
 
-Given("loguei como {string} com email {string} e senha {string} e não fiz nenhum pedido", async function (s1, s2, s3) {
+Given("loguei como {string} com email {string} e senha {string}", async function (s1, s2, s3) {
     this.browser = await remote({
         capabilities: {
             browserName: 'chrome'

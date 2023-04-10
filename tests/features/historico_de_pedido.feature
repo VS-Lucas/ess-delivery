@@ -10,7 +10,7 @@ Scenario: visualizando a página de histórico de pedido vazia
     And não vejo nenhum pedido feito anteriormente
 
 Scenario: visualizando a página de histórico de pedido não vazia
-    Given eu estou logado como 'cliente' com email 'severino@gmail.com' e senha 'biu123' e não fiz nenhum pedido
+    Given eu estou logado como 'cliente' com email 'severino@gmail.com' e senha 'biu123'
     When eu clico no card onde contem o prato "Churrasco misto" clico no botão de "Carrinho de compras"
     And na página de "Carrinho de compras" clico no botão de "Check out"
     And na página de 'Check out' clico no botão de 'Confirmar' após abrir um modal clico em 'Acompanhar'
@@ -20,7 +20,7 @@ Scenario: visualizando a página de histórico de pedido não vazia
     And vejo meu pedido que contém o prato 'Churrasco Misto'
 	
 Scenario: fazendo novamente um pedido pelo histórico de pedidos
-    Given loguei como 'cliente' com email 'severino@gmail.com' e senha 'biu123' e não fiz nenhum pedido
+    Given loguei como 'cliente' com email 'severino@gmail.com' e senha 'biu123'
     And estou na página de "Histórico de pedidos"
     And tenho um pedido de um 'Churrasco Misto' já feito antes
     When eu clico no botão para detalhar meu pedido
