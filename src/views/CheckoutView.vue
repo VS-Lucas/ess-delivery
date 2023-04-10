@@ -276,7 +276,7 @@ import qs from 'qs';
                         orderDate: this.todayDate,
                         orderTime: this.currTime, 
                         orderAddress: this.addressDict,
-                        orderPrice: this.orderPrice,
+                        orderPrice: this.finalPrice,
                         clientName: this.clientName,
                         orderFee: this.fee,
                         eTime: this.estTime,
