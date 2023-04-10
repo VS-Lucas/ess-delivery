@@ -84,7 +84,7 @@
                 
                 <li class="flex w-full items-center  space-x-2.5">
                     <div v-if="this.steps.delivered">
-                        <span class="flex items-center justify-center w-10 h-10 bg-[#6C4131] border-2 border-[#6C4131] rounded-full lg:h-24 lg:w-24 shrink-0">
+                        <span class="flex items-center justify-center w-10 h-10 bg-[#F26938] border-2 border-[#F26938] rounded-full lg:h-24 lg:w-24 shrink-0">
                             <img class="lg:h-14 lg:w-14 w-6 h-6" src="@/assets/img/done.png" alt="payment">
                         </span>
                     </div>
@@ -238,7 +238,7 @@
 
     <div class="mx-auto mt-10 flex items-center justify-center">
         <div>
-            <button v-if="this.status != 'Cancelado'" @click="cancelOrder" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Cancelar pedido</button>
+            <button v-if="this.status !== 'Cancelado' && this.status !== 'Entregue'" @click="cancelOrder" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Cancelar pedido</button>
         </div>       
     </div>
 </body>    
