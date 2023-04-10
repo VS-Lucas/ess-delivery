@@ -17,3 +17,18 @@ Scenario: atualizar CEP do restaurante sem adicionar um novo
     And eu vejo '66666-666' no CEP do restaurante 
     When eu tento atualizar o CEP do restaurante para ''    
     Then vejo a mensagem "Preencha este campo." e permaneço na página "Atualizar dados"
+
+Scenario: atualizar CFP do responsável pelo restaurante com formatação inválida
+    Given logado no perfil de "Restaurante" com login "test@gmail.com" e senha "12345"
+    And na página "Atualizar dados"
+    And observo '666.666.666-66' no CPF do responsável do restaurante 
+    When tento registrar a atualização do CPF do restaurante para '666.6'    
+    Then permaneço na página "Atualizar dados" e vejo a mensagem de erro "É preciso que o formato corresponda ao exigido"
+
+Scenario: atualizar nome do restaurante com um nome já existente
+    Given estou no perfil de "Restaurante" com login "test@gmail.com" e senha "12345"
+    And me encontro na página "Atualizar dados"
+    And visualizo 'TESTE UPDATE' no nome da loja 
+    When tento realizar o registro da atualização do nome da loja para 'TEST'    
+    Then visualizo a mensagem de erro 'Nome da loja já cadastrado'
+    And continuo na página "Atualizar dados"
