@@ -1707,7 +1707,7 @@ app.post('/accept-order', async (_req, _res) => {
         const pedidos = clienteDoc.data().pedidos;
         // console.log(pedidos)
         //Mudando status
-        pedidos[name][id]['status'] = 'Confirmado';
+        pedidos[name][id]['status'] = 'Pedido em preparação';
         // console.log(pedidos[name][id]['status'])
   
         admin.firestore().collection('restaurantes').doc(restaurantId)
@@ -1737,7 +1737,7 @@ app.post('/notify-order-accepted', async (_req, _res) => {
         
         // console.log(pedidos)
         // console.log(id)
-        pedidos[id]['status'] = 'Confirmado';
+        pedidos[id]['status'] = 'Pedido em preparação';
   
         admin.firestore().collection('cliente').doc(client_id)
           .update({ pedidos })
