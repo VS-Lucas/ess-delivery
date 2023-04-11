@@ -133,10 +133,10 @@
                             <p class="pt-3 text-white" style="font-size: 16px; font-weight: 400;">Total do pedido: <span style="font-weight: 600; font-size: 20px;">R${{ this.total }}</span><span style="font-weight: 400; font-size: 14px;"> (sem frete)</span></p>
                         </div>
                         
-                        <div class="flex justify-start items-end text-white bg-[#9DBF69] hover:bg-[#7d9b4f] font-medium text-center col-start-3 col-end-3 row-start-1 row-end-1 my-4">
+                        <div class="flex justify-start items-end font-medium text-center col-start-3 col-end-3 row-start-1 row-end-1 my-4">
 
-                            <button @click="goToHomeRestaurant()" type="button" class="block w-[180px] rounded-lg text-sm px-4 py-2.5">
-                                <p class="font-bold">Marcar como lido</p>
+                            <button @click="goToHomeRestaurant()" type="button" class="block w-full mx-4 text-white bg-[#9DBF69] hover:bg-[#7d9b4f] rounded-lg text-sm px-4 py-2.5">
+                                <p class="font-bold">Voltar</p>
                             </button>
 
                         </div>
@@ -191,10 +191,10 @@
                             <p class="pt-3 text-white" style="font-size: 16px; font-weight: 400;">Total do pedido: <span style="font-weight: 600; font-size: 20px;">R${{ this.total }}</span><span style="font-weight: 400; font-size: 14px;"> (sem frete)</span></p>
                         </div>
                         
-                        <div class="flex justify-start items-end text-white bg-[#9DBF69] hover:bg-[#7d9b4f] font-medium text-center col-start-3 col-end-3 row-start-1 row-end-1 my-4">
+                        <div class="flex justify-start items-end font-medium text-center col-start-3 col-end-3 row-start-1 row-end-1 my-4">
 
-                            <button @click="goToHomeRestaurant()" type="button" class="block w-[180px] rounded-lg text-sm px-4 py-2.5">
-                                <p class="font-bold">Marcar como lido</p>
+                            <button @click="goToHomeRestaurant()" type="button" class="block w-full mx-4 text-white bg-[#9DBF69] hover:bg-[#7d9b4f] rounded-lg text-sm px-4 py-2.5">
+                                <p class="font-bold">Voltar</p>
                             </button>
 
                         </div>

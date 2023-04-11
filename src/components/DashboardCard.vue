@@ -9,7 +9,7 @@
         'bg-red-500 bg-opacity-50 text-gray-600': status === 'Cancelado'} text-sm font-medium mr-2 px-5 py-1.5 rounded-full dark:bg-gray-700 dark:text-gray-600">
         {{ status }}
         </span> -->
-        <span class = "text-sm font-medium mr-2 px-5 py-1.5 rounded-full dark:bg-gray-700 dark:text-gray-600" :class="{'bg-blue-500 bg-opacity-50 text-gray-600': status === 'Confirmado', 'bg-yellow-500 bg-opacity-50 text-gray-600': status === 'A caminho', 'bg-red-500 bg-opacity-50 text-gray-600': status === 'Cancelado', 'bg-green-500 bg-opacity-50 text-gray-600': status === 'Entregue'}">
+        <span class = "text-sm font-medium mr-2 px-5 py-1.5 rounded-full dark:bg-gray-700 dark:text-gray-600" :class="{'bg-blue-500 bg-opacity-50 text-gray-600': status === 'Pedido em preparação', 'bg-yellow-500 bg-opacity-50 text-gray-600': status === 'A caminho', 'bg-red-500 bg-opacity-50 text-gray-600': status === 'Cancelado', 'bg-green-500 bg-opacity-50 text-gray-600': status === 'Entregue'}">
             {{ this.status }}
         </span>
     </td>

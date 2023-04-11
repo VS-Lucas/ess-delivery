@@ -65,6 +65,7 @@ export default ({
     },
     methods: {
         async confirmButton() {
+            this.goToHomeRestaurant();
             this.denyButtonDisable = true;
             // Confirmar pedido e enviar para o restaurante
             await axios.post('http://localhost:3000/accept-order', {name: this.name, id: this.id})
@@ -98,7 +99,7 @@ export default ({
             // Recusar pedido e enviar para o restaurante
             axios.post('http://localhost:3000/deny-order', {name: this.name, id: this.id})
             .then(() => {
-                
+                this.goToHomeRestaurant();
             }).catch(err => {
                 console.log(err.message);
             });
@@ -110,7 +111,10 @@ export default ({
                 console.log(err.message);
             });
         },
-
+        goToHomeRestaurant() {
+            this.$router.push('/home-restaurant')
+        }
+        
     }
 })
 </script>
