@@ -66,18 +66,17 @@
                            <tbody>
                                  <tr v-for="(order, index) in this.orders" :key="index" class="bg-[#FFF3F3] border-b font-medium dark:bg-gray-800 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-600">
                                     <th scope="row" class="px-6 py-4 text-left font-medium text-gray-900 whitespace-normal dark:text-gray-900">
-                                       {{index}}
+                                       {{index + 1}}
                                     </th>
-   
-                                    <DashboardCard
-                                    :id="order.order_id"
-                                    :name="order.nome"
-                                    :order="order.items"
-                                    :address="order.address"
-                                    :price="order.price"
-                                    :status="order.status"
-                                    :payment="this.form_of_payment"
-                                    />
+                                       <DashboardCard
+                                       :id="order.order_id"
+                                       :name="order.nome"
+                                       :order="order.items"
+                                       :address="order.address"
+                                       :price="order.price"
+                                       :status="order.status"
+                                       :payment="this.form_of_payment"
+                                       />
                                  </tr>
                            </tbody>
                         </table>
@@ -140,23 +139,22 @@ export default ({
                const base_orders = (res.data.pedido);
                let aux = []
                var keys = Object.keys(base_orders);
-               console.log(keys)
-
                keys.forEach(key => {
                   var ids = Object.keys(base_orders[key]);
-                  // console.log('ids:' + ids);
                   ids.forEach(id => {
-                     aux.push({
-                        order_id: id,
-                        items: this.get_items(key, id, base_orders),
-                        price: this.get_total_price(key, id, base_orders),
-                        status: this.get_status(key, id, base_orders),
-                        nome: key,
-                        address: this.getAddres(key, id, base_orders),
-                     });
+                     const status = this.get_status(key, id, base_orders);
+                     if (status === "Confirmado" || status === "A caminho" || status === "Cancelado" || status === "Entregue") {
+                        aux.push({
+                           order_id: id,
+                           items: this.get_items(key, id, base_orders),
+                           price: this.get_total_price(key, id, base_orders),
+                           status: status,
+                           nome: key,
+                           address: this.getAddres(key, id, base_orders),
+                        });
+                     }
                   });
                });
-               console.log('AUX:   ' + aux);
                this.orders = [...aux];
             }).catch((error) => {
                console.log(error.message)
