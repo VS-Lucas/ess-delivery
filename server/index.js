@@ -528,8 +528,8 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
   const name = _req.body.name;
   const justification = _req.body.justification;
   const restaurant = _req.body.restaurant;
-  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
-                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
+  const restaurants = {'Bode do Nô': 'hm0n3mzMyFMh2JAb9YQb',
+                       'Ratão Burguer': 'L9fhnBFA2DkVxHUIDjPr'}
 
   const restaurant_id = restaurants[restaurant];
 
@@ -1670,8 +1670,8 @@ app.post('/restaurant-confirmation', async (_req, _res) => {
   const id = _req.body.id;
   const restaurant_name = _req.body.restaurant_name;
   const client_name = _req.body.client_name;
-  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
-                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
+  const restaurants = {'Bode do Nô': 'hm0n3mzMyFMh2JAb9YQb',
+                       'Ratão Burguer': 'L9fhnBFA2DkVxHUIDjPr'}
 
   const restaurant_id = restaurants[restaurant_name];
 
