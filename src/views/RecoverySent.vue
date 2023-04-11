@@ -12,7 +12,7 @@
 
             <div class="text-white text-center">
                 <p>
-                  Sua nova senha é: {{ this.password }}
+                  Um link de recuperação foi enviado
                 </p>
             </div>
   
@@ -30,15 +30,6 @@
   <script>
     export default {
         name: 'recoverySent',
-        data(){
-          return{
-            password: '',
-          }
-        },
-        created() {
-          const password = this.$route.params.password;
-          this.password = password;
-        }, 
         methods: {
           toLogin(){
             this.$router.push({

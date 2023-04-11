@@ -53,11 +53,8 @@
         this.found = response.data.found;
 
         if (this.found) {
-          this.password = response.data.password;
-
           this.$router.push ({
-            name: 'recovery',
-            params: { password: this.password}
+            path: '/recovery'
           });
         }
       },
