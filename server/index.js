@@ -1471,7 +1471,7 @@ app.post('/notify-finish-order', async (_req, _res) => {
   admin.firestore().collection('cliente').doc(client_id).get()
   .then(clienteDoc => {
       const pedidos = clienteDoc.data().pedidos;
-      
+      console.log(pedidos[id]['status'])
       pedidos[id]['status'] = 'A caminho';
 
       admin.firestore().collection('cliente').doc(client_id)
@@ -1516,61 +1516,61 @@ app.put('/clear-tracking', async (_req, _res) => {
   }); 
 })
 
-// Rota de Finalização do Pedido para trocar Status(Em preparo -> A caminho)
-app.post('/finish-order', async (_req, _res) => {
-  const id = _req.body.id;
-  const name = _req.body.name;
+// // Rota de Finalização do Pedido para trocar Status(Em preparo -> A caminho)
+// app.post('/finish-order', async (_req, _res) => {
+//   const id = _req.body.id;
+//   const name = _req.body.name;
 
   
-  admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
-  .then(clienteDoc => {
-      const pedidos = clienteDoc.data().pedidos;
-      // console.log(pedidos)
-      //Mudando status
-      pedidos[name][id]['status'] = 'A caminho';
-      // console.log(pedidos[name][id]['status'])
+//   admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK').get()
+//   .then(clienteDoc => {
+//       const pedidos = clienteDoc.data().pedidos;
+//       // console.log(pedidos)
+//       //Mudando status
+//       pedidos[name][id]['status'] = 'A caminho';
+//       // console.log(pedidos[name][id]['status'])
 
-      admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
-        .update({ pedidos })
-        .then(() => {
-          _res.json({ message: 'Pedido conluído com sucesso!' });
-        })
-        .catch(err => {
-          console.error(err);
-          _res.status(500).send('Erro ao concluir pedido!!');
-        });
-  })
-  .catch(err => {
-    console.error(err);
-    _res.status(500).send('Erro ao obter cliente');
-  });
-});
+//       admin.firestore().collection('restaurantes').doc('DGoe9PEt7pEg6nRAgXYK')
+//         .update({ pedidos })
+//         .then(() => {
+//           _res.json({ message: 'Pedido conluído com sucesso!' });
+//         })
+//         .catch(err => {
+//           console.error(err);
+//           _res.status(500).send('Erro ao concluir pedido!!');
+//         });
+//   })
+//   .catch(err => {
+//     console.error(err);
+//     _res.status(500).send('Erro ao obter cliente');
+//   });
+// });
 
-//Rota de Notificar Cliente que o pedido está A Caminho
-app.post('/notify-finish-order', async (_req, _res) => {
-  const id = _req.body.id;
+// //Rota de Notificar Cliente que o pedido está A Caminho
+// app.post('/notify-finish-order', async (_req, _res) => {
+//   const id = _req.body.id;
 
-  admin.firestore().collection('cliente').doc(client_id).get()
-  .then(clienteDoc => {
-      const pedidos = clienteDoc.data().pedidos;
+//   admin.firestore().collection('cliente').doc(client_id).get()
+//   .then(clienteDoc => {
+//       const pedidos = clienteDoc.data().pedidos;
       
-      pedidos[id]['status'] = 'A caminho';
+//       pedidos[id]['status'] = 'A caminho';
 
-      admin.firestore().collection('cliente').doc(client_id)
-        .update({ pedidos })
-        .then(() => {
-          _res.json({ message: 'O seu pedido está a caminho' });
-        })
-        .catch(err => {
-          console.error(err);
-          _res.status(500).send('Seu pedido não pode ser concluído');
-        });
-  })
-  .catch(err => {
-    console.error(err);
-    _res.status(500).send('Erro ao obter cliente');
-  });
-});
+//       admin.firestore().collection('cliente').doc(client_id)
+//         .update({ pedidos })
+//         .then(() => {
+//           _res.json({ message: 'O seu pedido está a caminho' });
+//         })
+//         .catch(err => {
+//           console.error(err);
+//           _res.status(500).send('Seu pedido não pode ser concluído');
+//         });
+//   })
+//   .catch(err => {
+//     console.error(err);
+//     _res.status(500).send('Erro ao obter cliente');
+//   });
+// });
 
 
 app.get('/get-tracking', async (_req, _res) => {

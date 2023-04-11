@@ -3,7 +3,13 @@
         # {{ this.id }}
     </td>
     <td class="px-12 py-4r">
-        <span class="bg-[#F26938] bg-opacity-50  text-gray-600 text-sm font-medium mr-2 px-5 py-1.5 rounded-full dark:bg-gray-700 dark:text-gray-600">
+        <!-- <span v-bind:class="{
+        'bg-[#F26938] bg-opacity-50 text-gray-600': status === 'Confirmado',
+        'bg-green-500 bg-opacity-50 text-gray-600': status === 'A Caminho',
+        'bg-red-500 bg-opacity-50 text-gray-600': status === 'Cancelado'} text-sm font-medium mr-2 px-5 py-1.5 rounded-full dark:bg-gray-700 dark:text-gray-600">
+        {{ status }}
+        </span> -->
+        <span class = "text-sm font-medium mr-2 px-5 py-1.5 rounded-full dark:bg-gray-700 dark:text-gray-600" :class="{'bg-blue-500 bg-opacity-50 text-gray-600': status === 'Confirmado', 'bg-yellow-500 bg-opacity-50 text-gray-600': status === 'A caminho', 'bg-red-500 bg-opacity-50 text-gray-600': status === 'Cancelado', 'bg-green-500 bg-opacity-50 text-gray-600': status === 'Entregue'}">
             {{ this.status }}
         </span>
     </td>

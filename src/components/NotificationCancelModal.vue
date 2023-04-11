@@ -98,7 +98,7 @@ export default ({
             // Recusar pedido e enviar para o restaurante
             axios.post('http://localhost:3000/deny-order', {name: this.name, id: this.id})
             .then(() => {
-                this.denyModal = !this.denyModal;
+                
             }).catch(err => {
                 console.log(err.message);
             });
