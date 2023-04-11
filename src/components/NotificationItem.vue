@@ -26,7 +26,7 @@
                 </a>
             </div>
 
-            <div v-if="status === 'A caminho'">
+            <!-- <div v-if="status === 'A caminho'">
                 <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
 
                     <button class="w-full pl-3" @click="showDetails()">
@@ -35,7 +35,7 @@
                     </button>
 
                 </a>
-            </div>
+            </div> -->
 
             <div v-if="status === 'Entregue'">
                 <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
