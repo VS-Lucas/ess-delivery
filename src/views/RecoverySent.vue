@@ -35,11 +35,8 @@
             password: '',
           }
         },
-        props: {
-            msg: String
-        }, 
         created() {
-          const password = this.$route.params.password_param;
+          const password = this.$route.params.password;
           this.password = password;
         }, 
         methods: {

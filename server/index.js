@@ -245,10 +245,9 @@ app.post("/password-recovery", async (req, res) =>{
 
     const userRecord = await admin.auth().getUserByEmail(email);
 
-    if (email == userRecord.email) {
-      console.log('ACHOU');
-      
+    if (email == userRecord.email) {      
       const userRef = admin.firestore().collection('usuarios').doc(userRecord.uid);
+
       await userRef.update({
         password: result
       });
@@ -257,7 +256,7 @@ app.post("/password-recovery", async (req, res) =>{
     }
   }
   catch(error){
-      console.log('NÃO ACHOU')
+      console.log(error)
       res.json({found: false});   
   }
 });
