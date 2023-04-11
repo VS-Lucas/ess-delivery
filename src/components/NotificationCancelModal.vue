@@ -1,12 +1,21 @@
 <template>
-    <!-- <div class="mx-auto mt-10 flex items-center justify-center">
-        <div>  
-            <button @click="confirmButton" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Confirmar Pedido</button>
-        </div>
-        <div>
-            <button @click="denyButton" class="bg-[#541F1B] text-white font-bold rounded-[15px] p-4">Recusar Pedido</button>
-        </div>       
-    </div> -->
+    
+    <div class="flex justify-start items-end text-white">
+                        
+        <button @click="denyButton()" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+            Recusar pedido
+        </button>
+
+    </div>
+
+    <div class="flex justify-end items-end text-white">
+
+        <button @click="confirmButton()" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+            Confirmar pedido
+        </button>
+
+    </div>  
+
 
     <div v-if="this.denyModal">
         <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
@@ -48,17 +57,23 @@ export default ({
             denyModal: false
         }
     },
+    props: {
+        name: String,
+        id: String
+    },
     methods: {
-        confirmButton() {
+        async confirmButton() {
+            console.log(this.name)
+            console.log(this.id)
             // Confirmar pedido e enviar para o restaurante
-            axios.post('http://localhost:3000/accept-order', {name: this.name, id: this.id})
+            await axios.post('http://localhost:3000/accept-order', {name: this.name, id: this.id})
             .then(() => {
                 
             }).catch(err => {
                 console.log(err.message);
             });
             // Confirmar pedido e enviar para o cliente
-            axios.post('http://localhost:3000/notify-order-accepted', {name: this.name, id: this.id})
+            await axios.post('http://localhost:3000/notify-order-accepted', {name: this.name, id: this.id})
             .then(() => {
                 
             }).catch(err => {
@@ -66,16 +81,16 @@ export default ({
             });
         },
         denyButton() {
-            denyModal = !denyModal;
+            this.denyModal = !this.denyModal;
         },
         cancelDeny() {
-            denyModal = !denyModal;
+            this.denyModal = !this.denyModal;
         },
         confirmDenied() {
             // Recusar pedido e enviar para o restaurante
             axios.post('http://localhost:3000/deny-order', {name: this.name, id: this.id})
             .then(() => {
-                denyModal = !denyModal;
+                this.denyModal = !this.denyModal;
             }).catch(err => {
                 console.log(err.message);
             });

@@ -139,7 +139,7 @@ export default ({
       // setInterval(() => {
             axios.get('http://localhost:3000/restaurant-orders')
             .then((res) => {
-               const base_orders = res.data;
+               const base_orders = (res.data.pedido);
                let aux = []
                var keys = Object.keys(base_orders);
                console.log(keys)
@@ -157,7 +157,7 @@ export default ({
                      });
                   });
                });
-               // console.log('AUX:   ' + aux);
+               console.log('AUX:   ' + aux);
                this.orders = [...aux];
             }).catch((error) => {
                console.log(error.message)

@@ -528,8 +528,8 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
   const name = _req.body.name;
   const justification = _req.body.justification;
   const restaurant = _req.body.restaurant;
-  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
-                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
+  const restaurants = {'Bode do Nô': 'hm0n3mzMyFMh2JAb9YQb',
+                       'Ratão Burguer': 'L9fhnBFA2DkVxHUIDjPr'}
 
   const restaurant_id = restaurants[restaurant];
 
@@ -559,9 +559,9 @@ app.post('/cancel-restaurant-order', async (_req, _res) => {
 app.get('/restaurant-orders', async (_req, _res) => {
   
   await admin.firestore().collection('restaurantes').doc(restaurantId).get()
-  .get()
+  
   .then( async (doc) => {
-    _res.send(doc.data().pedidos);
+    _res.send({pedido: doc.data().pedidos});
   }).catch(() => {
     _res.status(500).send("Não foi possível acessar os pedidos no momento")
   });
@@ -1670,8 +1670,8 @@ app.post('/restaurant-confirmation', async (_req, _res) => {
   const id = _req.body.id;
   const restaurant_name = _req.body.restaurant_name;
   const client_name = _req.body.client_name;
-  const restaurants = {'Bode do Nô': 'DGoe9PEt7pEg6nRAgXYK',
-                       'Ratão Burguer': 'EbKwC2ud8dRr5kzcrJwH'}
+  const restaurants = {'Bode do Nô': 'hm0n3mzMyFMh2JAb9YQb',
+                       'Ratão Burguer': 'L9fhnBFA2DkVxHUIDjPr'}
 
   const restaurant_id = restaurants[restaurant_name];
 
@@ -1701,7 +1701,6 @@ app.post('/accept-order', async (_req, _res) => {
     const id = _req.body.id;
     const name = _req.body.name;
   
-  
     admin.firestore().collection('restaurantes').doc(restaurantId).get()
     .then(clienteDoc => {
         const pedidos = clienteDoc.data().pedidos;
@@ -1729,11 +1728,14 @@ app.post('/accept-order', async (_req, _res) => {
 //Rota de Notificar o que cliente que o pedido foi confirmado
 app.post('/notify-order-accepted', async (_req, _res) => {
     const id = _req.body.id;
-  
+
+    // console.log(id)
     admin.firestore().collection('cliente').doc(client_id).get()
     .then(clienteDoc => {
         const pedidos = clienteDoc.data().pedidos;
         
+        // console.log(pedidos)
+        // console.log(id)
         pedidos[id]['status'] = 'Confirmado';
   
         admin.firestore().collection('cliente').doc(client_id)
