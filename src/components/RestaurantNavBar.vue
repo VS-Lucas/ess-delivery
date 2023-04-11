@@ -28,9 +28,9 @@
 
         <div v-if="this.notificationsMenu" class="right-0">
 
-            <div class="fixed z-10 inset-0 overflow-y-auto bg-opacity-60 bg-[#261918] flex items-center justify-center min-h-screen px-4 rounded-lg overflow-hidden shadow-xl"></div>
+            <div class="fixed z-10 inset-0 overflow-y-auto bg-opacity-60 bg-[#261918] flex items-center justify-center px-4 rounded-lg overflow-hidden shadow-xl"></div>
 
-            <div id="notifications" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mr-4 mt-16 z-50 w-[380px] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
+            <div id="notifications" tabindex="-1" aria-hidden="true" aria-modal="true" class="fixed right-0 mr-4 mt-16 z-50 w-[380px] max-h-[80vh] p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] md:h-full">
 
                 <div class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
                     Notificações:
@@ -42,6 +42,8 @@
                     :orderId="object.orderId"
                     :status="object.status"
                     :clientName="object.clientName"
+                    :date="object.date"
+                    :time="object.time"
                     />
                     
                 </div>
@@ -116,7 +118,13 @@
                     this.notificationsMenu = false;
                 }
                 else {
-                    this.notificationsMenu = true;
+                    if (this.profileMenu) {
+                        this.profileMenu = false;
+                        this.notificationsMenu = true;
+                    }
+                    else {
+                        this.notificationsMenu = true;
+                    }
                 }
             },
             showProfileMenu() {
@@ -124,7 +132,13 @@
                     this.profileMenu = false;
                 }
                 else {
-                    this.profileMenu = true;
+                    if (this.notificationsMenu) {
+                        this.notificationsMenu = false;
+                        this.profileMenu = true;
+                    }
+                    else {
+                        this.profileMenu = true;
+                    }
                 }
             },
             goToUpdateRegister() {
@@ -139,6 +153,12 @@
             getStatus(key, id, orders) {
                 console.log(orders[key][id]['status']);
                 return orders[key][id]['status'];
+            },
+            getDate(key, id, orders) {
+                return orders[key][id]['data']
+            },
+            getTime(key, id, orders) {
+                return orders[key][id]['hora']
             }
         },
         mounted() {
@@ -156,7 +176,9 @@
                         aux.push({
                             orderId: id,
                             status: this.getStatus(key, id, base_orders),
-                            clientName: key
+                            clientName: key,
+                            date: this.getDate(key, id, base_orders),
+                            time: this.getTime(key, id, base_orders)
                             })
                     })
                     
