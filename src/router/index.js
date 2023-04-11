@@ -19,7 +19,7 @@ const routes = [
     component: () => import('../views/PasswordRecovery.vue')
   },
   {
-    path: '/recovery/:password_param',
+    path: '/recovery/:password',
     name: 'recovery',
     component: () => import('../views/RecoverySent.vue')
   },
@@ -84,7 +84,7 @@ const routes = [
     component: () => import('../views/CheckoutView.vue')
   },
   {
-    path: '/notification-details/:orderId/:clientName/:status',
+    path: '/notification-details/:orderId/:clientName/:status/:date/:time',
     name: 'notification-details',
     component: () => import('../views/NotificationDetails.vue')
   },  

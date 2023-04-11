@@ -117,7 +117,7 @@ import axios from 'axios';
                 var client_name = this.$route.params.client_name;
                 var estimated_time = this.$route.params.estimated_time;
                 var status = this.$route.params.status;
-                axios.post('http://localhost:3000/storeorderfield', {
+                axios.post('http://localhost:3000/tracking-field', {
                     orderData: orderData,
                     orderID: id,
                     orderDate: date,

@@ -41,7 +41,7 @@
       return {
         email: '',
         password: '',
-        found: Boolean
+        found: Boolean,
       }
     },
     methods: {
@@ -51,12 +51,13 @@
         });
 
         this.found = response.data.found;
-        this.password = response.data.password;
 
         if (this.found) {
+          this.password = response.data.password;
+
           this.$router.push ({
             name: 'recovery',
-            params: { password_param: this.password}
+            params: { password: this.password}
           });
         }
       },

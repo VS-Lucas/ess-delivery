@@ -155,7 +155,7 @@
                     <div class="modal-container bg-white w-[300px] mx-auto h-[200px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
                         <div class="modal-content py-4 text-left px-6">
                             <div class="modal-body mt-2">
-                                <!-- Conteúdo do modal aqui -->
+                                <!-- Conteúdo do modal -->
                                 <div class="text-center font-bold">
                                     <p>Seu pedido de número #{{ this.ordersAm }} foi realizado com sucesso!</p>
                                 </div>
@@ -184,31 +184,30 @@
   </template>
 
 <script>
-import axios from 'axios';
-import qs from 'qs';
+    import axios from 'axios';
+    import qs from 'qs';
 
     export default {
         name: 'checkoutView',
         data() {
             return {
+                resName: '',
                 clientDict: '',
                 addressDict: '',
-                modalCard: false,
-                ordersAm: 0,
                 clientName: '',
-                orderPrice: null, 
                 estTime: '',
-                fee: '',
                 todayDate: '', 
                 currTime: '', 
+                fee: 0,
+                ordersAm: 0,
+                finalPrice: 0,
+                discount: 0,
+                orderPrice: 0, 
+                modalCard: false,
                 cupons : [],
-                finalPrice: null,
-                discount: null,
-                resName: '',
             }
         },
         methods: {
-            // Dar um merge nos métodos getAddress() e getName()!!!!!!!
             async getAddress() {
                 await axios.get('http://localhost:3000/address')
                 .then(response => {
@@ -229,7 +228,7 @@ import qs from 'qs';
                 });
             }, 
             async getName() {
-                await axios.get('http://localhost:3000/clientname')
+                await axios.get('http://localhost:3000/client-name')
                 .then(response => {
                     this.clientName = response.data.nome;
                 })
@@ -237,9 +236,9 @@ import qs from 'qs';
                     console.error(error);
                 });
             },
-            async storeOrder() {
+            async storeClientOrder() {
                 try {
-                    const response = await axios.post('http://localhost:3000/storeclientorder', {
+                    await axios.post('http://localhost:3000/store-client-order', {
                         orderData: this.clientDict,
                         orderID: this.ordersAm,
                         orderDate: this.todayDate,
@@ -247,30 +246,26 @@ import qs from 'qs';
                         orderFee: this.fee,
                         eTime: this.estTime,
                     });
-
-                    console.log(response.data.message);
                 } catch (error) {
                     console.log(error);
                 }
             },
             async storeResOrder() {
                 try {
-                    const response = await axios.post('http://localhost:3000/reststore', {
+                    await axios.post('http://localhost:3000/store-res-order', {
                         orderData: this.clientDict,
                         orderID: this.ordersAm,
                         orderDate: this.todayDate,
                         orderTime: this.currTime, 
                         orderAddress: this.addressDict,
                     });
-
-                    console.log(response.data.message);
                 } catch (error) {
                     console.log(error);
                 }
             },
-            async storeOrderField() {
+            async trackingField() {
                 try {
-                    const response = await axios.post('http://localhost:3000/storeorderfield', {
+                    await axios.post('http://localhost:3000/tracking-field', {
                         orderData: this.clientDict,
                         orderID: this.ordersAm,
                         orderDate: this.todayDate,
@@ -283,16 +278,13 @@ import qs from 'qs';
                         resName: this.resName,
                         status: 'Pagamento'
                     });
-
-                    console.log(response.data.message);
                 } catch (error) {
                     console.log(error);
                 }
             },
             async clearCart() {
                 try {
-                    const response = await axios.put('http://localhost:3000/clearcart')
-                    console.log(response.data.message);
+                    await axios.put('http://localhost:3000/clear-cart')
                 }
                 catch (error) {
                     console.log(error);
@@ -300,24 +292,23 @@ import qs from 'qs';
             },
             async clearCouponsUsed() {
                 try {
-                    const response = await axios.put('http://localhost:3000/clearcoupons_used')
-                    console.log(response.data.message);
+                    await axios.put('http://localhost:3000/clear-coupons-used')
                 }
                 catch (error) {
                     console.log(error);
                 }
             },
             async getEstimatedTime() {
-                console.log(this.resName)
                 try{
-                    const response = await axios.post('http://localhost:3000/estimatedtime', {
+                    const response = await axios.post('http://localhost:3000/estimated-time', {
                         resName: this.resName,
                     });
                     const auxFee = response.data.taxa.split(" ");
-                    const iAux = auxFee[1]
-                    this.fee = parseFloat(iAux);
-                    this.estTime = response.data.tempo_estimado;
+                    const indexAux = auxFee[1]
+                    this.fee = parseFloat(indexAux);
                     this.finalPrice = (this.orderPrice - this.discount + this.fee).toFixed(2);
+
+                    this.estTime = response.data.tempo_estimado;
                 }
                 catch (error){
                     console.log(error);
@@ -325,17 +316,12 @@ import qs from 'qs';
 
             }, 
             OrderConfirmation(){
-                if (this.modalCard){
-                    this.modalCard = false;
-                }
-                else{
-                    this.modalCard = true;
-                }
+                this.modalCard = !this.modalCard;
             }, 
             toTracking(){
-                this.storeOrder();
+                this.storeClientOrder();
                 this.storeResOrder();
-                this.storeOrderField();
+                this.trackingField();
                 this.clearCart();
                 this.clearCouponsUsed();
                 
@@ -357,20 +343,19 @@ import qs from 'qs';
 
             const objectString = this.$route.params.pratos;
             const object = qs.parse(objectString);
+            this.clientDict = object;
+
             const subTotal = this.$route.params.subtotal;
             const discount = this.$route.params.desconto;
             const resName = this.$route.params.restaurante;
-
             this.resName = resName;
-            this.orderPrice = parseFloat(subTotal).toFixed(2);
+            this.orderPrice = parseFloat(subTotal);
             this.discount = parseFloat(discount);
-            this.clientDict = object;
 
             const aDate = new Date();
             const options = { timeZone: 'America/Sao_Paulo', hour12: false };
             const localTime = aDate.toLocaleString('pt-BR', options);
             const aux = localTime.split(" ");
-
             this.todayDate = aux[0];
             this.currTime = aux[1];
 

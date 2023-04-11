@@ -29,93 +29,179 @@
         </header>
 
         <!-- CARD -->
-        <div class="text-center">
-            <div class="inline-block bg-[#A62C21] sm:w-11/12 rounded-[20px] mx-auto">
-                
-                <div class="grid grid-cols-3 gap-2 text-start">
-                    <div class="flex col-start-1 col-end-1 text-white">
-                        <div class="flex flex-col align-middle p-4 ml-2">
-                            <div>
-                                <h2 class="pb-4" style="font-size: 24px; font-weight: 800;">Novo pedido</h2>
 
-                                <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Cliente:</span> {{ this.$route.params.clientName }}</p>
-                                <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Data:</span> {{ this.date }}</p>
-                                <p class="pb-4" style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
+        <!-- Pedido a ser confirmado ou recusado (pago) -->
+        <div v-if="this.$route.params.status === 'Pagamento'">
 
-                                <p style="font-size: 16px; font-weight: 600;"><span style="font-weight: 600; font-size: 18px;">Endereço de entrega:</span></p>
-                                
-                                <p style="font-size: 16px; font-weight: 400;">{{ this.address.rua }}, {{ this.address.numero }} - {{ this.address.complemento }}</p>
-                                <p style="font-size: 16px; font-weight: 400;">CEP: {{ this.address.cep }}</p>
-                                <p style="font-size: 16px; font-weight: 400;">{{ this.address.bairro }}</p>
+            <div class="text-center">
+                <div class="inline-block bg-[#A62C21] sm:w-11/12 rounded-[20px] mx-auto">
+                    <div class="grid grid-cols-3 grid-rows-1 gap-2 text-start">
+
+                        <div class="flex col-start-1 col-end-1 text-white">
+                            <div class="flex flex-col align-middle p-4 ml-2">
+                                <div>
+                                    <h2 class="pb-4" style="font-size: 24px; font-weight: 800;">Novo pedido</h2>
+
+                                    <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Realizado em</span> {{ this.date }} às {{ this.time }}</p>
+                                    <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Cliente:</span> {{ this.$route.params.clientName }}</p>
+                                    <p class="pb-4" style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
+
+                                    <p style="font-size: 16px; font-weight: 600;"><span style="font-weight: 600; font-size: 18px;">Endereço de entrega:</span></p>
+                                    
+                                    <p style="font-size: 16px; font-weight: 400;">{{ this.address.rua }}, {{ this.address.numero }} - {{ this.address.complemento }}</p>
+                                    <p style="font-size: 16px; font-weight: 400;">CEP: {{ this.address.cep }}</p>
+                                    <p style="font-size: 16px; font-weight: 400;">{{ this.address.bairro }}</p>
+
+                                </div>
 
                             </div>
-
                         </div>
-                    </div>
 
-                    <div class="flex col-start-2 col-end-2 text-white">
-                        <div class="flex flex-col align-middle p-4 ml-2">
-                            <div>
-                                <h2 class="pb-4" style="font-size: 24px; font-weight: 800;">Itens:</h2>
+                        <div class="flex col-start-2 col-end-2 text-white">
+                            <div class="flex flex-col align-middle p-4 ml-2">
+                                <div>
+                                    <h2 class="pb-4" style="font-size: 20px; font-weight: 600;">Itens:</h2>
 
-                                <!-- <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Cliente:</span> {{ this.$route.params.clientName }}</p>
-                                <p class="pb-4" style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
+                                    <div class="pb-1" style="font-size: 16px; font-weight: 400;" v-for="(dish, index) in this.dishes" :key="index">
+                                        <div v-html="dish"></div>
+                                    </div>
+                                    
+                                </div>
 
-                                <p style="font-size: 16px; font-weight: 600;"><span style="font-weight: 600; font-size: 18px;">Endereço de entrega:</span></p> -->
-                                
-                                
-                                
-                                <!-- <div class="flex flex-col align-bottom">
-                                    <p style="font-size: 16px; font-weight: 400;">Avenida Boa Viagem, 546</p>
-                                    <p style="font-size: 16px; font-weight: 400;">Boa Viagem</p>
-                                    <p style="font-size: 16px; font-weight: 400;">Recife, PE</p>
-                                </div> -->
                             </div>
-
-                            <!-- <h2 class="text-[#261918] font-bold">ID: #{{ this.$route.params.id }}</h2>
-                            <h4 class="text-[#261918] mb-3">{{ this.$route.params.date }}</h4>
-        
-                            <span class="text-white sm:text-[17px] text-[12px] mb-12">
-                                {{ this.$route.params.items.join(', ') }}
-                            </span>
-
-                            <h2 class="text-gray-400">Entregue em:</h2>
-                            <h3> {{this.address.rua}}, Nº {{this.address.numero}}, {{this.address.bairro}}</h3> -->
                         </div>
-                    </div>
 
-                    
-                    <div class="inline-flex justify-evenly col-start-3 col-end-3 my-4">
+                        <div class="col-start-3 col-end-3 row-start-1 row-end-1 flex justify-center items-end pb-[4.5rem]">
+                            <p class="pt-3 text-white" style="font-size: 16px; font-weight: 400;">Total do pedido: <span style="font-weight: 600; font-size: 20px;">R${{ this.total }}</span><span style="font-weight: 400; font-size: 14px;"> (sem frete)</span></p>
+                        </div>
+                        
+                        <div class="inline-flex justify-evenly col-start-3 col-end-3 row-start-1 row-end-1 my-4">
 
-                        <NotificationCancelModal
-                            :name="this.$route.params.clientName"
-                            :id="this.$route.params.orderId"
-                        />
+                            <NotificationCancelModal
+                                :name="this.$route.params.clientName"
+                                :id="this.$route.params.orderId"
+                            />
+
+                        </div>
 
                     </div>
                     
-
-                    <!-- <div class="flex col-span-2 text-white mr-2 ml-10">
-                        <div class="grid grid-cols-2 mt-20">
-                            <div class="col-span-1 mt-5">
-                                <div v-for="(dish, index) in this.$route.params.items" :key="index">
-                                    <span class="text-white sm:text-[17px] text-[12px] mb-1">{{ dish }}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="relative col-span-1 mt-5 text-right">
-                                <div v-for="(price, index) in this.$route.params.prices" :key="index">
-                                    <span class="text-white sm:text-[17px] text-[12px] mb-1">{{ price }}</span>
-                                </div>
-                                
-                                <hr class="text-center mr-3 mb-2 w-full">
-                                <h1 class=" ml-auto mr-3 text-3xl font-bold mb-5">R$ {{ this.$route.params.total_price }} <br>({{ this.$route.params.form_pay }})</h1> 
-                                <button class="bg-[#F26938] rounded-[25px] text-2xl font-bold p-3 absolute bottom-7 right-0">Pedir novamente</button>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
-                
+            </div>
+        </div>
+
+        <!-- Pedido cancelado -->
+        <div v-if="this.$route.params.status === 'Cancelado'">
+
+            <div class="text-center">
+                <div class="inline-block bg-[#A62C21] sm:w-11/12 rounded-[20px] mx-auto">
+                    
+                    <div class="grid grid-cols-3 grid-rows-1 gap-2 text-start">
+                        <div class="flex col-start-1 col-end-1 text-white">
+                            <div class="flex flex-col align-middle p-4 ml-2">
+                                <div>
+                                    <h2 class="pb-4" style="font-size: 24px; font-weight: 800;">Pedido cancelado</h2>
+
+                                    <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Realizado em</span> {{ this.date }} às {{ this.time }}</p>
+                                    <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Cliente:</span> {{ this.$route.params.clientName }}</p>
+                                    <p class="pb-4" style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
+
+                                    <p style="font-size: 16px; font-weight: 600;"><span style="font-weight: 600; font-size: 18px;">Motivo do cancelamento:</span></p>
+                                    
+                                    <p style="font-size: 16px; font-weight: 400;">{{ this.justification }}</p>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="flex col-start-2 col-end-2 text-white">
+                            <div class="flex flex-col align-middle p-4 ml-2">
+                                <div>
+                                    <h2 class="pb-4" style="font-size: 20px; font-weight: 600;">Itens:</h2>
+
+                                    <div class="pb-1" style="font-size: 16px; font-weight: 400;" v-for="(dish, index) in this.dishes" :key="index">
+                                        <div v-html="dish"></div>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-start-3 col-end-3 row-start-1 row-end-1 flex justify-center items-end pb-[4.5rem]">
+                            <p class="pt-3 text-white" style="font-size: 16px; font-weight: 400;">Total do pedido: <span style="font-weight: 600; font-size: 20px;">R${{ this.total }}</span><span style="font-weight: 400; font-size: 14px;"> (sem frete)</span></p>
+                        </div>
+                        
+                        <div class="flex justify-start items-end font-medium text-center col-start-3 col-end-3 row-start-1 row-end-1 my-4">
+
+                            <button @click="goToHomeRestaurant()" type="button" class="block w-full mx-4 text-white bg-[#9DBF69] hover:bg-[#7d9b4f] rounded-lg text-sm px-4 py-2.5">
+                                <p class="font-bold">Voltar</p>
+                            </button>
+
+                        </div>
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Pedido entregue -->
+        <div v-if="this.$route.params.status === 'Entregue'">
+            <div class="text-center">
+                <div class="inline-block bg-[#A62C21] sm:w-11/12 rounded-[20px] mx-auto">
+                    
+                    <div class="grid grid-cols-3 grid-rows-1 gap-2 text-start">
+                        <div class="flex col-start-1 col-end-1 text-white">
+                            <div class="flex flex-col align-middle p-4 ml-2">
+                                <div>
+                                    <h2 class="pb-4" style="font-size: 24px; font-weight: 800;">Pedido entregue</h2>
+
+                                    <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Realizado em</span> {{ this.date }} às {{ this.time }}</p>
+                                    <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Cliente:</span> {{ this.$route.params.clientName }}</p>
+                                    <p class="pb-4" style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
+
+                                    <p style="font-size: 16px; font-weight: 600;"><span style="font-weight: 600; font-size: 18px;">Endereço de entrega:</span></p>
+                                    
+                                    <p style="font-size: 16px; font-weight: 400;">{{ this.address.rua }}, {{ this.address.numero }} - {{ this.address.complemento }}</p>
+                                    <p style="font-size: 16px; font-weight: 400;">CEP: {{ this.address.cep }}</p>
+                                    <p style="font-size: 16px; font-weight: 400;">{{ this.address.bairro }}</p>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="flex col-start-2 col-end-2 text-white">
+                            <div class="flex flex-col align-middle p-4 ml-2">
+                                <div>
+                                    <h2 class="pb-4" style="font-size: 20px; font-weight: 600;">Itens:</h2>
+
+                                    <div class="pb-1" style="font-size: 16px; font-weight: 400;" v-for="(dish, index) in this.dishes" :key="index">
+                                        <div v-html="dish"></div>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-start-3 col-end-3 row-start-1 row-end-1 flex justify-center items-end pb-[4.5rem]">
+                            <p class="pt-3 text-white" style="font-size: 16px; font-weight: 400;">Total do pedido: <span style="font-weight: 600; font-size: 20px;">R${{ this.total }}</span><span style="font-weight: 400; font-size: 14px;"> (sem frete)</span></p>
+                        </div>
+                        
+                        <div class="flex justify-start items-end font-medium text-center col-start-3 col-end-3 row-start-1 row-end-1 my-4">
+
+                            <button @click="goToHomeRestaurant()" type="button" class="block w-full mx-4 text-white bg-[#9DBF69] hover:bg-[#7d9b4f] rounded-lg text-sm px-4 py-2.5">
+                                <p class="font-bold">Voltar</p>
+                            </button>
+
+                        </div>
+
+                    </div>
+                    
+                </div>
             </div>
         </div>
 
@@ -137,7 +223,11 @@ import axios from "axios";
         data() {
             return {
                 address: {},
-                date: ''
+                date: '',
+                time: '',
+                dishes: [],
+                total: '',
+                justification: ''
             }
         },
         components: {
@@ -145,55 +235,74 @@ import axios from "axios";
             NotificationCancelModal
         },
         mounted() {
-            
+
             axios.get('http://localhost:3000/restaurant-orders')
             .then(res => {
+
                 const orders = res.data.pedido;
                 console.log(res.data.pedido)
+            
                 this.address = this.getAddress(this.$route.params.clientName, this.$route.params.orderId, orders)
                 this.date = this.getDate(this.$route.params.clientName, this.$route.params.orderId, orders)
+                this.time = this.getTime(this.$route.params.clientName, this.$route.params.orderId, orders)
+                this.dishes = this.getItems(this.$route.params.clientName, this.$route.params.orderId, orders)
+                this.total = this.getTotalPrice(this.$route.params.clientName, this.$route.params.orderId, orders)
+                this.justification = this.getJustification(this.$route.params.clientName, this.$route.params.orderId, orders)
+            
             })
             .catch(error => {
                 console.log(error.message);
             });
         },
         methods: {
-            // async accept() {
-            //     this.status = 'Confirmado'
-            // },
-            // async deny() {
-            //     this.status = 'Cancelado'
-            // }
-            // getStatus(key, id, orders) {
-            //     console.log(orders[key][id]['status']);
-            //     return orders[key][id]['status'];
-            // },
             getDate(key, id, orders) {
                 return orders[key][id]['data'];
             },
+
             getAddress(key, id, orders){
                 return orders[key][id]['endereço'];
+            },
+
+            getTime(key, id, orders) {
+                return orders[key][id]['hora']
             }
-            // get_items(key, id, orders) {
-            //     // id
-            //     console.log('to aq')
-            //     var keys = Object.keys(orders[key][id]['pratos']);
-            //     console.log(keys);
-            //     var items = [];
-            //     keys.forEach(ky =>{
-            //         items.push(orders[key][id]['pratos'][ky].nome);
-            //     });
-            //     console.log('to aq em items' + items)
-            //     return items;
-            // },
-            // get_total_price(key, id, orders) {
-            //     var keys = Object.keys(orders[key][id]['pratos']);
-            //     var price = 0;
-            //     keys.forEach(ky =>{
-            //         price += parseFloat(orders[key][id]['pratos'][ky].preco.replace(',', '.'));
-            //     });
-            //     return `${price.toFixed(2)}`;
-            // },
+            ,
+            getItems(key, id, orders) {
+                
+                var keys = Object.keys(orders[key][id]['pratos']);
+                var items = [];
+                var amount = [];
+                var sorted_items = [];
+
+                keys.forEach(ky =>{
+                    items.push(orders[key][id]['pratos'][ky].nome);
+                });
+                keys.forEach(ky =>{
+                    amount.push(orders[key][id]['pratos'][ky].quantidade);
+                });
+                amount.forEach((elem, index) => {
+                    sorted_items.push("Qtd: " + elem + " | Item: " + items[index]);
+                });
+
+                return sorted_items;
+            },
+
+            getTotalPrice(key, id, orders) {
+                var keys = Object.keys(orders[key][id]['pratos']);
+                var price = 0;
+                keys.forEach(ky =>{
+                    price += parseFloat(orders[key][id]['pratos'][ky].preco.replace(',', '.')*parseInt(orders[key][id]['pratos'][ky].quantidade));
+                });
+                return `${price.toFixed(2)}`;
+            },
+
+            getJustification(key, id, orders) {
+                return orders[key][id]['justification']
+            },
+
+            goToHomeRestaurant() {
+                this.$router.push('/home-restaurant')
+            }
         }
     }
 </script>
