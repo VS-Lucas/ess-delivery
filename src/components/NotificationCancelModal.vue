@@ -2,7 +2,7 @@
     
     <div class="flex justify-start items-end text-white">
                         
-        <button @click="denyButton()" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+        <button @click="denyButton()" :disabled="denyButtonDisable" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
             Recusar pedido
         </button>
 
@@ -10,7 +10,7 @@
 
     <div class="flex justify-end items-end text-white">
 
-        <button @click="confirmButton()" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+        <button @click="confirmButton()" :disabled="confirmButtonDisable" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
             Confirmar pedido
         </button>
 
@@ -54,7 +54,9 @@ export default ({
     data() {
         return {
             justification: '',
-            denyModal: false
+            denyModal: false,
+            denyButtonDisable: false,
+            confirmButtonDisable: false
         }
     },
     props: {
@@ -63,8 +65,7 @@ export default ({
     },
     methods: {
         async confirmButton() {
-            console.log(this.name)
-            console.log(this.id)
+            this.denyButtonDisable = true;
             // Confirmar pedido e enviar para o restaurante
             await axios.post('http://localhost:3000/accept-order', {name: this.name, id: this.id})
             .then(() => {
@@ -81,12 +82,19 @@ export default ({
             });
         },
         denyButton() {
+            this.confirmButtonDisable = true;
             this.denyModal = !this.denyModal;
+
         },
         cancelDeny() {
             this.denyModal = !this.denyModal;
         },
         confirmDenied() {
+            if (!this.justification) {
+                return;
+            }
+            this.denyModal = !this.denyModal;
+
             // Recusar pedido e enviar para o restaurante
             axios.post('http://localhost:3000/deny-order', {name: this.name, id: this.id})
             .then(() => {
