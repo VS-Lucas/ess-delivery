@@ -87,21 +87,11 @@
                     
                     <div class="inline-flex justify-evenly col-start-3 col-end-3 my-4">
 
-                        <div class="flex justify-start items-end text-white">
-                            
-                            <button @click="deny" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                                Recusar pedido
-                            </button>
+                        <NotificationCancelModal
+                            :name="this.$route.params.clientName"
+                            :id="this.$route.params.orderId"
+                        />
 
-                        </div>
-
-                        <div class="flex justify-end items-end text-white">
-
-                            <button @click="accept" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                                Confirmar pedido
-                            </button>
-
-                        </div>
                     </div>
                     
 
@@ -139,26 +129,27 @@
 <script>
 
 import NavBar from '@/components/NavBar.vue';
+import NotificationCancelModal from '@/components/NotificationCancelModal.vue';
 import axios from "axios";
 
     export default {
         name: 'NotificationDetails',
         data() {
             return {
-                // height: 280,
                 address: {},
                 date: ''
             }
         },
         components: {
-            NavBar
+            NavBar,
+            NotificationCancelModal
         },
         mounted() {
             
             axios.get('http://localhost:3000/restaurant-orders')
             .then(res => {
-                const orders = res.data;
-                console.log(res.data)
+                const orders = res.data.pedido;
+                console.log(res.data.pedido)
                 this.address = this.getAddress(this.$route.params.clientName, this.$route.params.orderId, orders)
                 this.date = this.getDate(this.$route.params.clientName, this.$route.params.orderId, orders)
             })

@@ -11,7 +11,7 @@
         {{ this.address.rua }}
     </td>
     <td class="px-12 py-4">
-        {{ this.payment}}
+        {{ this.payment }}
     </td>
     <td class="px-12 py-4">
         {{ this.price }}
@@ -87,7 +87,7 @@ import axios from 'axios'
             payment: String,
         },
         mounted() {
-            console.log(this.address)
+            // console.log(this.address)
         },
         methods: {
             showDetail() {

@@ -145,7 +145,7 @@
             
             axios.get('http://localhost:3000/restaurant-orders')
             .then(response => {
-                const base_orders = response.data
+                const base_orders = response.data.pedido
                 console.log(base_orders)
                 let aux = []
                 var keys = Object.keys(base_orders)
