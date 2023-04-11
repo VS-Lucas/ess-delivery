@@ -143,7 +143,7 @@ export default ({
                   var ids = Object.keys(base_orders[key]);
                   ids.forEach(id => {
                      const status = this.get_status(key, id, base_orders);
-                     if (status === "Confirmado" || status === "A caminho" || status === "Cancelado" || status === "Entregue") {
+                     if (status === "Pedido em preparação" || status === "A caminho" || status === "Cancelado" || status === "Entregue") {
                         aux.push({
                            order_id: id,
                            items: this.get_items(key, id, base_orders),

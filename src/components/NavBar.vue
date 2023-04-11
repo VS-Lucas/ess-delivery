@@ -6,13 +6,6 @@
         <a class="flex items-center">
             <img src="@\assets\img\logo_navbar.png" class="h-9 mr-3 sm:h-16" alt="Logo"> <!-- sm:h-16 altera o tamanho da logo e consequentemente o da nav bar-->
         </a>
-        
-        <div flex md:order-2>
-            <button class="px-5 mr-3 md:ml-15 ">
-            <img src="@\assets\img\user_icon.png" alt="Descrição da imagem" class=" h-10 w-11" >
-            </button>
-    
-        </div>
     
       </div>
     
