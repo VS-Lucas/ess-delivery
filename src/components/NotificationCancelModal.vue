@@ -2,7 +2,7 @@
     
     <div class="flex justify-start items-end text-white">
                         
-        <button @click="denyButton()" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+        <button @click="denyButton()" class="block w-[180px] text-white bg-[#832017] hover:bg-[#6d1912] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
             Recusar pedido
         </button>
 
@@ -10,7 +10,7 @@
 
     <div class="flex justify-end items-end text-white">
 
-        <button @click="confirmButton()" class="block w-[180px] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+        <button @click="confirmButton()" class="block w-[180px] text-white bg-[#9DBF69] hover:bg-[#7d9b4f] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
             Confirmar pedido
         </button>
 

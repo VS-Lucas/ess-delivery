@@ -32,14 +32,14 @@
         <div class="text-center">
             <div class="inline-block bg-[#A62C21] sm:w-11/12 rounded-[20px] mx-auto">
                 
-                <div class="grid grid-cols-3 gap-2 text-start">
+                <div class="grid grid-cols-3 grid-rows-1 gap-2 text-start">
                     <div class="flex col-start-1 col-end-1 text-white">
                         <div class="flex flex-col align-middle p-4 ml-2">
                             <div>
                                 <h2 class="pb-4" style="font-size: 24px; font-weight: 800;">Novo pedido</h2>
 
+                                <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Realizado em</span> {{ this.date }} às {{ this.time }}</p>
                                 <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Cliente:</span> {{ this.$route.params.clientName }}</p>
-                                <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Data:</span> {{ this.date }}</p>
                                 <p class="pb-4" style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
 
                                 <p style="font-size: 16px; font-weight: 600;"><span style="font-weight: 600; font-size: 18px;">Endereço de entrega:</span></p>
@@ -56,36 +56,22 @@
                     <div class="flex col-start-2 col-end-2 text-white">
                         <div class="flex flex-col align-middle p-4 ml-2">
                             <div>
-                                <h2 class="pb-4" style="font-size: 24px; font-weight: 800;">Itens:</h2>
+                                <h2 class="pb-4" style="font-size: 20px; font-weight: 600;">Itens:</h2>
 
-                                <!-- <p style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">Cliente:</span> {{ this.$route.params.clientName }}</p>
-                                <p class="pb-4" style="font-size: 16px; font-weight: 400;"><span style="font-weight: 600; font-size: 18px;">ID do pedido:</span> #{{ this.$route.params.orderId }}</p>
-
-                                <p style="font-size: 16px; font-weight: 600;"><span style="font-weight: 600; font-size: 18px;">Endereço de entrega:</span></p> -->
+                                <div class="pb-1" style="font-size: 16px; font-weight: 400;" v-for="(dish, index) in this.dishes" :key="index">
+                                    <div v-html="dish"></div>
+                                </div>
                                 
-                                
-                                
-                                <!-- <div class="flex flex-col align-bottom">
-                                    <p style="font-size: 16px; font-weight: 400;">Avenida Boa Viagem, 546</p>
-                                    <p style="font-size: 16px; font-weight: 400;">Boa Viagem</p>
-                                    <p style="font-size: 16px; font-weight: 400;">Recife, PE</p>
-                                </div> -->
                             </div>
 
-                            <!-- <h2 class="text-[#261918] font-bold">ID: #{{ this.$route.params.id }}</h2>
-                            <h4 class="text-[#261918] mb-3">{{ this.$route.params.date }}</h4>
-        
-                            <span class="text-white sm:text-[17px] text-[12px] mb-12">
-                                {{ this.$route.params.items.join(', ') }}
-                            </span>
-
-                            <h2 class="text-gray-400">Entregue em:</h2>
-                            <h3> {{this.address.rua}}, Nº {{this.address.numero}}, {{this.address.bairro}}</h3> -->
                         </div>
                     </div>
 
+                    <div class="col-start-3 col-end-3 row-start-1 row-end-1 flex justify-center items-end pb-[4.5rem]">
+                        <p class="pt-3 text-white" style="font-size: 16px; font-weight: 400;">Total do pedido: <span style="font-weight: 600; font-size: 20px;">R${{ this.total }}</span><span style="font-weight: 400; font-size: 14px;"> (sem frete)</span></p>
+                    </div>
                     
-                    <div class="inline-flex justify-evenly col-start-3 col-end-3 my-4">
+                    <div class="inline-flex justify-evenly col-start-3 col-end-3 row-start-1 row-end-1 my-4">
 
                         <NotificationCancelModal
                             :name="this.$route.params.clientName"
@@ -137,7 +123,9 @@ import axios from "axios";
         data() {
             return {
                 address: {},
-                date: ''
+                date: '',
+                time: '',
+                dishes: []
             }
         },
         components: {
@@ -145,55 +133,57 @@ import axios from "axios";
             NotificationCancelModal
         },
         mounted() {
-            
+
             axios.get('http://localhost:3000/restaurant-orders')
             .then(res => {
                 const orders = res.data.pedido;
                 console.log(res.data.pedido)
                 this.address = this.getAddress(this.$route.params.clientName, this.$route.params.orderId, orders)
                 this.date = this.getDate(this.$route.params.clientName, this.$route.params.orderId, orders)
+                this.time = this.getTime(this.$route.params.clientName, this.$route.params.orderId, orders)
+                this.dishes = this.getItems(this.$route.params.clientName, this.$route.params.orderId, orders)
+                this.total = this.getTotalPrice(this.$route.params.clientName, this.$route.params.orderId, orders)
             })
             .catch(error => {
                 console.log(error.message);
             });
         },
         methods: {
-            // async accept() {
-            //     this.status = 'Confirmado'
-            // },
-            // async deny() {
-            //     this.status = 'Cancelado'
-            // }
-            // getStatus(key, id, orders) {
-            //     console.log(orders[key][id]['status']);
-            //     return orders[key][id]['status'];
-            // },
             getDate(key, id, orders) {
                 return orders[key][id]['data'];
             },
             getAddress(key, id, orders){
                 return orders[key][id]['endereço'];
+            },
+            getTime(key, id, orders) {
+                return orders[key][id]['hora']
+            },
+            getItems(key, id, orders) {
+                var keys = Object.keys(orders[key][id]['pratos']);
+                var items = [];
+                var amount = [];
+                var sorted_items = [];
+                keys.forEach(ky =>{
+                    items.push(orders[key][id]['pratos'][ky].nome);
+                });
+                keys.forEach(ky =>{
+                    amount.push(orders[key][id]['pratos'][ky].quantidade);
+                });
+                amount.forEach((elem, index) => {
+                    sorted_items.push("Qtd: " + elem + " | Item: " + items[index]);
+                    // sorted_items.push(items[index])
+                });
+
+                return sorted_items;
+            },
+            getTotalPrice(key, id, orders) {
+                var keys = Object.keys(orders[key][id]['pratos']);
+                var price = 0;
+                keys.forEach(ky =>{
+                    price += parseFloat(orders[key][id]['pratos'][ky].preco.replace(',', '.')*parseInt(orders[key][id]['pratos'][ky].quantidade));
+                });
+                return `${price.toFixed(2)}`;
             }
-            // get_items(key, id, orders) {
-            //     // id
-            //     console.log('to aq')
-            //     var keys = Object.keys(orders[key][id]['pratos']);
-            //     console.log(keys);
-            //     var items = [];
-            //     keys.forEach(ky =>{
-            //         items.push(orders[key][id]['pratos'][ky].nome);
-            //     });
-            //     console.log('to aq em items' + items)
-            //     return items;
-            // },
-            // get_total_price(key, id, orders) {
-            //     var keys = Object.keys(orders[key][id]['pratos']);
-            //     var price = 0;
-            //     keys.forEach(ky =>{
-            //         price += parseFloat(orders[key][id]['pratos'][ky].preco.replace(',', '.'));
-            //     });
-            //     return `${price.toFixed(2)}`;
-            // },
         }
     }
 </script>

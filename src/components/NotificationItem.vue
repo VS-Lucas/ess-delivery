@@ -62,7 +62,7 @@
             status: String,
             clientName: String,
             address: Object,
-            date: String
+            dishes: Array
         },
         methods: {
             showDetails() {
