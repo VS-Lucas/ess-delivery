@@ -49,9 +49,11 @@
               <div class="mb-2 d-flex">
                 <div class="flex items-center ml-auto">
                   <div class="flex-grow"></div>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-auto h-4 w-4 cursor-pointer duration-150 hover:text-red-500" @click="retrieveCoupon(cupom_efetivado)">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <button @click="retrieveCoupon(cupom_efetivado)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-auto h-4 w-4 cursor-pointer duration-150 hover:text-red-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                   <p class="text-white ml-auto">-{{cupom_efetivado.valor.toFixed(2).replace('.',',')}} <span class="ml-1">R$</span></p>
                 </div>
               </div>
