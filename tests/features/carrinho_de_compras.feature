@@ -138,4 +138,4 @@ Scenario: Proceder para checkout do pedido com sucesso
   And estou localizado na página do "Carrinho de compras"
   And o meu carrinho tem os itens 'X-Bacon' e 'X-Ratão'
   When eu tento proceder para checkout do pedido
-  Then eu sou direcionado para a página de checkout 
+  Then eu sou direcionado para a página de checkout
