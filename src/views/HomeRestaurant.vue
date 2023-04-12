@@ -151,6 +151,7 @@ export default ({
                            status: status,
                            nome: key,
                            address: this.getAddres(key, id, base_orders),
+                           // fee: this.get_fee(key, id, base_orders)
                         });
                      }
                   });
@@ -174,7 +175,6 @@ export default ({
       getAddres(key, id, orders){
          return orders[key][id]['endereço'];
       },
-
       get_items(key, id, orders) {
          var keys = Object.keys(orders[key][id]['pratos']);
          var items = [];
@@ -188,7 +188,7 @@ export default ({
             amount.push(orders[key][id]['pratos'][ky].quantidade);
          });
          amount.forEach((elem, index) => {
-            sorted_items.push(elem + "- " + items[index]);
+            sorted_items.push("Qtd: " + elem + " | Item: " + items[index]);
          });
 
          return sorted_items;
