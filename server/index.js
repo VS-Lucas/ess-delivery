@@ -1494,9 +1494,29 @@ app.post('/notify-finish-order', async (_req, _res) => {
 
 app.get('/get-tracking', async (_req, _res) => {
   await admin.firestore().collection('cliente').doc(client_id).get()
-  .then((doc) => {
+  .then(async (doc) => {
       const order = doc.data().acompanhamento;
-      _res.json(order);
+
+      const keys = Object.keys(order);
+      if (keys.length > 1) {
+        keys.forEach((key) => {
+          if (key !== keys[keys.length - 1])
+          delete order[key];
+        });
+      }
+      await admin.firestore()
+        .collection('cliente')
+        .doc(client_id)
+        .update({ acompanhamento: order })
+        .then(() => {
+          _res.json(order);
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Error ao atualizar');
+        });
+
+      
   }).catch((error) => {
     console.error(error);
   });
@@ -1509,7 +1529,7 @@ app.put('/clear-tracking', async (_req, _res) => {
        .doc(client_id)
        .update({ acompanhamento: {} })
   .then(() => {
-    _res.json({ message: 'Acompanhamento Limpor' });
+    _res.json({ message: 'Acompanhamento Limpo!' });
   })
   .catch(err => {
     console.error(err);

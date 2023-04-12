@@ -25,17 +25,6 @@
                 </a>
             </div>
 
-            <!-- <div v-if="status === 'A caminho'">
-                <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
-
-                    <button class="w-full pl-3" @click="showDetails()">
-                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">O pedido <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> está a caminho para o cliente {{ clientName }}.</div>
-                        <div class="text-xs text-blue-600 dark:text-blue-500">10 minutes ago</div>
-                    </button>
-
-                </a>
-            </div> -->
-
             <div v-if="status === 'Entregue'">
                 <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
 
@@ -72,20 +61,13 @@
                     {
                         orderId: this.orderId, 
                         clientName: this.clientName,
-                        // items: this.items,
-                        // total_price: this.total_price,
-                        // form_pay: this.form_pay,
                         status: this.status,
                         date: this.date,
                         time: this.time
-                        // prices: this.prices,
-                        // dishes: JSON.stringify(this.dishes)
+
                     }
                 })
-            },
-            // getAddress(key, id, orders){
-            //     return orders[key][id]['endereço'];
-            // }
+            }
         }
     }
 </script>

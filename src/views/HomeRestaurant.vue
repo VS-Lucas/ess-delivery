@@ -169,21 +169,18 @@ export default ({
    },
    methods: {
       showDetail() {
-         // console.log(this.modalCard)
          this.modalCard = !this.modalCard
-         // console.log(this.modalCard)
       },
+
       getAddres(key, id, orders){
          return orders[key][id]['endereço'];
       },
-      // get_fee(key, id, orders){
-      //    return parseInt(orders[key][id][taxa]);
-      // },
       get_items(key, id, orders) {
          var keys = Object.keys(orders[key][id]['pratos']);
          var items = [];
          var amount = [];
          var sorted_items = [];
+
          keys.forEach(ky =>{
             items.push(orders[key][id]['pratos'][ky].nome);
          });
@@ -192,11 +189,11 @@ export default ({
          });
          amount.forEach((elem, index) => {
             sorted_items.push("Qtd: " + elem + " | Item: " + items[index]);
-            // sorted_items.push(items[index])
          });
 
          return sorted_items;
       },
+
       get_total_price(key, id, orders) {
          var keys = Object.keys(orders[key][id]['pratos']);
          var price = 0;
@@ -205,9 +202,11 @@ export default ({
          });
          return `${price.toFixed(2)}`;
       },
+
       get_status(key, id, orders) {
          return orders[key][id]['status'];
       },
+      
       get_date() {
          const dataAtual = new Date();
          const dia = String(dataAtual.getDate()).padStart(2, '0');
