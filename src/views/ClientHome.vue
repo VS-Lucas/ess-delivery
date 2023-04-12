@@ -43,18 +43,18 @@
     <!-- Segundo restaurante -->
     <div class="text-xl font-bold text-white px-28 py-3"> Bode do Nô </div>
     <div class=" flex flex-wrap items-center space-x-12 justify-center py-4 bg-cover inset-x-0  " > <!-- Flexbox do cardápio de pratos-->
-      <div v-for="prato in pratos_1" :key="prato.id">
-        <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 " @click="addToCart(prato)">
+      <div v-for="dish in dishes_1" :key="dish.id">
+        <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300 " @click="addToCart(dish)">
           <a href="#">
-            <img :src="prato.url" :alt="prato.nome" class= 'object-scale-down h-28 w-full mx-auto block'>
+            <img :src="dish.url" :alt="dish.nome" class= 'object-scale-down h-28 w-full mx-auto block'>
           </a>
           <div class="px-5 pb-5">
               <a href="#">
-                  <h5 class="text-lg font-semibold tracking-tight text-white ">{{prato.nome}}</h5>
+                  <h5 class="text-lg font-semibold tracking-tight text-white ">{{dish.nome}}</h5>
               </a>
-              <div class="text-xs text-white">{{prato.descricao}} </div>
+              <div class="text-xs text-white">{{dish.descricao}} </div>
               <div class="flex items-center justify-between p-1">
-                  <div class="text-xl font-bold text-white">{{prato.preco}} </div>
+                  <div class="text-xl font-bold text-white">{{dish.preco}} </div>
                   <a href="#" class="text-white bg-blue-700   font-medium rounded-lg text-sm px-1 py-1.5 text-center ">Add to cart</a>
               </div>
             </div>
@@ -65,18 +65,18 @@
     <!-- Segundo restaurante -->
     <div class="text-xl font-bold text-white px-28 py-3"> Ratão Burguer </div>
     <div class="flex flex-wrap items-center space-x-12 justify-center py-4 bg-cover inset-x-0" > <!-- Flexbox do cardápio de pratos-->
-      <div v-for="prato in pratos_2" :key="prato.id">
-        <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300" @click="addToCart(prato)">
+      <div v-for="dish in dishes_2" :key="dish.id">
+        <button class=" w-56 h-56 bg-[#541F1B] border-gray-200 rounded-lg shadow transform hover:scale-105 transition duration-300" @click="addToCart(dish)">
           <a href="#">
-            <img :src="prato.url" :alt="prato.nome" class= 'object-scale-down h-28 w-full mx-auto block'>
+            <img :src="dish.url" :alt="dish.nome" class= 'object-scale-down h-28 w-full mx-auto block'>
           </a>
           <div class="px-5 pb-5">
               <a href="#">
-                  <h5 class="text-lg font-semibold tracking-tight text-white ">{{prato.nome}}</h5>
+                  <h5 class="text-lg font-semibold tracking-tight text-white ">{{dish.nome}}</h5>
               </a>
-              <div class="text-xs text-white">{{prato.descricao}} </div>
+              <div class="text-xs text-white">{{dish.descricao}} </div>
               <div class="flex items-center justify-between p-1">
-                  <div class="text-xl font-bold text-white">{{prato.preco}} </div>
+                  <div class="text-xl font-bold text-white">{{dish.preco}} </div>
                   <a href="#" class="text-white bg-blue-700   font-medium rounded-lg text-sm px-1 py-1.5 text-center ">Add to cart</a>
               </div>
           </div>
@@ -85,7 +85,7 @@
     </div>
 
     <!-- Avisar ao usuário que só pode adicionar itens de um mesmo restaurante no carrinho -->
-    <div v-if="this.notCompatible">
+    <div v-if="this.not_compatible">
         <div class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
           <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
               <div class="modal-container bg-white w-[300px] mx-auto h-[175px] rounded-[20px] shadow-lg z-50 overflow-y-auto">
@@ -96,7 +96,7 @@
                             <p>Só é possível acrescentar ao carrinho itens de um mesmo restaurante!</p>
                         </div>
                         <div class="flex justify-center">
-                        <button @click="fecharModal" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5 mt-7" >
+                        <button @click="closeModal" class="bg-[#9DBF69] hover:bg-[#A62C21] rounded-lg text-sm px-9 py-2.5 mt-7" >
                           Voltar
                         </button>
                         </div>
@@ -109,7 +109,7 @@
   </div>
 </template>
   
-  <script>
+<script>
   import NavBar from '@/components/NavBar.vue'
   import axios from 'axios';
 
@@ -120,36 +120,36 @@
     },
     data() {
     return {
-      pratos_1: [],
-      pratos_2: [],
-      carrinho: [],
+      dishes_1: [],
+      dishes_2: [],
+      cart: [],
       found: false,
-      notCompatible: false
+      not_compatible: false
     }
   },
   async mounted() {
     await axios.get('http://localhost:3000/clienthome1')
       .then(response => {
-        this.carrinho = [...response.data];
+        this.cart = [...response.data];
       })
       .catch(error=> {
         console.error(error);
       });
     axios.get('http://localhost:3000/clienthome_first_restaurant')
       .then(response => {
-        this.pratos_1 = response.data;
+        this.dishes_1 = response.data;
       })
       .catch(error => {
         console.error(error);
       });
-      axios.get('http://localhost:3000/clienthome_second_restaurant')
+    axios.get('http://localhost:3000/clienthome_second_restaurant')
       .then(response => {
-        this.pratos_2 = response.data;
+        this.dishes_2 = response.data;
       })
       .catch(error => {
         console.error(error);
       });
-      console.log(this.carrinho)
+      console.log(this.cart)
   },
     methods:{
       goToShoppingCart() {
@@ -165,19 +165,19 @@
         console.log('updated')
         axios.get('http://localhost:3000/clienthome1')
         .then(response => {
-          this.carrinho = [...response.data];
+          this.cart = [...response.data];
         })
         .catch(error=> {
           console.error(error);
         });
       },
-      addToCart(prato) {
+      addToCart(dish) {
         this.update();
         console.log('addToCart')
-        console.log(this.carrinho)
-        if (this.carrinho.length == 0){
-          console.log('length == 0')
-          axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1, restaurante: prato.restaurante}  )
+        console.log(this.cart)
+        if (this.cart.length == 0){
+
+          axios.post('http://localhost:3000/clienthome',  {nome: dish.nome, descricao: dish.descricao, preco: dish.preco, url: dish.url, quantidade: 1, restaurante: dish.restaurante}  )
           .then(response => {
             console.log(response.data.message);
             location.reload();
@@ -185,29 +185,28 @@
           .catch(error => {
             console.error(error);
           });
-      } else {
-        console.log("length !== 0")
-        let i = 0;
-        let index = 0;
-        this.carrinho.forEach((doc) => {
-          console.log(doc)
-          console.log(prato.restaurante)
-          if(doc.restaurante !== prato.restaurante){
-            this.notCompatible = true;
-          }
-          console.log(doc.nome)
-          if(doc.nome == prato.nome){
-            console.log('Está no carrinho')
-            index = i;
-            this.found = true; 
-          }
-          i = i + 1;
-        });
-        if (!this.notCompatible){
+        } else {
+          let i = 0;
+          let index = 0;
+          this.cart.forEach((doc) => {
+            console.log(doc)
+            console.log(dish.restaurante)
+            if(doc.restaurante !== dish.restaurante){
+              this.not_compatible = true;
+            }
+            console.log(doc.nome)
+            if(doc.nome == dish.nome){
+              console.log('Está no carrinho')
+              index = i;
+              this.found = true; 
+            }
+            i = i + 1;
+          });
+        if (!this.not_compatible){
           console.log('ENTROU NO IF')
           if(!this.found){
             console.log('not found');
-            axios.post('http://localhost:3000/clienthome',  {nome: prato.nome, descricao: prato.descricao, preco: prato.preco, url: prato.url, quantidade: 1, restaurante: prato.restaurante}  )
+            axios.post('http://localhost:3000/clienthome',  {nome: dish.nome, descricao: dish.descricao, preco: dish.preco, url: dish.url, quantidade: 1, restaurante: dish.restaurante}  )
             .then(response => {
               console.log(response.data.message);
               location.reload();
@@ -219,7 +218,7 @@
           if(this.found){
             console.log('found');
             console.log(index)
-            axios.put('http://localhost:3000/clienthome2',  {nome: prato.nome, index: index}  )
+            axios.put('http://localhost:3000/clienthome2',  {nome: dish.nome, index: index}  )
             .then(response => {
               console.log(response.data.message);
               location.reload();
@@ -233,11 +232,11 @@
       this.found = false;
       // location.reload();
       },
-      fecharModal(){
-        this.notCompatible = false;
+      closeModal(){
+        this.not_compatible = false;
       }
     }
   }
-  </script>
+</script>
 
 
