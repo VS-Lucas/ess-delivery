@@ -91,6 +91,7 @@ import axios from 'axios'
             price: String,
             status: String,
             payment: String,
+            // fee: String,
         },
         mounted() {
             // console.log(this.address)
