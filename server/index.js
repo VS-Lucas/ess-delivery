@@ -1491,6 +1491,14 @@ app.get('/get-tracking', async (_req, _res) => {
   await admin.firestore().collection('cliente').doc(client_id).get()
   .then((doc) => {
       const order = doc.data().acompanhamento;
+
+      const keys = Object.keys(order);
+      if (keys.length > 1) {
+        keys.forEach((key) => {
+          if (key !== keys[keys.length - 1])
+          delete order[key];
+        });
+      }
       _res.json(order);
   }).catch((error) => {
     console.error(error);
