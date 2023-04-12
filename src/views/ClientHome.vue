@@ -174,7 +174,8 @@
       addToCart(dish) {
         this.update();
         console.log('addToCart')
-        console.log(this.cart)
+
+        // Se o carrinho estiver vazio, somente acrescenta o item nele
         if (this.cart.length == 0){
 
           axios.post('http://localhost:3000/clienthome',  {nome: dish.nome, descricao: dish.descricao, preco: dish.preco, url: dish.url, quantidade: 1, restaurante: dish.restaurante}  )
@@ -185,49 +186,49 @@
           .catch(error => {
             console.error(error);
           });
-        } else {
+        }
+        else { // Se o carrinho não estiver vazio
           let i = 0;
           let index = 0;
+
           this.cart.forEach((doc) => {
-            console.log(doc)
-            console.log(dish.restaurante)
-            if(doc.restaurante !== dish.restaurante){
+            if (doc.restaurante !== dish.restaurante){ // Se o item adicionado for de outro restaurante, aparece o aviso
               this.not_compatible = true;
             }
-            console.log(doc.nome)
-            if(doc.nome == dish.nome){
+            if (doc.nome == dish.nome){  // Ativa o found se já houver o item que será adicionado no carrinho
               console.log('Está no carrinho')
               index = i;
               this.found = true; 
             }
             i = i + 1;
           });
-        if (!this.not_compatible){
-          console.log('ENTROU NO IF')
-          if(!this.found){
-            console.log('not found');
-            axios.post('http://localhost:3000/clienthome',  {nome: dish.nome, descricao: dish.descricao, preco: dish.preco, url: dish.url, quantidade: 1, restaurante: dish.restaurante}  )
-            .then(response => {
-              console.log(response.data.message);
-              location.reload();
-            })
-            .catch(error => {
-              console.error(error);
-            });
+
+          // Se o item for do mesmo restaurante
+          if (!this.not_compatible){ 
+            if (!this.found){ // Se não houver outro do mesmo item no carrinho
+              console.log('not found');
+              axios.post('http://localhost:3000/clienthome',  {nome: dish.nome, descricao: dish.descricao, preco: dish.preco, url: dish.url, quantidade: 1, restaurante: dish.restaurante}  )
+              .then(response => {
+                console.log(response.data.message);
+                location.reload();
+              })
+              .catch(error => {
+                console.error(error);
+              });
+            }
+
+            if (this.found){ // Se houver outro do mesmo item no carrinho, acrescenta uma unidade na quantidade (chama o put)
+              console.log('found');
+              axios.put('http://localhost:3000/clienthome2',  {nome: dish.nome, index: index}  )
+              .then(response => {
+                console.log(response.data.message);
+                location.reload();
+              })
+              .catch(error => {
+                console.error(error);
+              });
+            }
           }
-          if(this.found){
-            console.log('found');
-            console.log(index)
-            axios.put('http://localhost:3000/clienthome2',  {nome: dish.nome, index: index}  )
-            .then(response => {
-              console.log(response.data.message);
-              location.reload();
-            })
-            .catch(error => {
-              console.error(error);
-            });
-          }
-        }
       }
       this.found = false;
       // location.reload();
