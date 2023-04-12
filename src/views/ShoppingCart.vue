@@ -65,7 +65,7 @@
                       <input id= "cupom_desconto" type="cupom" name="cupom" v-model="cupom" class="block w-100 p-10 pl-10 text-sm py-4 h-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 " placeholder="Cupom de desconto..." required>
                   </div>
               </form>
-              <button type="submit" class="text-white right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 " @click="getDiscount()" >Aplicar</button>
+              <button type="submit" class="text-white right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 " @click="applyCoupon()" >Aplicar</button>
           </div> 
   
           <!-- Sub total com desconto -->
@@ -158,7 +158,8 @@
       descontoAplicado: false,
       precoRota: 0,
       descontoRota: 0,
-      cupom : ''
+      cupom : '',
+      index: 0
      }
     },
     async mounted() {
@@ -257,17 +258,17 @@
           console.error(error)
         })
       },
-      increaseAmount(prato) {
-        let i = 0;
-        let index = 0;
-        this.pratos.forEach((doc) => {
-            if(doc.nome == prato.nome){
-              index = i;
-              this.found = true; 
-            }
-            i = i + 1;
-          });
-        axios.put('http://localhost:3000/shoppingcart1',  {nome: prato.nome, index: index}  )
+      async locateFoodItem(prato){
+          for (let i = 0; i < this.pratos.length; i++) {
+            if(this.pratos[i].nome == prato.nome){
+                this.index = i;
+                this.found = true; 
+              }
+          }
+      },
+      async increaseAmount(prato) {
+        await this.locateFoodItem(prato);
+        axios.put('http://localhost:3000/shoppingcart1',  {nome: prato.nome, index: this.index}  )
             .then(response => {
               console.log(response.data.message);
               location.reload();
@@ -276,32 +277,25 @@
               console.error(error);
             });
       },
-      reduceAmount(prato) {
+      async reduceAmount(prato) {
         if (prato.quantidade  == 1){
           this.deleteItem(prato);
-        } else {
-        let i = 0;
-        let index = 0;
-        this.pratos.forEach((doc) => {
-            if(doc.nome == prato.nome){
-              index = i;
-              this.found = true; 
-            }
-            i = i + 1;
-          });
-        axios.put('http://localhost:3000/shoppingcart2',  {nome: prato.nome, index: index}  )
-            .then(response => {
-              console.log(response.data.message);
-              location.reload();
-            })
-            .catch(error => {
-              console.error(error);
-            });
-        }
+        } 
+        else {
+          await this.locateFoodItem(prato);
+          axios.put('http://localhost:3000/shoppingcart2',  {nome: prato.nome, index: this.index}  )
+              .then(response => {
+                console.log(response.data.message);
+                location.reload();
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          }
       },
-      async getDiscount() {
-          // GET dos cupons disponíveis
-          await axios.get('http://localhost:3000/getcoupons_available')
+      async getCoupons() {
+        // GET dos cupons disponíveis
+        await axios.get('http://localhost:3000/getcoupons_available')
               .then(response => {
                   this.cupons = response.data;
               })
@@ -316,6 +310,10 @@
               .catch(error => {
                   console.error(error);
           });
+      },
+      async applyCoupon() {
+          await this.getCoupons();
+
           let cupom_valido = false;
           for (let i = 0; i < this.cupons.length; i++) {
             if (this.cupons[i].nome === this.cupom) {
@@ -328,7 +326,6 @@
                 .catch(error => {
                   console.error(error);
                 });
-  
                 
               // Cupom sai do array de cupons disponíveis
               await axios.delete('http://localhost:3000/getcoupons_available', {
@@ -348,7 +345,6 @@
             if (i == (this.cupons.length - 1) && !cupom_valido ){
               this.cupom_invalido = true;
             }
-  
           }
           // Só entra nesse if se o array de cupons (disponíveis) está vazio, então qualquer cupom é inválido
           // A booleana cupom_valido só vira true caso o array não seja vazio e tenha um cupom válido
