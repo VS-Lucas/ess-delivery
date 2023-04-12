@@ -300,19 +300,21 @@ export default {
                 console.error(error);
             });
 
-            this.steps.payment = true;
             await axios.get('http://localhost:3000/get-orders')
             .then(response => {
             const orders = response.data.pedidos;
             this.status = orders[this.id]['status'];
-            if (this.status === 'Cancelado') {
+            console.log(this.status)
+            if (this.status === 'Cancelado' || this.status === 'Recusado') {
                 this.steps.payment = false;
                 this.steps.confirmed_order = false;
                 this.steps.order_in_preparation = false;
                 this.steps.underway = false;
                 this.steps.delivered = false;
             } else {
-                if (this.status === 'Pedido confirmado') {
+                if (this.status === 'Pagamento') {
+                    this.steps.payment = true;
+                } else if (this.status === 'Pedido confirmado') {
                     this.steps.payment = true;
                     this.steps.confirmed_order = true;
                 } else if (this.status === 'Pedido em preparação') {
