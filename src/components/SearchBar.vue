@@ -13,3 +13,12 @@
   </div>
 </div>
 </template>
+
+<script scoped>
+export default {
+    name: 'SearchBar',
+    props: {
+    msg: String
+    }
+}
+</script>
