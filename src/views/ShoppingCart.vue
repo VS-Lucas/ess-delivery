@@ -30,7 +30,6 @@
                   </div>
                   <div class="mt-4 flex items-center space-x-2">
                     <p class="text-white flex items-center">{{(parseFloat(prato.preco.replace(',','.'))*prato.quantidade).toFixed(2).replace('.',',')}} <span class="ml-1">R$</span></p>
-                    
                   </div>
                 </div>
               </div>
@@ -134,9 +133,9 @@
                   </div>
               </div>
   </body>
-  </template>
+</template>
   
-  <script>
+<script>
   // @ is an alias to /src
   import NavBar from '@/components/NavBar.vue'
   import axios from 'axios';
@@ -154,7 +153,6 @@
       precoDescontado: '0,00',
       vazio: false,
       cupom_invalido: false,
-      itens: 0,
       cupons: [],
       cuponsEfetivados: [],
       descontoAplicado: false,
@@ -163,32 +161,18 @@
       cupom : ''
      }
     },
-    // computed: {
-    //   pratosFiltrados() {
-    //     return this.pratos.filter(prato => prato.no_carrinho === true);
-    //   },
-    // },
     async mounted() {
-      await axios.get('http://localhost:3000/shoppingcart')
-        .then(response => {
-          this.pratos = [...response.data];
-          // console.log(this.pratos)
-        })
-        .catch(error=> {
-          console.error(error);
-        });
-        // console.log("Passou pelo axios")
-        // console.log(this.pratos)
-
-        let precoTotal = 0;
-        this.pratos.forEach((doc) => {
-          precoTotal+= parseFloat(doc.preco.replace(',','.'))*doc.quantidade;
-          this.precoTotal = precoTotal.toFixed(2).replace('.',',')
-          console.log(this.precoTotal) 
-        });
-        this.precoRota = precoTotal;
-  
-        // A partir daqui é o cálculo do subtotal com desconto
+      //Baixando e atribuindo dados do banco de dados
+        //Baixando e atribuindo carrinho
+        await axios.get('http://localhost:3000/shoppingcart')
+          .then(response => {
+            this.pratos = [...response.data];
+          })
+          .catch(error=> {
+            console.error(error);
+          });
+      
+        //Baixando e atribuindo cupons
         await axios.get('http://localhost:3000/getcoupons_used')
           .then(response => {
               this.cuponsEfetivados = response.data;
@@ -196,47 +180,51 @@
           .catch(error => {
               console.error(error);
           });
-  
-        // Calcula o total do desconto
+
+      //Calculando valores a serem exibidos
+        //Subtotal
+        let precoTotal = 0;
+        this.pratos.forEach((doc) => {
+          precoTotal+= parseFloat(doc.preco.replace(',','.'))*doc.quantidade;
+          this.precoTotal = precoTotal.toFixed(2).replace('.',',')
+        });
+        //Desconto (para subtotal descontado)
         let desconto = 0;
         for (let i = 0; i < this.cuponsEfetivados.length; i++) {
           desconto = desconto + this.cuponsEfetivados[i].valor;
         }
         this.descontoRota = desconto;
-  
+        this.precoRota = precoTotal;
+        //Subtotal descontado
         let precoDescontado = 0;
         precoDescontado = precoTotal - desconto;
         if (precoDescontado < 0){
           precoDescontado = 0
         }
         this.precoDescontado = precoDescontado.toFixed(2).replace('.',',')
-  
-        console.log(this.precoDescontado)
-  
-        // Se houver cupons aplicados, o novo valor é mostrado na tela
-        if(this.cuponsEfetivados.length>0){
+      
+      //Verificando se há cupons ou não para serem exibidos na tela
+      if(this.cuponsEfetivados.length>0){
           this.descontoAplicado = true;
         }
-      //   for(let objeto in this.pratos){
-      //   console.log('Mensagem');
-      //   this.precoTotal+= parseFloat(objeto.preco);      
-      // }
-      console.log(this.precoTotal)
-      console.log(this.precoDescontado)
-      console.log('rota:')
-      console.log(this.precoRota)
-      console.log(this.descontoRota)
-      console.log(this.pratos[0].restaurante)
+
     },
     methods: {
+      //Funções para rota p/ outras páginas
       goToClientHome() {
                       this.$router.push('/clienthome');
                   },
       goToCheckout() {
-        this.pratos.forEach(() => {
-          this.itens+= 1; 
+        //Checa se há itens no carrinho ou não
+        let itens = 0;
+        let pratos = this.pratos;
+        pratos.forEach(() => {
+          itens = itens + 1; 
         });
-        if(this.itens==0){this.vazio = true}
+        //Se não houver itens no carrinho, um modal aparece
+        if(itens==0){this.vazio = true}
+        
+        //Se houver itens no carrinho, se procede para checkout
         if(!this.vazio){
           this.$router.push ({
                 name: 'checkout',
@@ -270,7 +258,6 @@
         })
       },
       increaseAmount(prato) {
-        console.log('mais')
         let i = 0;
         let index = 0;
         this.pratos.forEach((doc) => {
@@ -293,7 +280,6 @@
         if (prato.quantidade  == 1){
           this.deleteItem(prato);
         } else {
-        console.log('menos')
         let i = 0;
         let index = 0;
         this.pratos.forEach((doc) => {
@@ -314,10 +300,6 @@
         }
       },
       async getDiscount() {
-          //const cupom  = this;
-          console.log(this.cupom)
-          console.log(this.cupom)
-          console.log(this.cupom)
           // GET dos cupons disponíveis
           await axios.get('http://localhost:3000/getcoupons_available')
               .then(response => {
@@ -326,7 +308,6 @@
               .catch(error => {
                   console.error(error);
           });
-          console.log("depois do 1 get")
           // GET dos cupons efetivados
           await axios.get('http://localhost:3000/getcoupons_used')
               .then(response => {
@@ -335,23 +316,17 @@
               .catch(error => {
                   console.error(error);
           });
-          console.log("depois do 2 get")
           let cupom_valido = false;
           for (let i = 0; i < this.cupons.length; i++) {
-            console.log("entrou aq")
-            console.log(this.cupons[i].nome)
-            console.log(this.cupom)
             if (this.cupons[i].nome === this.cupom) {
               cupom_valido = true;
               // Se o cupom existe, colocamos ele no array de cupons efetivados
               await axios.post('http://localhost:3000/getcoupons_used',  {nome: this.cupons[i].nome, valor: this.cupons[i].valor}  ) //pode dar erro
                 .then(response => {
                   console.log(response.data.message);
-                  console.log('Entrou aqui 0000')
                 })
                 .catch(error => {
                   console.error(error);
-                  console.log('Entrou aqui 9999')
                 });
   
                 
@@ -371,7 +346,6 @@
             }
             // Chega no final do array e não tem nenhum cupom com esse nome, o cupom é inválido
             if (i == (this.cupons.length - 1) && !cupom_valido ){
-              console.log("entrou nesse if")
               this.cupom_invalido = true;
             }
   
@@ -379,7 +353,6 @@
           // Só entra nesse if se o array de cupons (disponíveis) está vazio, então qualquer cupom é inválido
           // A booleana cupom_valido só vira true caso o array não seja vazio e tenha um cupom válido
           if (this.cupons.length == 0 && !cupom_valido ){
-              console.log("entrou nesse if")
               this.cupom_invalido = true;
             }   
       },
@@ -405,4 +378,4 @@
       }
     }
   }
-  </script>
+</script>"
