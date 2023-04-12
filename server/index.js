@@ -236,31 +236,36 @@ app.post("/password-recovery", async (req, res) =>{
   const email = req.body.email;
   
   try{
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < 8; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
+    // Gera um link para redefinição de senha
+    const link = await admin.auth().generatePasswordResetLink(email);
 
-    const userRecord = await admin.auth().getUserByEmail(email);
+    //Envia um email para o usuário com o link para redefinição de senha
+    const mailOptions = {
+      from: "forra-bucho.firebaseapp.com",
+      to: email,
+      subject: "Recuperação de senha",
+      text: `Clique no link a seguir para redefinir sua senha: ${link}`,
+      html: `Clique <a href="${link}">aqui</a> para redefinir sua senha.`,
+    };
 
-    if (email == userRecord.email) {      
-      const userRef = admin.firestore().collection('usuarios').doc(userRecord.uid);
-
-      await userRef.update({
-        password: result
-      });
-      
-      res.json({found: true, password: result});
-    }
+    admin.firestore()
+        .collection("mail")
+        .add(mailOptions)
+        .then(() => {
+          // Email enviado com sucesso
+          console.log("Um email para redefinição de senha foi enviado para " + email);
+        })
+        .catch((error) => {
+          // Ocorreu um erro ao enviar o email de redefinição de senha
+          console.error("Ocorreu um erro ao enviar o email de redefinição de senha: ", error);
+        });
+    res.json({found: true})
   }
-  catch(error){
-      console.log(error)
-      res.json({found: false});   
+  catch (error){
+    console.log('E-mail não encontrado')
+    res.json({found: false})
   }
 });
-
 
 // Rota PUT para atualizar os dados do restaurante
 app.put('/update-register/:index', (req, res) => {
