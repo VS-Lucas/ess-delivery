@@ -27,8 +27,6 @@
                      </div>
                </div>
 
-               <p class="flex items-start justify-start text-white" style="font-size: 15px; font-weight: 600;">Data (ver como fazer)</p>
-
             </div>
 
             <div class="h-76 mb-4 rounded bg-[#FFF3F3] dark:bg-gray-800">
@@ -145,7 +143,7 @@ export default ({
                   var ids = Object.keys(base_orders[key]);
                   ids.forEach(id => {
                      const status = this.get_status(key, id, base_orders);
-                     if (status === "Confirmado" || status === "A caminho" || status === "Cancelado" || status === "Entregue") {
+                     if (status === "Pedido em preparação" || status === "A caminho" || status === "Cancelado" || status === "Entregue") {
                         aux.push({
                            order_id: id,
                            items: this.get_items(key, id, base_orders),
@@ -205,6 +203,15 @@ export default ({
       },
       get_status(key, id, orders) {
          return orders[key][id]['status'];
+      },
+      get_date() {
+         const dataAtual = new Date();
+         const dia = String(dataAtual.getDate()).padStart(2, '0');
+         const mes = String(dataAtual.getMonth() + 1).padStart(2, '0'); // Note que o mês começa em 0
+         const ano = dataAtual.getFullYear();
+         const dataFormatada = `${dia}/${mes}/${ano}`;
+
+         return dataFormatada;
       }
    }
 })

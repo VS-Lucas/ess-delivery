@@ -236,32 +236,36 @@ app.post("/password-recovery", async (req, res) =>{
   const email = req.body.email;
   
   try{
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < 8; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
+    // Gera um link para redefinição de senha
+    const link = await admin.auth().generatePasswordResetLink(email);
 
-    const userRecord = await admin.auth().getUserByEmail(email);
+    //Envia um email para o usuário com o link para redefinição de senha
+    const mailOptions = {
+      from: "forra-bucho.firebaseapp.com",
+      to: email,
+      subject: "Recuperação de senha",
+      text: `Clique no link a seguir para redefinir sua senha: ${link}`,
+      html: `Clique <a href="${link}">aqui</a> para redefinir sua senha.`,
+    };
 
-    if (email == userRecord.email) {
-      console.log('ACHOU');
-      
-      const userRef = admin.firestore().collection('usuarios').doc(userRecord.uid);
-      await userRef.update({
-        password: result
-      });
-      
-      res.json({found: true, password: result});
-    }
+    admin.firestore()
+        .collection("mail")
+        .add(mailOptions)
+        .then(() => {
+          // Email enviado com sucesso
+          console.log("Um email para redefinição de senha foi enviado para " + email);
+        })
+        .catch((error) => {
+          // Ocorreu um erro ao enviar o email de redefinição de senha
+          console.error("Ocorreu um erro ao enviar o email de redefinição de senha: ", error);
+        });
+    res.json({found: true})
   }
-  catch(error){
-      console.log('NÃO ACHOU')
-      res.json({found: false});   
+  catch (error){
+    console.log('E-mail não encontrado')
+    res.json({found: false})
   }
 });
-
 
 // Rota PUT para atualizar os dados do restaurante
 app.put('/update-register/:index', (req, res) => {
@@ -1009,8 +1013,7 @@ app.get('/orders', async(req, res) =>{
     const doc = await admin.firestore().collection('cliente').doc(client_id).get();
     client_name = doc.data().nome;
     
-    const data = doc.data();
-    const orders = Object.keys(data.pedidos);
+    const orders = Object.keys(doc.data().pedidos);
     const ordersAmount = orders.length;
 
     res.json({amount: ordersAmount})
@@ -1021,7 +1024,7 @@ app.get('/orders', async(req, res) =>{
 });
 
 // Rota GET do nome do cliente
-app.get('/clientname', async(req, res) =>{
+app.get('/client-name', async(req, res) =>{
   try{
     const doc = await admin.firestore().collection('cliente').doc(client_id).get();
     const nome = doc.data().nome
@@ -1034,7 +1037,7 @@ app.get('/clientname', async(req, res) =>{
 });
 
 // Rota POST para salvar o(s) pedido(s) do cliente
-app.post("/storeclientorder", async (req, res) =>{
+app.post("/store-client-order", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
@@ -1049,7 +1052,6 @@ app.post("/storeclientorder", async (req, res) =>{
     if (!clienteDoc.exists) {
       res.status(404).send('Cliente não encontrado');
     } else {
-
       const pedidos = clienteDoc.data().pedidos || {};
       pedidos[orderID] = {'pratos': orderData, 'status': 'Pagamento', 'data': orderDate, 'hora': orderTime,
                           'taxa': orderFee, 'tempo_estimado': eTime}
@@ -1072,7 +1074,7 @@ app.post("/storeclientorder", async (req, res) =>{
 });
 
 // Rota POST para salvar a demanda do restaurante
-app.post("/reststore", async (req, res) =>{
+app.post("/store-res-order", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
@@ -1086,7 +1088,6 @@ app.post("/reststore", async (req, res) =>{
     if (!clienteDoc.exists) {
       res.status(404).send('Restaurante não encontrado');
     } else {
-
       const pedidos = clienteDoc.data().pedidos || {};
       if (!(client_name in pedidos)) {
         pedidos[client_name] = {};
@@ -1113,7 +1114,7 @@ app.post("/reststore", async (req, res) =>{
 });
 
 // Rota PUT para limpar o carrinho
-app.put("/clearcart", async (req, res) =>{
+app.put("/clear-cart", async (req, res) =>{
 
   admin.firestore()
        .collection('cliente')
@@ -1129,7 +1130,7 @@ app.put("/clearcart", async (req, res) =>{
 });
 
 // Rota PUT para limpar o array de cupons efetivados
-app.put("/clearcoupons_used", async (req, res) =>{
+app.put("/clear-coupons-used", async (req, res) =>{
   admin.firestore()
        .collection('cliente')
        .doc(client_id)
@@ -1159,10 +1160,11 @@ app.put("/clearcoupons_used", async (req, res) =>{
 });
 
 // Rota POST do tempo estimado de entrega
-app.post('/estimatedtime', async(req, res) =>{
-  const res_name = req.body.resName
+app.post('/estimated-time', async(req, res) =>{
   const res_id = {'Ratão Burguer': 'L9fhnBFA2DkVxHUIDjPr', 
-                  'Bode do Nô': 'hm0n3mzMyFMh2JAb9YQb'}
+  'Bode do Nô': 'hm0n3mzMyFMh2JAb9YQb'}
+  const res_name = req.body.resName
+  
   id_rest = res_id[res_name];
 
   try{
@@ -1178,7 +1180,7 @@ app.post('/estimatedtime', async(req, res) =>{
 });
 
 // Rota POST para salvar no campo acompanhamento
-app.post("/storeorderfield", async (req, res) =>{
+app.post("/tracking-field", async (req, res) =>{
 
   const orderData = req.body.orderData;
   const orderID = req.body.orderID;
@@ -1198,7 +1200,6 @@ app.post("/storeorderfield", async (req, res) =>{
     if (!clienteDoc.exists) {
       res.status(404).send('Cliente não encontrado');
     } else {
-
       const acompanhamento = clienteDoc.data().acompanhamento || {};
       acompanhamento[orderID] = {'pratos': orderData, 'restaurante': resName, 'status': status, 'data': orderDate, 'hora': orderTime,
                                   'preco': orderPrice, 'endereco': orderAddress, 'nome': clientName, 'taxa': orderFee, 
@@ -1706,7 +1707,7 @@ app.post('/accept-order', async (_req, _res) => {
         const pedidos = clienteDoc.data().pedidos;
         // console.log(pedidos)
         //Mudando status
-        pedidos[name][id]['status'] = 'Confirmado';
+        pedidos[name][id]['status'] = 'Pedido em preparação';
         // console.log(pedidos[name][id]['status'])
   
         admin.firestore().collection('restaurantes').doc(restaurantId)
@@ -1736,7 +1737,7 @@ app.post('/notify-order-accepted', async (_req, _res) => {
         
         // console.log(pedidos)
         // console.log(id)
-        pedidos[id]['status'] = 'Confirmado';
+        pedidos[id]['status'] = 'Pedido em preparação';
   
         admin.firestore().collection('cliente').doc(client_id)
           .update({ pedidos })

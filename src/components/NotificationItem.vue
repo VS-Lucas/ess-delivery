@@ -8,8 +8,8 @@
                 <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
                 
                     <button class="w-full pl-3" @click="showDetails()">
-                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">Você recebeu um novo pedido: ID <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span></div>
-                        <div class="text-xs text-blue-600 dark:text-blue-500">a few moments ago</div>
+                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">Você recebeu um novo pedido com ID <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> de <span class="font-semibold text-gray-900 dark:text-white">{{ clientName }}</span></div>
+                        <div class="text-xs text-blue-600 dark:text-blue-500">em {{ date }} às {{ time }}</div>
                     </button>
 
                 </a>
@@ -19,14 +19,13 @@
                 <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
 
                     <button class="w-full pl-3" @click="showDetails()">
-                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">O pedido <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> foi cancelado.</div>
-                        <div class="text-xs text-blue-600 dark:text-blue-500">10 minutes ago</div>
+                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">O pedido <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> feito por <span class="font-semibold text-gray-900 dark:text-white">{{ clientName }}</span> foi cancelado.</div>
                     </button>
 
                 </a>
             </div>
 
-            <div v-if="status === 'A caminho'">
+            <!-- <div v-if="status === 'A caminho'">
                 <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
 
                     <button class="w-full pl-3" @click="showDetails()">
@@ -35,14 +34,13 @@
                     </button>
 
                 </a>
-            </div>
+            </div> -->
 
             <div v-if="status === 'Entregue'">
                 <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
 
                     <button class="w-full pl-3" @click="showDetails()">
-                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">O pedido <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> foi entregue com sucesso!</div>
-                        <div class="text-xs text-blue-600 dark:text-blue-500">44 minutes ago</div>
+                        <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">O pedido <span class="font-semibold text-gray-900 dark:text-white">#{{ orderId }}</span> feito por <span class="font-semibold text-gray-900 dark:text-white">{{ clientName }}</span> foi entregue com sucesso!</div>
                     </button>
 
                 </a>
@@ -61,8 +59,10 @@
             orderId: String,
             status: String,
             clientName: String,
+            date: String,
+            time: String,
             address: Object,
-            date: String
+            dishes: Array
         },
         methods: {
             showDetails() {
@@ -75,7 +75,9 @@
                         // items: this.items,
                         // total_price: this.total_price,
                         // form_pay: this.form_pay,
-                        status: this.status
+                        status: this.status,
+                        date: this.date,
+                        time: this.time
                         // prices: this.prices,
                         // dishes: JSON.stringify(this.dishes)
                     }
