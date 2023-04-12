@@ -236,31 +236,36 @@ app.post("/password-recovery", async (req, res) =>{
   const email = req.body.email;
   
   try{
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < 8; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
+    // Gera um link para redefinição de senha
+    const link = await admin.auth().generatePasswordResetLink(email);
 
-    const userRecord = await admin.auth().getUserByEmail(email);
+    //Envia um email para o usuário com o link para redefinição de senha
+    const mailOptions = {
+      from: "forra-bucho.firebaseapp.com",
+      to: email,
+      subject: "Recuperação de senha",
+      text: `Clique no link a seguir para redefinir sua senha: ${link}`,
+      html: `Clique <a href="${link}">aqui</a> para redefinir sua senha.`,
+    };
 
-    if (email == userRecord.email) {      
-      const userRef = admin.firestore().collection('usuarios').doc(userRecord.uid);
-
-      await userRef.update({
-        password: result
-      });
-      
-      res.json({found: true, password: result});
-    }
+    admin.firestore()
+        .collection("mail")
+        .add(mailOptions)
+        .then(() => {
+          // Email enviado com sucesso
+          console.log("Um email para redefinição de senha foi enviado para " + email);
+        })
+        .catch((error) => {
+          // Ocorreu um erro ao enviar o email de redefinição de senha
+          console.error("Ocorreu um erro ao enviar o email de redefinição de senha: ", error);
+        });
+    res.json({found: true})
   }
-  catch(error){
-      console.log(error)
-      res.json({found: false});   
+  catch (error){
+    console.log('E-mail não encontrado')
+    res.json({found: false})
   }
 });
-
 
 // Rota PUT para atualizar os dados do restaurante
 app.put('/update-register/:index', (req, res) => {
@@ -1489,9 +1494,29 @@ app.post('/notify-finish-order', async (_req, _res) => {
 
 app.get('/get-tracking', async (_req, _res) => {
   await admin.firestore().collection('cliente').doc(client_id).get()
-  .then((doc) => {
+  .then(async (doc) => {
       const order = doc.data().acompanhamento;
-      _res.json(order);
+
+      const keys = Object.keys(order);
+      if (keys.length > 1) {
+        keys.forEach((key) => {
+          if (key !== keys[keys.length - 1])
+          delete order[key];
+        });
+      }
+      await admin.firestore()
+        .collection('cliente')
+        .doc(client_id)
+        .update({ acompanhamento: order })
+        .then(() => {
+          _res.json(order);
+        })
+        .catch(err => {
+          console.error(err);
+          _res.status(500).send('Error ao atualizar');
+        });
+
+      
   }).catch((error) => {
     console.error(error);
   });
@@ -1504,7 +1529,7 @@ app.put('/clear-tracking', async (_req, _res) => {
        .doc(client_id)
        .update({ acompanhamento: {} })
   .then(() => {
-    _res.json({ message: 'Acompanhamento Limpor' });
+    _res.json({ message: 'Acompanhamento Limpo!' });
   })
   .catch(err => {
     console.error(err);
