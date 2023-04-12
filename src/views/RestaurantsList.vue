@@ -108,7 +108,7 @@
         data() {
             return {
                 restaurants: [],
-                shoppingcart: [],
+                shopping_cart: [],
                 found: false,
                 notCompatible: false
             }
@@ -125,12 +125,12 @@
             console.log(this.restaurants);
         await axios.get('http://localhost:3000/clienthome1')
             .then(response => {
-              this.shoppingcart = [...response.data];
+              this.shopping_cart = [...response.data];
             })
             .catch(error=> {
               console.error(error);
             });
-          console.log(this.shoppingcart)
+          console.log(this.shopping_cart)
         },
         methods: {
           goToHome() {
@@ -143,7 +143,7 @@
           console.log('updated')
           axios.get('http://localhost:3000/clienthome1')
           .then(response => {
-            this.shoppingcart = [...response.data];
+            this.shopping_cart = [...response.data];
           })
           .catch(error=> {
             console.error(error);
@@ -152,8 +152,8 @@
         addToCart(dish) {
           this.update();
           console.log('addToCart')
-          console.log(this.shoppingcart)
-          if (this.shoppingcart.length == 0){
+          console.log(this.shopping_cart)
+          if (this.shopping_cart.length == 0){
             console.log('length == 0')
             axios.post('http://localhost:3000/clienthome',  {nome: dish.nome, descricao: dish.descricao, preco: dish.preco, url: dish.url, quantidade: 1, restaurante: dish.restaurante}  )
             .then(response => {
@@ -167,7 +167,7 @@
           console.log("length !== 0")
           let i = 0;
           let index = 0;
-          this.shoppingcart.forEach((doc) => {
+          this.shopping_cart.forEach((doc) => {
             console.log(doc)
             console.log(dish.restaurante)
             if(doc.restaurante !== dish.restaurante){
@@ -209,7 +209,6 @@
           }
         }
         this.found = false;
-        // location.reload();
         },
         fecharModal(){
           this.notCompatible = false;
