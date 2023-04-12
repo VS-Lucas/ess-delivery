@@ -359,24 +359,30 @@ export default {
             this.show = false;
         },
         confirm() {
-            // Cancelamento do pedido do cliente
-            axios.post('http://localhost:3000/cancel-customer-order', {id: this.id, restaurant: this.restaurant})
+            this.cancel_customer_order();
+            this.cancel_restaurant_order();
+            this.clear_tracking();
+        },
+        async cancel_customer_order () {
+            await axios.post('http://localhost:3000/cancel-customer-order', {id: this.id, restaurant: this.restaurant})
             .then(() => {
                 this.show = false;
                 this.show2 = true;
             }).catch(err => {
                 console.log(err.message);
             });
-            // Cancelamento do pedido do restaurante
-            axios.post('http://localhost:3000/cancel-restaurant-order', {name: this.name, id: this.id, justification: this.justification, restaurant: this.restaurant})
+        },
+        async cancel_restaurant_order () {
+            await axios.post('http://localhost:3000/cancel-restaurant-order', {name: this.name, id: this.id, justification: this.justification, restaurant: this.restaurant})
             .then(() => {
                 this.show = false;
                 this.show2 = true;
             }).catch(err => {
                 console.log(err.message);
             });
-            // Clear no campo de acompanhamento
-            axios.put('http://localhost:3000/clear-tracking')
+        },
+        async clear_tracking() {
+            await axios.put('http://localhost:3000/clear-tracking')
             .then(() => {
             }).catch(error => { 
                 console.error(error);
