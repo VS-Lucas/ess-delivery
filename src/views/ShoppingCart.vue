@@ -49,24 +49,24 @@
               <div class="mb-2 d-flex">
                 <div class="flex items-center ml-auto">
                   <div class="flex-grow"></div>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-auto h-4 w-4 cursor-pointer duration-150 hover:text-red-500" @click="retrieveCoupon(cupom_efetivado)">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <button @click="retrieveCoupon(cupom_efetivado)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-auto h-4 w-4 cursor-pointer duration-150 hover:text-red-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                   <p class="text-white ml-auto">-{{cupom_efetivado.valor.toFixed(2).replace('.',',')}} <span class="ml-1">R$</span></p>
                 </div>
               </div>
             </div>
         
-  
           <!-- Caixa de cupom desconto -->
-          <div class="py-3" >
-              <form @submit.prevent="getDiscount($event)">   
-                  <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only  p-3">Search</label>
+          <div class="py-3 flex justify-between" >
+              <form>   
                   <div class="relative">
                       <input id= "cupom_desconto" type="cupom" name="cupom" v-model="cupom" class="block w-100 p-10 pl-10 text-sm py-4 h-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 " placeholder="Cupom de desconto..." required>
-                      <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 ">Aplicar</button>
                   </div>
               </form>
+              <button type="submit" class="text-white right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 " @click="getDiscount()" >Aplicar</button>
           </div> 
   
           <!-- Sub total com desconto -->
@@ -159,7 +159,8 @@
       cuponsEfetivados: [],
       descontoAplicado: false,
       precoRota: 0,
-      descontoRota: 0
+      descontoRota: 0,
+      cupom : ''
      }
     },
     // computed: {
@@ -313,8 +314,10 @@
         }
       },
       async getDiscount() {
-          const cupom  = this;
-  
+          //const cupom  = this;
+          console.log(this.cupom)
+          console.log(this.cupom)
+          console.log(this.cupom)
           // GET dos cupons disponíveis
           await axios.get('http://localhost:3000/getcoupons_available')
               .then(response => {
@@ -323,7 +326,7 @@
               .catch(error => {
                   console.error(error);
           });
-  
+          console.log("depois do 1 get")
           // GET dos cupons efetivados
           await axios.get('http://localhost:3000/getcoupons_used')
               .then(response => {
@@ -332,11 +335,13 @@
               .catch(error => {
                   console.error(error);
           });
-  
+          console.log("depois do 2 get")
           let cupom_valido = false;
           for (let i = 0; i < this.cupons.length; i++) {
             console.log("entrou aq")
-            if (this.cupons[i].nome === cupom.cupom) {
+            console.log(this.cupons[i].nome)
+            console.log(this.cupom)
+            if (this.cupons[i].nome === this.cupom) {
               cupom_valido = true;
               // Se o cupom existe, colocamos ele no array de cupons efetivados
               await axios.post('http://localhost:3000/getcoupons_used',  {nome: this.cupons[i].nome, valor: this.cupons[i].valor}  ) //pode dar erro
@@ -353,7 +358,7 @@
               // Cupom sai do array de cupons disponíveis
               await axios.delete('http://localhost:3000/getcoupons_available', {
                 data: {
-                nome: cupom.cupom
+                nome: this.cupom
                 }
                 })
                 .then(response => {
@@ -401,5 +406,3 @@
     }
   }
   </script>
-  message.txt
-  17 KB

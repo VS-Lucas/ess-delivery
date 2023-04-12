@@ -99,3 +99,43 @@ Scenario: Adicionar um item que já se encontre no carrinho ao carrinho a partir
   When eu tento acrescentar "X-Bacon" no meu carrinho
   And prossigo para o meu carrinho de compras
   Then o prato 'X-Bacon' aparece no meu carrinho com 2 unidades
+
+Scenario: Adicionar um cupom de desconto inválido
+  Given Acessei o sistema com o email "severino@gmail.com" e com a senha "biu123"
+  And situo-me na página do carrinho de compras
+  And eu tenho os pratos 'X-Bacon' e 'X-Ratão' adicionados no meu carrinho de compras
+  When eu aplico o cupom 'cupom_fake' 
+  Then eu vejo a mensagem 'Cupom inválido!' exibida na tela
+
+Scenario: Adicionar um cupom de desconto válido
+  Given Eu acessei o sistema com o email "severino@gmail.com" e com a senha "biu123"
+  And eu me situo na página do carrinho de compras
+  And tenho os pratos 'X-Bacon' e 'X-Ratão' adicionados no meu carrinho de compras
+  And o subtotal da minha compra é '44,00' 
+  When eu uso o cupom 'cupom10' 
+  Then eu vejo que o novo subtotal após o desconto é '34,00'
+
+Scenario: Adicionar um cupom de desconto válido já havendo outro cupom em vigor
+  Given estou acessando o sistema com o email "severino@gmail.com" e com a senha "biu123"
+  And estou situado na página do carrinho de compras
+  And tenho os pratos 'X-Bacon' e 'X-Ratão' presentes no meu carrinho de compras
+  And o subtotal atual da minha compra é '34,00'
+  And vejo que já há um desconto em vigor de '-10,00'
+  When eu efetuo o cupom 'cupom15' 
+  Then eu vejo que o subtotal após o desconto é '19,00'
+
+Scenario: Remover um cupom de desconto válido já em vigor
+  Given eu estou acessando o sistema com o email "severino@gmail.com" e com a senha "biu123"
+  And eu estou situado na página do carrinho de compras
+  And eu tenho os pratos 'X-Bacon' e 'X-Ratão' presentes no meu carrinho de compras
+  And o subtotal da minha compra atual é '19,00'
+  And vejo que já há cupons de desconto em vigor de '-10,00' e '-15,00'
+  When eu recupero o cupom “cupom10” em vigor
+  Then eu vejo que o novo subtotal após o cálculo é '29,00'
+
+Scenario: Proceder para checkout do pedido com sucesso
+  Given Entrei no sistema com o email "severino@gmail.com" e com a senha "biu123"
+  And estou localizado na página do "Carrinho de compras"
+  And o meu carrinho tem os itens 'X-Bacon' e 'X-Ratão'
+  When eu tento proceder para checkout do pedido
+  Then eu sou direcionado para a página de checkout
