@@ -1,46 +1,39 @@
 Feature: Notificação da Confirmação de Pedido
+
   As a usuário do sistema do tipo "cliente"
   I want to acompanhar o status do meu pedido
   So that eu possa saber se o meu pedido foi concluído com êxito
 
-Scenario: Ser notificado de que falta apenas o pedido ser confirmado pelo estabelecimento.
-  Given estou logado com o usuário “José Admilson” e com a senha “senha123”
-  And eu estou na página do carrinho de compras
-  And eu forneci informações de um endereço válido
-  And eu selecionei um método de pagamento válido
-  And a loja da qual estou pedindo está aberta
-  And a loja entrega no endereço que forneci
-  When eu confirmo o meu pedido
-  And o pagamento é processado com êxito
-  Then se exibe na tela uma mensagem avisando que o pedido foi feito e aguarda confirmação da loja
+# Pedido confirmado
+Scenario: Notificação de pedido confirmado
 
-Scenario: Ser notificado de que o pedido não pôde ser feito devido à loja estar fechada.
-  Given estou logado com o usuário “Miguel Wellington” e com a senha “senha234”
-  And eu estou na página do carrinho de compras
-  And eu forneci informações de um endereço válido
-  And eu selecionei um método de pagamento válido
-  And a loja da qual estou pedindo está fechada no momento
-  And a loja entrega no endereço que forneci
-  When eu confirmo o meu pedido
-  Then se exibe na tela uma mensagem avisando que o pedido não pôde ser concluído pois a loja se encontra fechada no momento
+  Given estou logado como o cliente "Ana Carla Guerra de Albuquerque Melo"
+  And   estou na tela de Home do Cliente aguardando uma resposta do restaurante ao meu pedido cujo "id" é "1"
+  When  entro na tela de Histórico de Pedidos
+  Then  eu vejo o "status" "Confirmado" no pedido de "id" igual a "1"
 
-Scenario: Ser notificado de que o pedido não pôde ser concluído devido a um erro no processamento do pagamento.
-  Given estou logado com o usuário “Rafael Hamilton” e com a senha “senha345”
-  And eu estou na página do carrinho de compras
-  And eu forneci informações de um endereço válido
-  And eu selecionei um método de pagamento válido
-  And a loja da qual estou pedindo está aberta
-  And a loja entrega no endereço que forneci
-  When eu confirmo o meu pedido
-  And o pagamento não é processado com êxito
-  Then se exibe na tela uma mensagem avisando que o pedido não pôde ser concluído pois houve um erro no processamento do pagamento
+# Pedido recusado
+Scenario: Notificação de pedido recusado
 
-Scenario: Ser notificado de que o pedido não pôde ser realizado devido à loja não entregar no endereço fornecido.
-  Given estou logado com o usuário “Gabriel McEarlson” e com a senha “senha456”
-  And eu estou na página do carrinho de compras
-  And eu forneci informações de um endereço válido
-  And eu selecionei um método de pagamento válido
-  And a loja da qual estou pedindo está aberta
-  And a loja não entrega no endereço que forneci
-  When eu confirmo o meu pedido
-  Then se exibe na tela uma mensagem avisando que o pedido não pôde ser concluído pois a loja não entrega no endereço fornecido
+  Given fiz login no sistema como o cliente "Ana Carla Guerra de Albuquerque Melo"
+  And   estou na tela de Home do Cliente aguardando uma resposta do restaurante ao meu pedido cujo "id" é "2"
+  When  eu entro na tela de Histórico de Pedidos
+  Then  eu vejo o "status" "Recusado" no pedido de "id" igual a "2"
+
+# Pedido a caminho
+Scenario: Notificação de pedido a caminho
+
+  Given entrei no sistema como o cliente "Ana Carla Guerra de Albuquerque Melo"
+  And   estou na tela de Home do Cliente esperando o meu pedido de "id" igual a "3" mudar de status para A caminho
+  When  acesso a tela de Histórico de Pedidos
+  Then  eu vejo o "status" "A caminho" no pedido de "id" igual a "3"
+
+# Cliente confirma a entrega
+Scenario: Entrega realizada com sucesso
+
+  Given loguei no sistema como o cliente "Ana Carla Guerra de Albuquerque Melo"
+  And   estou na tela de Home do Cliente esperando o pedido de "id" igual a "4" chegar para confirmar a entrega
+  When  chego na tela de Histórico de Pedidos
+  And   eu vejo o "status" "A caminho" no pedido de "id" igual a "4"
+  And   entro na tela de Detalhamento de Pedido
+  Then  eu vejo uma opção para "Confirmar entrega"
